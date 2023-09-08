@@ -1,6 +1,6 @@
 import Button from '../components/atoms/Button';
 
-function MenuPage() {
+function MainMenuPage() {
   return (
     <div>
       <h1>Home Page</h1>
@@ -17,4 +17,4 @@ function MenuPage() {
   );
 }
 
-export default MenuPage;
+export default MainMenuPage;
