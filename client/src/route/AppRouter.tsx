@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from '../pages/LandingPage';
-import LoginPage from '@/pages/LoginPage';
+import LoginPage from '../pages/LoginPage';
 import FamilyProfilePage from '../pages/FamilyProfilePage';
 import MainMenuPage from '../pages/MainMenuPage';
 import DrawingTopicMenuPage from '../pages/DrawingTopicMenuPage';
