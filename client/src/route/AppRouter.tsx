@@ -1,12 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from '../pages/Home';
+import LandingPage from '../pages/LandingPage';
+import MenuPage from '../pages/MenuPage';
 
 const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/menu" element={<MenuPage />} />
       </Routes>
     </BrowserRouter>
   );
