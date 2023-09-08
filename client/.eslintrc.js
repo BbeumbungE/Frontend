@@ -12,6 +12,11 @@ module.exports = {
   ],
   rules: {
     'linebreak-style': 0, // 줄바꿈 스타일과 관련된 규칙을 무시
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'react/function-component-definition': [
+      2,
+      { namedComponents: ['arrow-function', 'function-declaration'] },
+    ],
     'import/prefer-default-export': 0, // 모듈에서 named export를 사용하더라도, default export를 선호하는 규칙을 무시
     'import/extensions': 0, // 파일 확장자와 관련된 규칙을 무시
     'no-use-before-define': 0, // 변수나 함수를 정의하기 전에 사용하는 것을 허용
