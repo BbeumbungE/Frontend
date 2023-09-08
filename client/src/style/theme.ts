@@ -4,6 +4,7 @@ interface Theme {
     mainBlue: string;
     mainBlack: string;
     mainSalmon: string;
+    mainWhite: string;
     lightPurple: string;
     purple: string;
     lightGray: string;
@@ -23,13 +24,20 @@ interface Theme {
     borderGreen: string;
     yellow: string;
     blue: string;
+    transparentWhite: string;
   };
   stageColors: {
     lightGreen: string;
     green: string;
+    mediumGreen: string;
     darkGreen: string;
     mainSalmon: string;
     fontGreen: string;
+  };
+  storeColors: {
+    yellow: string;
+    lightYellow: string;
+    gray: string;
   };
   hamsterColors: {
     cloud: string;
@@ -37,14 +45,6 @@ interface Theme {
     mountain: string;
     ground: string;
   };
-  //   typography: {
-  //     fontFamily: string;
-  //     fontSize: string;
-  //   };
-  //   spacing: {
-  //     padding: string;
-  //     margin: string;
-  //   };
 }
 
 const theme: Theme = {
@@ -53,6 +53,7 @@ const theme: Theme = {
     mainBlue: '#4293F7',
     mainBlack: '#2B2C2B',
     mainSalmon: '#FB796E',
+    mainWhite: '#FFFFFF',
     lightPurple: '#F5F5FF',
     purple: '#D6D6FE',
     lightGray: '#EDEDED',
@@ -72,13 +73,20 @@ const theme: Theme = {
     borderGreen: '#00C300',
     yellow: '#FAE77F',
     blue: '#9BC3FA',
+    transparentWhite: '#FFFFFF50',
   },
   stageColors: {
     lightGreen: '#E5F4D3',
     green: '#ADDA7C',
+    mediumGreen: '#CDE9AD',
     darkGreen: '#6FAD35',
     mainSalmon: '#FB796E',
     fontGreen: '#416922',
+  },
+  storeColors: {
+    yellow: '#FFDF8D',
+    lightYellow: '#FFF4D6',
+    gray: '#D5D6D5',
   },
   hamsterColors: {
     cloud: '#FBFCF6',
@@ -86,14 +94,6 @@ const theme: Theme = {
     mountain: '#F4F8CE',
     ground: '#EBF0BC',
   },
-  //   typography: {
-  //     fontFamily: 'Arial, sans-serif',
-  //     fontSize: '16px',
-  //   },
-  //   spacing: {
-  //     padding: '10px',
-  //     margin: '10px',
-  //   },
 };
 
 export default theme;
