@@ -25,6 +25,7 @@ interface Theme {
     yellow: string;
     blue: string;
     transparentWhite: string;
+    mint: string;
   };
   stageColors: {
     lightGreen: string;
@@ -74,6 +75,7 @@ const theme: Theme = {
     yellow: '#FAE77F',
     blue: '#9BC3FA',
     transparentWhite: '#FFFFFF50',
+    mint: '#47CFB0',
   },
   stageColors: {
     lightGreen: '#E5F4D3',
