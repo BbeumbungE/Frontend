@@ -7,29 +7,33 @@ interface ButtonProps {
   // onClick?: () => void;
 }
 
-const StyledMenu = styled.div<{ bgColor: string }>`
+const StyledMenu = styled.div<{ $bgColor: string; $border: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
   width: 370px;
   height: 510px;
   border-radius: 50px;
   transition: all 0.3s ease-in-out;
-  background-color: ${(props) => props.theme.menuColors.bgColor};
-  border: none;
+  background-color: ${(props) => props.$bgColor};
+  border: ${(props) => props.$border};
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  overflow-wrap: break-word;
 `;
 
-const ButtonText = styled.span<{ $fontColor: string }>`
-  font-size: 30px;
-  color: ${(props) => props.$fontColor};
-  margin-top: 24px;
-  margin-bottom: 24px;
+const MenuText = styled.div`
+  font-size: 50px;
+  color: ${(props) => props.theme.colors.mainBlack};
+  margin-top: 30px;
+  margin-bottom: 30px;
   margin-right: 34px;
   margin-left: 34px;
 `;
 
-function Button({ buttonText, color }: ButtonProps) {
-  let bgColor = theme.colors.mainBlue; // 기본값은 mainBlue
-  let fontColor = theme.colors.mainWhite;
+function Menu({ buttonText, color }: ButtonProps) {
+  let bgColor = theme.menuColors.pink; // 기본값은 mainBlue
+  let border = 'none';
 
   switch (color) {
     case 'pink':
@@ -45,26 +49,23 @@ function Button({ buttonText, color }: ButtonProps) {
       bgColor = theme.menuColors.blue;
       break;
     case 'mint':
-      bgColor = theme.menuColors.transparentWhite;
+      bgColor = theme.menuColors.mint;
       break;
-    case 'yellow':
-      bgColor = theme.storeColors.yellow;
-      fontColor = theme.colors.mainBlack;
+    case 'borderPink':
+      bgColor = theme.menuColors.pink;
+      border = `solid 10px ${theme.menuColors.borderPink}`;
       break;
-    case 'gray':
-      bgColor = theme.storeColors.gray;
-      fontColor = theme.colors.mainBlack;
-      break;
-    case 'darkGray':
-      bgColor = theme.colors.darkGray;
+    case 'borderGreen':
+      bgColor = theme.menuColors.green;
+      border = `solid 10px ${theme.menuColors.borderGreen}`;
       break;
     default:
       bgColor = theme.colors.mainBlue;
   }
 
   return (
-    <StyledMenu $bgColor={bgColor}>
-      <ButtonText $fontColor={fontColor}>{buttonText}</ButtonText>
+    <StyledMenu $bgColor={bgColor} $border={border}>
+      <MenuText>{buttonText}</MenuText>
     </StyledMenu>
   );
 }

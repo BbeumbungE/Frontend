@@ -1,4 +1,5 @@
 import Button from '../components/atoms/Button';
+import Menu from '../components/atoms/Menu';
 
 function MainMenuPage() {
   return (
@@ -13,6 +14,13 @@ function MainMenuPage() {
       <Button buttonText="yellow" color="yellow" />
       <Button buttonText="gray" color="gray" />
       <Button buttonText="darkGray" color="darkGray" />
+      <Menu buttonText="pink" color="pink" />
+      <Menu buttonText="green" color="green" />
+      <Menu buttonText="yellow" color="yellow" />
+      <Menu buttonText="blue" color="blue" />
+      <Menu buttonText="mint" color="mint" />
+      <Menu buttonText="borderPinkborderPinkborderPink" color="borderPink" />
+      <Menu buttonText="borderGreen" color="borderGreen" />
     </div>
   );
 }
