@@ -1,5 +1,6 @@
 import Button from '../components/atoms/Button';
 import Menu from '../components/atoms/Menu';
+import WhiteModal from '../components/atoms/WhiteModal';
 
 function MainMenuPage() {
   return (
@@ -21,6 +22,7 @@ function MainMenuPage() {
       <Menu buttonText="mint" color="mint" />
       <Menu buttonText="borderPinkborderPinkborderPink" color="borderPink" />
       <Menu buttonText="borderGreen" color="borderGreen" />
+      <WhiteModal modalText="이름을 지어주세요!" height={300} />
     </div>
   );
 }
