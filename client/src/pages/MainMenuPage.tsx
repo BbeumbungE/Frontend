@@ -1,11 +1,13 @@
 import Button from '../components/atoms/Button';
 import Menu from '../components/atoms/Menu';
 import WhiteModal from '../components/atoms/WhiteModal';
+import ProfileBtn from '../components/atoms/ProfileBtn';
 
 function MainMenuPage() {
   return (
     <div>
       <h1>Home Page</h1>
+      <ProfileBtn />
       <Button buttonText="salmon" color="salmon" />
       <Button buttonText="blue" color="blue" />
       <Button buttonText="green" color="green" />

@@ -42,7 +42,44 @@ interface Theme {
   };
   hamsterColors: {
     cloud: string;
-    main: string;
+    sky: string;
+    mountain: string;
+    ground: string;
+  };
+  otterColors: {
+    cloud: string;
+    sky: string;
+    mountain: string;
+    ground: string;
+  };
+  foxColors: {
+    cloud: string;
+    sky: string;
+    mountain: string;
+    ground: string;
+  };
+  eagleColors: {
+    cloud: string;
+    sky: string;
+    mountain: string;
+    ground: string;
+  };
+  crocodileColors: {
+    cloud: string;
+    sky: string;
+    mountain: string;
+    ground: string;
+  };
+  unicornColors: {
+    cloud: string;
+    sky: string;
+    mountain1: string;
+    mountain2: string;
+    ground: string;
+  };
+  lionColors: {
+    cloud: string;
+    sky: string;
     mountain: string;
     ground: string;
   };
@@ -92,9 +129,46 @@ const theme: Theme = {
   },
   hamsterColors: {
     cloud: '#FBFCF6',
-    main: '#F8FAE4',
+    sky: '#F8FAE4',
     mountain: '#F4F8CE',
     ground: '#EBF0BC',
+  },
+  otterColors: {
+    cloud: '#FBFCF6',
+    sky: '#FFF1F5',
+    mountain: '#FECDDD',
+    ground: '#F893B3',
+  },
+  foxColors: {
+    cloud: '#FBFCF6',
+    sky: '#FEF3EE',
+    mountain: '#FBC3AD',
+    ground: '#FBA386',
+  },
+  eagleColors: {
+    cloud: '#FBFCF6',
+    sky: '#F2F0F0',
+    mountain: '#DADCCA',
+    ground: '#B2B497',
+  },
+  crocodileColors: {
+    cloud: '#FBFCF6',
+    sky: '#F1F8F1',
+    mountain: '#B8E6BB',
+    ground: '#7CB581',
+  },
+  unicornColors: {
+    cloud: '#FBFCF6',
+    sky: '#FEF4F2',
+    mountain1: '#FFF8BB',
+    mountain2: '#FCD3CD',
+    ground: '#F8B8AF',
+  },
+  lionColors: {
+    cloud: '#FBFCF6',
+    sky: '#F8EEC9',
+    mountain: '#F3DB95',
+    ground: '#E4BB55',
   },
 };
 
