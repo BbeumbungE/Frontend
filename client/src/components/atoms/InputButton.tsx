@@ -1,14 +1,15 @@
+import React, { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 import theme from '../../style/theme';
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   buttonText: string;
-  // onClick?: () => void;
 }
 
 const StyledButton = styled.button`
   font-family: 'TmoneyRoundWindExtraBold';
   display: inline-block;
+  min-width: 120px;
   height: 62px;
   border-radius: 15px;
   text-align: center;
@@ -16,23 +17,12 @@ const StyledButton = styled.button`
   background-color: ${theme.colors.mainBlue};
   border: none;
   cursor: pointer;
-`;
-
-const ButtonText = styled.span`
   font-size: 30px;
   color: ${theme.colors.mainWhite};
-  margin-top: 24px;
-  margin-bottom: 24px;
-  margin-right: 34px;
-  margin-left: 34px;
 `;
 
-const Button = ({ buttonText }: ButtonProps) => {
-  return (
-    <StyledButton>
-      <ButtonText>{buttonText}</ButtonText>
-    </StyledButton>
-  );
+const Button = ({ buttonText, onClick }: ButtonProps) => {
+  return <StyledButton onClick={onClick}>{buttonText}</StyledButton>;
 };
 
 export default Button;
