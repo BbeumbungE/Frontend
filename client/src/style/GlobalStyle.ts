@@ -1,18 +1,20 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
-
 @font-face {
     font-family: 'TmoneyRoundWindExtraBold';
-    src: url('../assets/font/TmoneyRoundWindExtraBold.otf') format('otf');
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/TmoneyRoundWindExtraBold.woff') format('woff');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 @font-face {
     font-family: 'TmoneyRoundWindRegular';
-    src: url('../assets/font/TmoneyRoundWindRegular.otf') format('otf');
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/TmoneyRoundWindRegular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
+
 }
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -45,6 +47,7 @@ footer, header, hgroup, main, menu, nav, section {
 }
 body {
   line-height: 1;
+  font-family: 'TmoneyRoundWindExtraBold';
 }
 menu, ol, ul {
   list-style: none;
