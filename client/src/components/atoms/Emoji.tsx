@@ -12,6 +12,7 @@ const EmojiWrapper = styled.div`
   display: inline-block;
   cursor: pointer;
   z-index: 300;
+  margin-right: 3px;
 `;
 
 const Emoji = ({ emotion }: EmojiProps) => {
