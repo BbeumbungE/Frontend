@@ -10,6 +10,8 @@ interface EmojiProps {
 
 const EmojiWrapper = styled.div`
   display: inline-block;
+  cursor: pointer;
+  z-index: 300;
 `;
 
 const Emoji = ({ emotion }: EmojiProps) => {
