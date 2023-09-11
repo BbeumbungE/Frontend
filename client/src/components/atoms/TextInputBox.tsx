@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { InputHTMLAttributes } from 'react';
 import styled from 'styled-components';
 import theme from '../../style/theme';
 
-interface InputProps {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string;
+  value: string;
+  setInputValue: (value: string) => void;
 }
 
 // 스타일드 컴포넌트를 사용하여 Text input 스타일링
 const TextInputWrapper = styled.div`
   display: inline-block;
   padding: 0;
-  margin: 0;
+  margin-right: 4px;
 `;
 
 const Input = styled.input`
@@ -19,7 +21,12 @@ const Input = styled.input`
   padding: 8px;
   font-size: 40px;
   font-family: 'TmoneyRoundWindRegular';
-  color: white;
+  color: ${theme.colors.mainWhite};
+  &::placeholder {
+    font-size: 27px;
+    color: ${theme.colors.mainWhite};
+    padding-top: 5px;
+  }
   text-align: center;
   background-color: ${theme.colors.mainGray};
   border-radius: 15px;
@@ -30,8 +37,8 @@ const Input = styled.input`
 `;
 
 // Text input Atom 컴포넌트 정의
-function TextInput({ placeholder }: InputProps) {
-  const [inputValue, setInputValue] = useState<string>('');
+function TextInput({ placeholder, value, setInputValue }: InputProps) {
+  // const [inputValue, setInputValue] = useState<string>(value);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // 문자열의 실제 길이를 계산하여 최대 6글자로 제한
@@ -43,7 +50,7 @@ function TextInput({ placeholder }: InputProps) {
     <TextInputWrapper>
       <Input
         type="text"
-        value={inputValue}
+        value={value}
         onChange={handleInputChange} // 이벤트 핸들러 함수 연결
         placeholder={placeholder}
         maxLength={6}
