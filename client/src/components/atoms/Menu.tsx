@@ -10,7 +10,8 @@ interface ButtonProps {
 const StyledMenu = styled.div<{ $bgColor: string; $border: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
   width: 370px;
-  height: 510px;
+  height: 500px;
+  margin: 20px;
   border-radius: 50px;
   transition: all 0.3s ease-in-out;
   background-color: ${(props) => props.$bgColor};
