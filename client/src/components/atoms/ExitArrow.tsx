@@ -20,7 +20,7 @@ function Arrow({ color }: ArrowProps) {
       bgColor = theme.colors.darkGray;
       break;
     case 'light':
-      bgColor = `#FFFFFF`;
+      bgColor = theme.colors.mainWhite;
       break;
     default:
       bgColor = theme.colors.darkGray;

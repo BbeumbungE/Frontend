@@ -20,7 +20,7 @@ function SpanColor({ color }: ExitTextProps) {
       txColor = theme.colors.darkGray;
       break;
     case 'light':
-      txColor = `#FFFFFF`;
+      txColor = theme.colors.mainWhite;
       break;
     default:
       txColor = theme.colors.darkGray;
