@@ -6,6 +6,7 @@ const BlurBox = styled.div`
   backdrop-filter: blur(10px);
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
+  z-index: 100;
 `;
 
 export default BlurBox;
