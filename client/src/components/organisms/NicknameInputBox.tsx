@@ -29,7 +29,6 @@ const NicknameInputBox = ({ onButtonClick }: NicknameInputBoxProps) => {
   return (
     <NicknameInputBoxDiv>
       <TextInputBox
-        placeholder="^ - ^"
         value={inputValue}
         setInputValue={setInputValue}
         onChange={valueChange}
