@@ -6,6 +6,9 @@ interface EmojiBoxProps {
   SmileCount: number;
   WowCount: number;
   SadCount: number;
+  SmileClick: React.MouseEventHandler<HTMLDivElement>;
+  WowClick: React.MouseEventHandler<HTMLDivElement>;
+  SadClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const EmojiBoxDiv = styled.div`
@@ -16,14 +19,21 @@ const EmojiBoxDiv = styled.div`
   z-index: 300;
 `;
 
-const EmojiBox = ({ SmileCount, WowCount, SadCount }: EmojiBoxProps) => {
+const EmojiBox = ({
+  SmileCount,
+  WowCount,
+  SadCount,
+  SmileClick,
+  WowClick,
+  SadClick,
+}: EmojiBoxProps) => {
   return (
     <EmojiBoxDiv>
-      <Emoji emotion="smile" />
+      <Emoji emotion="smile" onClick={SmileClick} />
       <EmojiCount count={SmileCount} />
-      <Emoji emotion="wow" />
+      <Emoji emotion="wow" onClick={WowClick} />
       <EmojiCount count={WowCount} />
-      <Emoji emotion="sad" />
+      <Emoji emotion="sad" onClick={SadClick} />
       <EmojiCount count={SadCount} />
     </EmojiBoxDiv>
   );
