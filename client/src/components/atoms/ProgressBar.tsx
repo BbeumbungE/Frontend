@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
-// CSS keyframes로 애니메이션 정의
+interface ProgressBarProps {
+  durationInSeconds: number;
+}
+
+interface ProgressBarInnerProps {
+  progress: number;
+  isRed: boolean;
+}
+
 const progressAnimation = keyframes`
   from {
     width: 100%;
@@ -11,44 +19,70 @@ const progressAnimation = keyframes`
   }
 `;
 
+const bounceAnimation = keyframes`
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+`;
+
 const ProgressBarWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  background-color: #ddd;
+  background-color: #ffefc6;
+  margin-top: 5px;
 `;
 
-const ProgressBarInner = styled.div<{ progress: number }>`
+const ProgressBarInner = styled.div<ProgressBarInnerProps>`
   height: 30px;
-  width: ${({ progress }) => progress}%;
-  background-color: #007bff;
+  background-color: ${(props) =>
+    props.isRed ? props.theme.stageColors.mainSalmon : '#ffc64a'};
   transition: width 0.2s ease-in-out;
-  animation: ${progressAnimation} ${({ progress }) => progress * 0.01 * 1.5}s
-    linear; // 애니메이션 적용
+  animation: ${progressAnimation} ${({ progress }) => progress}s linear;
 `;
 
-interface ProgressBarProps {
-  durationInSeconds: number;
-}
+const RemainSec = styled.span<{ isRed: boolean }>`
+  position: absolute;
+  font-size: 25px;
+  color: ${(props) => (props.isRed ? 'red' : props.theme.colors.mainWhite)};
+  ${({ isRed }) =>
+    isRed &&
+    css`
+      animation: ${bounceAnimation} 0.5s ease infinite;
+    `};
+`;
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ durationInSeconds }) => {
-  const [progress, setProgress] = useState<number>(100);
+function ProgressBar({ durationInSeconds }: ProgressBarProps) {
+  const [remainingTime, setRemainingTime] = useState<number>(durationInSeconds);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (progress > 0) {
-        setProgress((prevProgress) => prevProgress - 100 / durationInSeconds);
+      if (remainingTime > 0) {
+        setRemainingTime((prevTime) => prevTime - 1);
       } else {
         clearInterval(interval);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [durationInSeconds, progress]);
+  }, [durationInSeconds, remainingTime]);
+
+  // remainingTime이 10초 이하면 프로그레스 바 빨간색으로 변경 및 남은 초 애니메이션 추가
+  const isRed = remainingTime <= 10;
 
   return (
     <ProgressBarWrapper>
-      <ProgressBarInner progress={progress} />
+      <ProgressBarInner isRed={isRed} progress={durationInSeconds} />
+      <RemainSec isRed={isRed}>{remainingTime}초</RemainSec>
     </ProgressBarWrapper>
   );
-};
+}
 
 export default ProgressBar;
