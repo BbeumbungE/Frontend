@@ -16,7 +16,6 @@ const ButtonDiv = styled.div`
   position: absolute;
   top: 45%; /* 높이 조절 */
   transform: translateY(-50%);
-  z-index: 999; /* 다른 컨텐츠 위에 표시합니다. */
   pointer-events: none;
 `;
 
