@@ -4,6 +4,7 @@ import WhiteModal from '../components/atoms/WhiteModal';
 import ProfileBtn from '../components/atoms/ProfileBtn';
 import UserRupee from '../components/atoms/UserRupee';
 import LevelBtn from '../components/atoms/LevelBtn';
+import ProgressBar from '../components/atoms/ProgressBar';
 
 function MainMenuPage() {
   return (
@@ -12,6 +13,7 @@ function MainMenuPage() {
       <ProfileBtn />
       <UserRupee />
       <LevelBtn level={1} />
+      <ProgressBar durationInSeconds={10} />
       <Button buttonText="salmon" color="salmon" />
       <Button buttonText="blue" color="blue" />
       <Button buttonText="green" color="green" />
