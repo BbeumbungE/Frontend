@@ -21,7 +21,7 @@ const LevelText = styled.span`
   top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 5;
+  z-index: 3;
   text-shadow: 0px -1px 3px #23232380;
 `;
 
@@ -36,7 +36,7 @@ const TopBtn = styled.div`
   position: absolute;
   top: -5%;
   left: 7%;
-  z-index: 4;
+  z-index: 2;
 `;
 
 const BottomBtn = styled.div`
@@ -47,8 +47,8 @@ const BottomBtn = styled.div`
   box-shadow:
     0px -10px 4px 0px rgba(0, 0, 0, 0.25) inset,
     0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  position: relative; /* 위치 지정 */
-  z-index: 3; /* 가장 위에 위치하도록 z-index 설정 */
+  position: relative;
+  z-index: 1;
 `;
 
 function LevelBtn({ level }: LevelBtnProps) {
