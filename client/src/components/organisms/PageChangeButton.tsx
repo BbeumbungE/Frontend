@@ -17,6 +17,13 @@ const ButtonDiv = styled.div`
   top: 45%; /* 높이 조절 */
   transform: translateY(-50%);
   z-index: 999; /* 다른 컨텐츠 위에 표시합니다. */
+  pointer-events: none;
+`;
+
+const PointableSpace = styled.div`
+  border: 0px;
+  margin: 0px;
+  pointer-events: auto;
 `;
 
 const PageChangeButton = ({
@@ -25,8 +32,12 @@ const PageChangeButton = ({
 }: PageChangeButtonProps) => {
   return (
     <ButtonDiv>
-      <ViewLeftArrow onClick={leftOnClick} />
-      <ViewRightArrow onClick={rightOnClick} />
+      <PointableSpace>
+        <ViewLeftArrow onClick={leftOnClick} />
+      </PointableSpace>
+      <PointableSpace>
+        <ViewRightArrow onClick={rightOnClick} />
+      </PointableSpace>
     </ButtonDiv>
   );
 };
