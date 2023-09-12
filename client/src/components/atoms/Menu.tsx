@@ -1,17 +1,17 @@
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 import theme from '../../style/theme';
 
 interface ButtonProps {
   buttonText: string;
   color: string;
-  // onClick?: () => void;
 }
 
-const StyledMenu = styled.div<{ $bgColor: string; $border: string }>`
+const StyledMenu = styled(NavLink)<{ $bgColor: string; $border: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
-  width: 370px;
-  height: 500px;
-  margin: 20px;
+  width: 300px;
+  height: 430px;
+  margin: 10px;
   border-radius: 50px;
   transition: all 0.3s ease-in-out;
   background-color: ${(props) => props.$bgColor};
@@ -24,17 +24,19 @@ const StyledMenu = styled.div<{ $bgColor: string; $border: string }>`
 `;
 
 const MenuText = styled.div`
-  font-size: 50px;
+  font-size: 40px;
   color: ${(props) => props.theme.colors.mainBlack};
   margin-top: 30px;
   margin-bottom: 30px;
   margin-right: 34px;
   margin-left: 34px;
+  line-height: 1.2;
 `;
 
 function Menu({ buttonText, color }: ButtonProps) {
   let bgColor = theme.menuColors.pink; // 기본값은 mainBlue
   let border = 'none';
+  let routeUrl = '';
 
   switch (color) {
     case 'pink':
@@ -64,9 +66,28 @@ function Menu({ buttonText, color }: ButtonProps) {
       bgColor = theme.colors.mainBlue;
   }
 
+  // 원하는 경로로 이동
+  switch (buttonText) {
+    case '주제별<br />그리기':
+      routeUrl = '/menu/draw';
+      break;
+    case '단계별<br />그리기':
+      routeUrl = '/stage';
+      break;
+    case '그림<br />보러가기':
+      routeUrl = '/menu/view';
+      break;
+    case '상점':
+      routeUrl = '/store';
+      break;
+    default:
+      routeUrl = '/';
+      break;
+  }
+
   return (
-    <StyledMenu $bgColor={bgColor} $border={border}>
-      <MenuText>{buttonText}</MenuText>
+    <StyledMenu to={routeUrl} $bgColor={bgColor} $border={border}>
+      <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
     </StyledMenu>
   );
 }

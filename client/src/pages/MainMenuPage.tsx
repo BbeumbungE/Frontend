@@ -5,11 +5,13 @@ import ProfileBtn from '../components/atoms/ProfileBtn';
 import UserRupee from '../components/atoms/UserRupee';
 import LevelBtn from '../components/atoms/LevelBtn';
 import ProgressBar from '../components/atoms/ProgressBar';
+import MenuBox from '../components/organisms/MenuBox';
 
 function MainMenuPage() {
   return (
     <div>
       <h1>Home Page</h1>
+      <MenuBox />
     </div>
   );
 }
