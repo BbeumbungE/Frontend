@@ -5,12 +5,14 @@ import theme from '../../style/theme';
 interface ButtonProps {
   buttonText: string;
   color: string;
+  svgSrc?: string;
 }
 
 const StyledMenu = styled(NavLink)<{ $bgColor: string; $border: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
   width: 300px;
   height: 430px;
+  position: relative;
   margin: 10px;
   border-radius: 50px;
   transition: all 0.3s ease-in-out;
@@ -21,6 +23,7 @@ const StyledMenu = styled(NavLink)<{ $bgColor: string; $border: string }>`
   flex-direction: column;
   justify-content: left;
   overflow-wrap: break-word;
+  overflow: hidden;
 `;
 
 const MenuText = styled.div`
@@ -33,7 +36,15 @@ const MenuText = styled.div`
   line-height: 1.2;
 `;
 
-function Menu({ buttonText, color }: ButtonProps) {
+const SvgImage = styled.img`
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 260px;
+  height: 260px;
+`;
+
+function Menu({ buttonText, color, svgSrc }: ButtonProps) {
   let bgColor = theme.menuColors.pink; // 기본값은 mainBlue
   let border = 'none';
   let routeUrl = '';
@@ -88,8 +99,13 @@ function Menu({ buttonText, color }: ButtonProps) {
   return (
     <StyledMenu to={routeUrl} $bgColor={bgColor} $border={border}>
       <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
+      {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
     </StyledMenu>
   );
 }
+
+Menu.defaultProps = {
+  svgSrc: '',
+};
 
 export default Menu;
