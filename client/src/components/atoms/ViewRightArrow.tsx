@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ReactComponent as ViewRightArrowIcon } from '../../assets/image/etc/ViewRightArrow.svg';
 
 interface ViewRightArrowProps {
-  onClick: React.MouseEventHandler<SVGSVGElement>;
+  onClick: () => void;
 }
 
 const StyledViewRightArrow = styled(ViewRightArrowIcon)`

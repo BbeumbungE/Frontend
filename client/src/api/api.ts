@@ -1,6 +1,5 @@
-import axios from 'axios';
-import { useRecoilState } from 'recoil';
-import { UserTokenState } from '../recoil/token/atom';
+/* eslint-disable no-param-reassign */
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
 const SERVER_URL = process.env.REACT_APP_API_URL;
 
@@ -12,19 +11,17 @@ const api = axios.create({
   },
 });
 
-// 토큰이 저장되어 있다면 모든 요청의 헤더에 넣고 전송
-const [accessToken, setAccessToken] = useRecoilState(UserTokenState);
-
 api.interceptors.request.use(
-  (config) => {
-    const { token } = accessToken;
-    if (token) {
-      // eslint-disable-next-line no-param-reassign
-      config.headers.Authorization = `Bearer ${token}`;
+  function (config) {
+    // 요청 성공 직전 호출
+    const access = localStorage.getItem('accessToken');
+    if (access) {
+      config.headers.Authorization = `Bearer ${access}`;
     }
     return config;
   },
-  (error) => {
+  function (error) {
+    // 요청 에러 직전 호출
     return Promise.reject(error);
   },
 );

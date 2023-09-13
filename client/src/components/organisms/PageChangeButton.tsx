@@ -4,8 +4,8 @@ import ViewLeftArrow from '../atoms/ViewLeftArrow';
 import ViewRightArrow from '../atoms/ViewRightArrow';
 
 interface PageChangeButtonProps {
-  leftOnClick: React.MouseEventHandler<SVGSVGElement>;
-  rightOnClick: React.MouseEventHandler<SVGSVGElement>;
+  leftOnClick: () => void;
+  rightOnClick: () => void;
 }
 
 const ButtonDiv = styled.div`

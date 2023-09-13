@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import theme from '../../style/theme';
 
 interface ButtonProps {
+  key?: number;
   buttonText: string;
   color: string;
   svgSrc?: string;
@@ -44,7 +45,7 @@ const SvgImage = styled.img`
   height: 260px;
 `;
 
-function Menu({ buttonText, color, svgSrc }: ButtonProps) {
+function Menu({ key, buttonText, color, svgSrc }: ButtonProps) {
   let bgColor = theme.menuColors.pink; // 기본값은 mainBlue
   let border = 'none';
   let routeUrl = '';
@@ -105,6 +106,7 @@ function Menu({ buttonText, color, svgSrc }: ButtonProps) {
 }
 
 Menu.defaultProps = {
+  key: null,
   svgSrc: '',
 };
 

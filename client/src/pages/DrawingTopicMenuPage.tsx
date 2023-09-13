@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { UserProfileState } from '../recoil/profile/atom';
 import { getUserTopic } from '../api/menu';
 import menuTreeIcon from '../assets/image/etc/menuTree.svg';
 import menuMountainIcon from '../assets/image/etc/mainMountain.svg';
-import MenuBox from '../components/organisms/MainMenuBox';
 import ExitBox from '../components/organisms/ExitBox';
 import ProfileBtn from '../components/atoms/ProfileBtn';
+import TopicMenuBox from '../components/organisms/TopicMenuBox';
+import PageChangeButton from '../components/organisms/PageChangeButton';
 
 interface SvgImageProps extends React.HTMLProps<HTMLImageElement> {
   'data-bottom'?: string;
@@ -92,18 +95,34 @@ interface UserTopicProps {
 }
 
 function DrawingTopicMenuPage() {
-  const [page, setPage] = useState(1);
-  // const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
-  // const [userTopics, setUserTopics] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
+  const [userTopics, setUserTopics] = useState<any[]>([]);
 
   // const numPages = Math.ceil(total / limit);
 
-  // useEffect(() => {
-  //   getUserTopic()
-  //   }
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await getUserTopic(currentPage, userProfile.profileId);
+        console.log('유저 보유 토픽', response);
+        setUserTopics(response.content.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getData();
+  }, [currentPage, userProfile]);
 
-  //   fetchData();
-  // }, [page, pageSize]);
+  const leftOnClick = () => {
+    const prevPage = currentPage - 1;
+    setCurrentPage(prevPage);
+  };
+
+  const rightOnClick = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+  };
 
   return (
     <MainMenuWrapper>
@@ -125,7 +144,8 @@ function DrawingTopicMenuPage() {
         data-bottom="33%"
         data-right="74%"
       />
-      <MenuBox />
+      <PageChangeButton leftOnClick={leftOnClick} rightOnClick={rightOnClick} />
+      <TopicMenuBox topicData={userTopics} />
       <SvgImage
         src={menuTreeIcon}
         alt="menuTreeIcon"
