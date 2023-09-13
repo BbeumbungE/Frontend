@@ -19,12 +19,6 @@ const MainMenuWrapper = styled.div`
   overflow: hidden;
 `;
 
-const ExitBoxWrapper = styled.div`
-  position: fixed;
-  top: 3%;
-  left: 0%;
-`;
-
 const BearImg = styled.img<SvgImageProps>`
   position: fixed;
   bottom: ${(props) => props['data-bottom'] || '0'};
@@ -87,9 +81,6 @@ const BalloonTail = styled.div`
 function MainMenuPage() {
   return (
     <MainMenuWrapper>
-      <ExitBoxWrapper>
-        <ExitBox color="dark" />
-      </ExitBoxWrapper>
       <BalloonWrapper>
         <Balloon>
           어디로 떠나볼까요?
