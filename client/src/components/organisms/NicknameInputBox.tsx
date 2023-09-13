@@ -4,7 +4,9 @@ import TextInputBox from '../atoms/TextInputBox';
 import InputButton from '../atoms/InputButton';
 
 interface NicknameInputBoxProps {
+  inputValue: string;
   onButtonClick: () => void;
+  onInputChange: (text: string) => void;
 }
 
 const NicknameInputBoxDiv = styled.div`
@@ -14,12 +16,16 @@ const NicknameInputBoxDiv = styled.div`
   align-items: center;
 `;
 
-const NicknameInputBox = ({ onButtonClick }: NicknameInputBoxProps) => {
-  const [inputValue, setInputValue] = useState<string>('');
+const NicknameInputBox = ({
+  inputValue,
+  onInputChange,
+  onButtonClick,
+}: NicknameInputBoxProps) => {
+  // const [inputValue, setInputValue] = useState<string>('');
 
-  const valueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
+  // const valueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setInputValue(event.target.value);
+  // };
 
   // const handleButtonClick = () => {
   //   // 버튼 클릭 시 inputValue의 값을 확인하는 임시 함수
@@ -30,8 +36,10 @@ const NicknameInputBox = ({ onButtonClick }: NicknameInputBoxProps) => {
     <NicknameInputBoxDiv>
       <TextInputBox
         value={inputValue}
-        setInputValue={setInputValue}
-        onChange={valueChange}
+        setInputValue={onInputChange}
+        onChange={(event) => {
+          onInputChange(event.target.value);
+        }}
       />
       <InputButton buttonText="확인" onClick={onButtonClick} />
     </NicknameInputBoxDiv>
