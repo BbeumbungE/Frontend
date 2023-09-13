@@ -54,6 +54,8 @@ footer, header, hgroup, main, menu, nav, section {
 body {
   line-height: 1;
   font-family: 'TmoneyRoundWindExtraBold';
+  min-height: 100vh;
+  min-width: 100vw;
 }
 menu, ol, ul {
   list-style: none;
