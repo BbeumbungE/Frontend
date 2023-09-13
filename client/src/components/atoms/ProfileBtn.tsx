@@ -1,34 +1,40 @@
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
-import { userProfileState } from '../../recoil/profile/atom';
+import { UserProfileState } from '../../recoil/profile/atom';
 import theme from '../../style/theme';
 
 const ProfileWrapper = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 2%;
+  right: 2%;
 `;
 
 const StyledCharacter = styled.div<{ $bgColor: string }>`
-  display: inline-block;
-  width: 120px;
-  height: 120px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
   margin: 10px;
-  padding: 50px;
   border-radius: 50%;
   text-align: center;
   transition: all 0.3s ease-in-out;
   background-color: ${(props) => props.$bgColor};
   cursor: pointer;
-  z-index: 200;
+  z-index: 100;
 `;
 
-const CharacterImage = styled.div<{ $bgImage: string }>`
-  width: 100px;
-  height: 100px;
+const CharacterImage = styled.div<{ $bgImage: string | null }>`
+  width: 80px;
+  height: 80px;
   background-image: url(${(props) => props.$bgImage});
   background-size: cover;
   background-repeat: no-repeat;
-  z-index: 100;
+  z-index: 200;
 `;
 
 const ModalText = styled.span`
@@ -38,7 +44,7 @@ const ModalText = styled.span`
 `;
 
 function ProfileBtn() {
-  const [userProfile, setUserProfile] = useRecoilState(userProfileState);
+  const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
   let bgColor = theme.colors.mainWhite; // 기본값은 mainBlue
 
   switch (userProfile.character) {

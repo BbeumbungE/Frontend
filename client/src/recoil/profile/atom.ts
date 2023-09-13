@@ -1,17 +1,18 @@
 import { atom } from 'recoil';
 
 interface UserProfile {
+  profileId: number;
   character: string;
-  profileImg: string;
+  profileImg: string | null;
   nickname: string;
 }
 
-export const userProfileState = atom<UserProfile>({
-  key: 'userProfileState',
+export const UserProfileState = atom<UserProfile>({
+  key: 'UserProfileState',
   default: {
-    character: 'otter',
-    profileImg: '../../assets/image/character/hamster.png',
+    profileId: 2,
+    character: 'hamster',
+    profileImg: `${process.env.REACT_APP_IMG_URL}/item/avatar/hamster.png`,
     nickname: '론빵이',
   },
-  //   dangerouslyAllowMutability: true,
 });

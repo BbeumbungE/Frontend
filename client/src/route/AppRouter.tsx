@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from '../pages/LandingPage';
 import LoginPage from '../pages/LoginPage';
+import LoginTransitionPage from '../pages/LoginTransitionPage';
 import FamilyProfilePage from '../pages/FamilyProfilePage';
 import MainMenuPage from '../pages/MainMenuPage';
 import DrawingTopicMenuPage from '../pages/DrawingTopicMenuPage';
@@ -22,6 +23,7 @@ const AppRouter: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/oauth/redirect" element={<LoginTransitionPage />} />
         <Route path="/profiles" element={<FamilyProfilePage />} />
 
         <Route path="/menu" element={<MainMenuPage />} />
