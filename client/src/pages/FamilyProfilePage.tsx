@@ -48,8 +48,11 @@ function FamilyProfilePage() {
         console.log(error);
       }
     }
-    loadProfiles();
-  }, []);
+    if (isCreating !== true) {
+      loadProfiles();
+      console.log('로딩');
+    }
+  }, [isCreating]);
 
   const handleSelectProfile = (
     Id: number,
