@@ -89,24 +89,24 @@ const BalloonTail = styled.div`
   border-bottom: 20px solid transparent;
 `;
 
-interface UserTopicProps {
-  page: number;
-  pageSize: number;
-}
-
 function DrawingTopicMenuPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
   const [userTopics, setUserTopics] = useState<any[]>([]);
 
   // const numPages = Math.ceil(total / limit);
+  console.log('유저 프로필', userProfile);
+  console.log('메뉴로 가는 데이터', userTopics);
 
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await getUserTopic(currentPage, userProfile.profileId);
         console.log('유저 보유 토픽', response);
-        setUserTopics(response.content.data);
+        const subjectArray = response.content.data.map(
+          (item) => item.item.subject,
+        );
+        setUserTopics(subjectArray);
       } catch (error) {
         console.error(error);
       }

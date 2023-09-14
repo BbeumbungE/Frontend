@@ -50,4 +50,19 @@ const getUserTopic = async (
   }
 };
 
-export { getUserTopic };
+const getTotalTopic = async (
+  page: number,
+  profileId: number,
+): Promise<ApiResponse> => {
+  try {
+    const response: AxiosResponse<ApiResponse> = await api.get(
+      `/api/profiles/${profileId}/items/subjects?page=${page}&size=4`,
+    );
+    return response.data;
+  } catch (error) {
+    console.log('전체 그림주제 조회 실패', error);
+    throw error;
+  }
+};
+
+export { getUserTopic, getTotalTopic };

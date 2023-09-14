@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import theme from '../../style/theme';
+import Button from './Button';
 
 interface ButtonProps {
   key?: number;
   buttonText: string;
   color: string;
   svgSrc?: string;
+  transparencyButton?: boolean;
 }
 
 const StyledMenu = styled(NavLink)<{ $bgColor: string; $border: string }>`
@@ -15,6 +17,8 @@ const StyledMenu = styled(NavLink)<{ $bgColor: string; $border: string }>`
   height: 430px;
   position: relative;
   margin: 10px;
+  padding-right: 5px;
+  padding-left: 5px;
   border-radius: 50px;
   transition: all 0.3s ease-in-out;
   background-color: ${(props) => props.$bgColor};
@@ -45,7 +49,23 @@ const SvgImage = styled.img`
   height: 260px;
 `;
 
-function Menu({ key, buttonText, color, svgSrc }: ButtonProps) {
+const ButtonWrapper = styled.div`
+  width: 100%;
+  height: 35%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 100;
+`;
+
+function Menu({
+  key,
+  buttonText,
+  color,
+  svgSrc,
+  transparencyButton,
+}: ButtonProps) {
   let bgColor = theme.menuColors.pink; // 기본값은 mainBlue
   let border = 'none';
   let routeUrl = '';
@@ -101,6 +121,12 @@ function Menu({ key, buttonText, color, svgSrc }: ButtonProps) {
     <StyledMenu to={routeUrl} $bgColor={bgColor} $border={border}>
       <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
       {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
+      {transparencyButton && (
+        <ButtonWrapper>
+          <Button buttonText="랭킹그림 보기" color="transparency" />
+          <Button buttonText="모든그림 보기" color="transparency" />
+        </ButtonWrapper>
+      )}
     </StyledMenu>
   );
 }
@@ -108,6 +134,7 @@ function Menu({ key, buttonText, color, svgSrc }: ButtonProps) {
 Menu.defaultProps = {
   key: null,
   svgSrc: '',
+  transparencyButton: false,
 };
 
 export default Menu;
