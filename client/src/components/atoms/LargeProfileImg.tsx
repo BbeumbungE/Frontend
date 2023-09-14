@@ -4,6 +4,7 @@ import theme from '../../style/theme';
 interface LargeProfileImgProps {
   imgsrc?: string;
   profileCharacter?: string;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 ProfileImg.defaultProps = {
   imgsrc: '',
@@ -37,7 +38,11 @@ const CharacterImage = styled.div<{ $bgImage: string }>`
   z-index: 100;
 `;
 
-function ProfileImg({ imgsrc = '', profileCharacter }: LargeProfileImgProps) {
+function ProfileImg({
+  imgsrc = '',
+  profileCharacter,
+  onClick,
+}: LargeProfileImgProps) {
   let bgColor = theme.colors.mainWhite; // 기본값은 mainBlue
 
   switch (profileCharacter) {
@@ -67,7 +72,7 @@ function ProfileImg({ imgsrc = '', profileCharacter }: LargeProfileImgProps) {
   }
   return (
     <ProfileWrapper>
-      <StyledCharacter $bgColor={bgColor}>
+      <StyledCharacter $bgColor={bgColor} onClick={onClick}>
         <CharacterImage $bgImage={imgsrc} />
       </StyledCharacter>
     </ProfileWrapper>

@@ -6,6 +6,7 @@ interface LargeProfileBoxProps {
   ProfileCharacter: string;
   ProfileImage: string;
   ProfileName: string;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const LargeProfileWrapper = styled.div`
@@ -18,12 +19,14 @@ const LargeProfile = ({
   ProfileCharacter,
   ProfileImage,
   ProfileName,
+  onClick,
 }: LargeProfileBoxProps) => {
   return (
     <LargeProfileWrapper>
       <LargeProfileImg
         imgsrc={ProfileImage}
         profileCharacter={ProfileCharacter}
+        onClick={onClick}
       />
       <LargeProfileName name={ProfileName} />
     </LargeProfileWrapper>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import TextInputBox from '../atoms/TextInputBox';
 import InputButton from '../atoms/InputButton';
@@ -11,7 +11,7 @@ interface NicknameInputBoxProps {
 
 const NicknameInputBoxDiv = styled.div`
   display: flex;
-  width: 345px;
+  width: 342px;
   height: 65px;
   align-items: center;
 `;

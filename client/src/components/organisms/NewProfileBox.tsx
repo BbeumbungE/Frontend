@@ -23,6 +23,9 @@ const NewProfile = ({
       <LargeProfileImg
         imgsrc={`${process.env.REACT_APP_IMG_URL}/item/avatar/hamster.png`}
         profileCharacter="hamster"
+        onClick={() => {
+          console.log('btn');
+        }}
       />
       <NicknameInputBox
         inputValue={inputValue}
