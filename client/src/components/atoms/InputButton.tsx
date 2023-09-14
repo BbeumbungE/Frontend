@@ -9,7 +9,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const StyledButton = styled.button`
   font-family: 'TmoneyRoundWindExtraBold';
   display: inline-block;
-  min-width: 120px;
+  min-width: 100px;
   height: 62px;
   border-radius: 15px;
   text-align: center;

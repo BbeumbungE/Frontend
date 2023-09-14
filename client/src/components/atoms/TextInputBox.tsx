@@ -21,14 +21,14 @@ const Input = styled.input`
   padding: 8px;
   font-size: 40px;
   font-family: 'TmoneyRoundWindRegular';
-  color: ${theme.colors.mainWhite};
+  color: ${theme.colors.mainBlack};
   &::placeholder {
     font-size: 27px;
-    color: ${theme.colors.mainWhite};
+    color: ${theme.colors.mainBlack};
     padding-top: 5px;
   }
   text-align: center;
-  background-color: ${theme.colors.mainGray};
+  background-color: ${theme.colors.mainWhite};
   border-radius: 15px;
   border: none;
   outline: none;
