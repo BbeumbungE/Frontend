@@ -29,6 +29,25 @@ interface PostResponse {
     }[];
   };
 }
+
+interface PostDetailResponse {
+  status: {
+    httpStatus: string;
+    code: number;
+    message: string;
+  };
+  content: {
+    canvasUrl: string;
+    authorProfileId: number;
+    authorProfileImage: string;
+    postEmotionTypeInfos: {
+      emotionTypeId: number;
+      emotionTypeName: string;
+      emotionCount: number;
+      emoted: boolean;
+    }[];
+  };
+}
 // 랭킹 게시물 조회 메서드
 const getRankPosts = async (): Promise<RankingResponse> => {
   try {
@@ -49,6 +68,21 @@ const getPosts = async (subjectId: number): Promise<PostResponse> => {
     return response.data;
   } catch (error) {
     console.log('게시물 조회 실패', error);
+    throw error;
+  }
+};
+
+const getDetail = async (
+  postId: number,
+  profileId: number,
+): Promise<PostDetailResponse> => {
+  try {
+    const response: AxiosResponse<PostDetailResponse> = await api.get(
+      `/api/posts/${postId}/?profileId=${profileId}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.log('상세 조회 실패', error);
     throw error;
   }
 };
@@ -84,4 +118,4 @@ const deleteEmotion = async (
   }
 };
 
-export { getRankPosts, getPosts, makeEmotion, deleteEmotion };
+export { getRankPosts, getPosts, getDetail, makeEmotion, deleteEmotion };
