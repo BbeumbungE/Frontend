@@ -2,10 +2,12 @@ import styled from 'styled-components';
 
 interface LevelBtnProps {
   level: number;
+  bottom: number;
+  right: number;
 }
 
 const LevelWrapper = styled.div`
-  position: relative;
+  position: fixed;
   width: 200px;
   height: 144px;
   margin: 10px;
@@ -51,9 +53,11 @@ const BottomBtn = styled.div`
   z-index: 1;
 `;
 
-function LevelBtn({ level }: LevelBtnProps) {
+function LevelBtn({ level, bottom, right }: LevelBtnProps) {
   return (
-    <LevelWrapper>
+    <LevelWrapper
+      style={{ bottom: `${bottom || 0}px`, right: `${right || 0}px` }}
+    >
       <LevelText>{level}</LevelText>
       <TopBtn />
       <BottomBtn />
