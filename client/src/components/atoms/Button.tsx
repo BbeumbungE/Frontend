@@ -11,6 +11,7 @@ const StyledButton = styled.button<{ $bgColor: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
   display: inline-block;
   height: 83px;
+  margin: 5px;
   border-radius: 50px;
   text-align: center;
   transition: all 0.3s ease-in-out;
@@ -20,7 +21,7 @@ const StyledButton = styled.button<{ $bgColor: string }>`
 `;
 
 const ButtonText = styled.span<{ $fontColor: string }>`
-  font-size: 30px;
+  font-size: 25px;
   color: ${(props) => props.$fontColor};
   margin-top: 24px;
   margin-bottom: 24px;

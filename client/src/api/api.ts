@@ -21,6 +21,7 @@ api.interceptors.request.use(
     return config;
   },
   function (error) {
+    // 요청 에러 직전 호출
     return Promise.reject(error);
   },
 );

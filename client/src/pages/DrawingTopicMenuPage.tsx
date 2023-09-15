@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useRecoilValue } from 'recoil';
+import { UserProfileState } from '../recoil/profile/atom';
 import { getUserTopic } from '../api/menu';
 import menuTreeIcon from '../assets/image/etc/menuTree.svg';
 import menuMountainIcon from '../assets/image/etc/mainMountain.svg';
-import MenuBox from '../components/organisms/MainMenuBox';
 import ExitBox from '../components/organisms/ExitBox';
 import ProfileBtn from '../components/atoms/ProfileBtn';
+import TopicMenuBox from '../components/organisms/TopicMenuBox';
+import PageChangeButton from '../components/organisms/PageChangeButton';
 
 interface SvgImageProps extends React.HTMLProps<HTMLImageElement> {
   'data-bottom'?: string;
@@ -86,24 +89,54 @@ const BalloonTail = styled.div`
   border-bottom: 20px solid transparent;
 `;
 
-interface UserTopicProps {
-  page: number;
-  pageSize: number;
-}
-
 function DrawingTopicMenuPage() {
-  const [page, setPage] = useState(1);
-  // const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
-  // const [userTopics, setUserTopics] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const userProfile = useRecoilValue(UserProfileState);
+  const [userTopics, setUserTopics] = useState<{ topic: any[]; page: any }>({
+    topic: [],
+    page: {},
+  });
 
-  // const numPages = Math.ceil(total / limit);
+  const itemsPerPage = 4; // 한 페이지당 아이템 개수
+  // 첫번째 페이지, 마지막 페이지 파악하는 변수
+  const isFirstPage = currentPage === 0;
+  const isLastPage = currentPage === userTopics.page.totalPages - 1;
+  // 화살표에 전달할 boolean 값
+  const leftDisabled = isFirstPage;
+  const rightDisabled = isLastPage;
 
-  // useEffect(() => {
-  //   getUserTopic()
-  //   }
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await getUserTopic(
+          currentPage,
+          userProfile.profileId,
+          itemsPerPage,
+        );
+        console.log('유저 보유 토픽', response);
+        const subjectArray = response.content.data.map(
+          (item) => item.item.subject,
+        );
+        setUserTopics({
+          topic: subjectArray,
+          page: response.content.pageInfo,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getData();
+  }, [currentPage, userProfile]);
 
-  //   fetchData();
-  // }, [page, pageSize]);
+  const leftOnClick = () => {
+    const prevPage = currentPage - 1;
+    setCurrentPage(prevPage);
+  };
+
+  const rightOnClick = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+  };
 
   return (
     <MainMenuWrapper>
@@ -125,7 +158,13 @@ function DrawingTopicMenuPage() {
         data-bottom="33%"
         data-right="74%"
       />
-      <MenuBox />
+      <PageChangeButton
+        leftOnClick={leftOnClick}
+        rightOnClick={rightOnClick}
+        leftDisabled={leftDisabled}
+        rightDisabled={rightDisabled}
+      />
+      <TopicMenuBox topicData={userTopics.topic} transparencyButton={false} />
       <SvgImage
         src={menuTreeIcon}
         alt="menuTreeIcon"
