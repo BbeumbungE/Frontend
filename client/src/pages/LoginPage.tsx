@@ -37,7 +37,11 @@ const LoginPage = () => {
 
   return (
     <LoginPageContainer>
-      <PageHeaderText content="로그인 및 회원가입" color="dark" />
+      <PageHeaderText
+        content="로그인 및 회원가입"
+        color="dark"
+        fontSize="90px"
+      />
       <LoginButtonContainer>
         <LoginButton onClick={handleButtonClick}>
           <img src={kakaoLoginButton} alt="kakao" width="600px" height="90px" />

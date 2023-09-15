@@ -212,7 +212,11 @@ function FamilyProfilePage() {
   }
   return (
     <ProfilesPageContainer>
-      <PageHeaderText content="프로필을 선택해주세요" color="dark" />
+      <PageHeaderText
+        content="프로필을 선택해주세요"
+        color="dark"
+        fontSize="90px"
+      />
       {content}
       <DeleteText
         content="탈퇴하기"
