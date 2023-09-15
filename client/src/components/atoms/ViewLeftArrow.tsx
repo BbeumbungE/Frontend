@@ -1,18 +1,32 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ReactComponent as ViewLeftArrowIcon } from '../../assets/image/etc/ViewLeftArrow.svg';
 
 interface ViewLeftArrowProps {
-  onClick: React.MouseEventHandler<SVGSVGElement>;
+  onClick: () => void;
+  disabled: boolean | undefined;
 }
 
-const StyledViewLeftArrow = styled(ViewLeftArrowIcon)`
+const StyledViewLeftArrow = styled(ViewLeftArrowIcon)<ViewLeftArrowProps>`
   cursor: pointer;
   margin: 5px;
+
+  ${(props) =>
+    props.disabled &&
+    css`
+      fill: gray;
+      cursor: default;
+    `}
 `;
 
-const ViewLeftArrow = ({ onClick }: ViewLeftArrowProps) => {
-  return <StyledViewLeftArrow onClick={onClick} />;
+const ViewLeftArrow = ({ onClick, disabled }: ViewLeftArrowProps) => {
+  const handleClick = () => {
+    if (!disabled) {
+      onClick();
+    }
+  };
+
+  return <StyledViewLeftArrow onClick={handleClick} disabled={disabled} />;
 };
 
 export default ViewLeftArrow;
