@@ -18,7 +18,7 @@ const RankDiv = styled.div`
   margin: 10px;
 `;
 
-const RankPicurePostDiv = ({
+const RankPicturePostDiv = ({
   rank,
   imgSrc = '',
   onClick,
@@ -32,4 +32,4 @@ const RankPicurePostDiv = ({
   );
 };
 
-export default RankPicurePostDiv;
+export default RankPicturePostDiv;

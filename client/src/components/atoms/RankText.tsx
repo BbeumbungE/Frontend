@@ -26,7 +26,7 @@ function getFontColor(color: string): string {
     case 'dark':
       return theme.colors.mainBlack;
     case 'light':
-      return theme.colors.mainWhite;
+      return theme.colors.lightGray;
     default:
       return theme.colors.mainBlack;
   }

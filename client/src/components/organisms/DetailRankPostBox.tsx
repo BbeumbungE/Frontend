@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import DetailPicturePostDiv from '../atoms/DetailPicturePostDiv';
 import EmojiBox from './EmojiBox';
+import RankText from '../atoms/RankText';
 
 // 감정표현 개수, 감정표현 눌렀는지, 어떤 그림의 상세인지
 interface DetailPostBoxProps {
@@ -15,6 +16,7 @@ interface DetailPostBoxProps {
   WowClick: React.MouseEventHandler<HTMLDivElement>;
   SadClick: React.MouseEventHandler<HTMLDivElement>;
   imgsrc: string;
+  ranking: number;
 }
 const CenterDiv = styled.div`
   position: fixed;
@@ -27,6 +29,9 @@ const CenterDiv = styled.div`
 const DetailPostBoxDiv = styled.div`
   width: 577px;
   height: 600px;
+  padding: 0;
+  border: 0;
+  position: relative;
   border: 1px solid white;
 `;
 
@@ -35,6 +40,13 @@ const EmojiWrapperDiv = styled.div`
   width: 550px;
   bottom: 7%;
   left: 27%;
+`;
+
+const RankTextWrapperDiv = styled.div`
+  position: absolute;
+  bottom: -5%;
+  left: 0%;
+  width: 2px;
 `;
 
 const DetailPostBox = ({
@@ -48,11 +60,15 @@ const DetailPostBox = ({
   WowClick,
   SadClick,
   imgsrc,
+  ranking,
 }: DetailPostBoxProps) => {
   return (
     <CenterDiv>
       <DetailPostBoxDiv>
         <DetailPicturePostDiv imgSrc={imgsrc} />
+        <RankTextWrapperDiv>
+          <RankText ranking={ranking} size="large" color="light" />
+        </RankTextWrapperDiv>
         <EmojiWrapperDiv>
           <EmojiBox
             SmileCount={SmileCount}
