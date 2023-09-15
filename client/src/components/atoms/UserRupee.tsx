@@ -7,6 +7,9 @@ const RupeeWrapper = styled.div`
   display: flex;
   align-items: center;
   margin: 10px;
+  position: fixed;
+  top: 10px;
+  right: 10px;
 `;
 
 const RupeeText = styled.span`
