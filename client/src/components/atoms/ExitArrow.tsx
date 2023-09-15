@@ -6,9 +6,9 @@ interface ArrowProps {
   color: string;
 }
 
-const StyledArrowIcon = styled(ArrowIcon)<{ bgColor: string }>`
+const StyledArrowIcon = styled(ArrowIcon)<{ $bgColor: string }>`
   path {
-    fill: ${(props) => props.bgColor};
+    fill: ${(props) => props.$bgColor};
   }
   cursor: pointer;
 `;
@@ -29,7 +29,7 @@ function Arrow({ color }: ArrowProps) {
 }
 const ExitArrow = ({ color }: ArrowProps) => {
   const bgColor = Arrow({ color });
-  return <StyledArrowIcon bgColor={bgColor} />;
+  return <StyledArrowIcon $bgColor={bgColor} />;
 };
 
 export default ExitArrow;

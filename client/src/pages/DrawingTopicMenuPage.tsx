@@ -92,21 +92,35 @@ const BalloonTail = styled.div`
 function DrawingTopicMenuPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
-  const [userTopics, setUserTopics] = useState<any[]>([]);
+  const [userTopics, setUserTopics] = useState<{ topic: any[]; page: any }>({
+    topic: [],
+    page: {},
+  });
 
-  // const numPages = Math.ceil(total / limit);
-  console.log('유저 프로필', userProfile);
-  console.log('메뉴로 가는 데이터', userTopics);
+  const itemsPerPage = 4; // 한 페이지당 아이템 개수
+  // 첫번째 페이지, 마지막 페이지 파악하는 변수
+  const isFirstPage = currentPage === 0;
+  const isLastPage = currentPage === userTopics.page.totalPages - 1;
+  // 화살표에 전달할 boolean 값
+  const leftDisabled = isFirstPage;
+  const rightDisabled = isLastPage;
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await getUserTopic(currentPage, userProfile.profileId);
+        const response = await getUserTopic(
+          currentPage,
+          userProfile.profileId,
+          itemsPerPage,
+        );
         console.log('유저 보유 토픽', response);
         const subjectArray = response.content.data.map(
           (item) => item.item.subject,
         );
-        setUserTopics(subjectArray);
+        setUserTopics({
+          topic: subjectArray,
+          page: response.content.pageInfo,
+        });
       } catch (error) {
         console.error(error);
       }
@@ -144,8 +158,13 @@ function DrawingTopicMenuPage() {
         data-bottom="33%"
         data-right="74%"
       />
-      <PageChangeButton leftOnClick={leftOnClick} rightOnClick={rightOnClick} />
-      <TopicMenuBox topicData={userTopics} transparencyButton={false} />
+      <PageChangeButton
+        leftOnClick={leftOnClick}
+        rightOnClick={rightOnClick}
+        leftDisabled={leftDisabled}
+        rightDisabled={rightDisabled}
+      />
+      <TopicMenuBox topicData={userTopics.topic} transparencyButton={false} />
       <SvgImage
         src={menuTreeIcon}
         alt="menuTreeIcon"

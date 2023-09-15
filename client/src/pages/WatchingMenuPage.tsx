@@ -139,10 +139,6 @@ function WatchingMenuPage() {
     setCurrentPage(nextPage);
   };
 
-  // 현재 페이지에 따라 표시할 데이터 슬라이싱
-  // const startIndex = currentPage * itemsPerPage;
-  // const endIndex = startIndex + itemsPerPage;
-
   return (
     <MainMenuWrapper>
       <ExitBoxWrapper>

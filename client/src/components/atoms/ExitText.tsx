@@ -5,10 +5,10 @@ interface ExitTextProps {
   color: string;
 }
 
-const ExitSpan = styled.span<{ txColor: string }>`
+const ExitSpan = styled.span<{ $txColor: string }>`
   font-size: 25px;
   font-family: 'TmoneyRoundWindExtraBold';
-  color: ${(props) => props.txColor};
+  color: ${(props) => props.$txColor};
   cursor: pointer;
 `;
 
@@ -31,7 +31,7 @@ function SpanColor({ color }: ExitTextProps) {
 
 const ExitText = ({ color }: ExitTextProps) => {
   const txColor = SpanColor({ color }); // SpanColor 함수 호출
-  return <ExitSpan txColor={txColor}>나가기</ExitSpan>;
+  return <ExitSpan $txColor={txColor}>나가기</ExitSpan>;
 };
 
 export default ExitText;

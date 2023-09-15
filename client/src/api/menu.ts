@@ -46,10 +46,11 @@ interface ApiResponse {
 const getUserTopic = async (
   page: number,
   profileId: number,
+  itemsPerPage: number,
 ): Promise<ApiResponse> => {
   try {
     const response: AxiosResponse<ApiResponse> = await api.get(
-      `/api/profiles/${profileId}/my-items?category=subject&page=${page}&size=4`,
+      `/api/profiles/${profileId}/my-items?category=subject&page=${page}&size=${itemsPerPage}`,
     );
     return response.data;
   } catch (error) {
