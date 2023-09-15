@@ -145,7 +145,7 @@ function DrawingTopicMenuPage() {
         data-right="74%"
       />
       <PageChangeButton leftOnClick={leftOnClick} rightOnClick={rightOnClick} />
-      <TopicMenuBox topicData={userTopics} />
+      <TopicMenuBox topicData={userTopics} transparencyButton={false} />
       <SvgImage
         src={menuTreeIcon}
         alt="menuTreeIcon"

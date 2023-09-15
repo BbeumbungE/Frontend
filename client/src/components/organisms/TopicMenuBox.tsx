@@ -10,6 +10,7 @@ interface MenuItem {
 
 interface TopicMenuBoxProps {
   topicData: MenuItem[];
+  transparencyButton: boolean;
 }
 
 const MenuWrapper = styled.div`
@@ -20,8 +21,7 @@ const MenuWrapper = styled.div`
   justify-content: center;
 `;
 
-function TopicMenuBox({ topicData }: TopicMenuBoxProps) {
-  console.log('########## 전달된 ', topicData);
+function TopicMenuBox({ topicData, transparencyButton }: TopicMenuBoxProps) {
   return (
     <MenuWrapper>
       {topicData.length > 0 && (
@@ -29,6 +29,7 @@ function TopicMenuBox({ topicData }: TopicMenuBoxProps) {
           color="pink"
           buttonText={topicData[0].subjectName}
           svgSrc={topicData[0].subjectImage}
+          transparencyButton={transparencyButton}
         />
       )}
       {topicData.length > 1 && (
@@ -36,6 +37,7 @@ function TopicMenuBox({ topicData }: TopicMenuBoxProps) {
           color="green"
           buttonText={topicData[1].subjectName}
           svgSrc={topicData[1].subjectImage}
+          transparencyButton={transparencyButton}
         />
       )}
       {topicData.length > 2 && (
@@ -43,6 +45,7 @@ function TopicMenuBox({ topicData }: TopicMenuBoxProps) {
           color="mint"
           buttonText={topicData[2].subjectName}
           svgSrc={topicData[2].subjectImage}
+          transparencyButton={transparencyButton}
         />
       )}
       {topicData.length > 3 && (
@@ -50,6 +53,7 @@ function TopicMenuBox({ topicData }: TopicMenuBoxProps) {
           color="yellow"
           buttonText={topicData[3].subjectName}
           svgSrc={topicData[3].subjectImage}
+          transparencyButton={transparencyButton}
         />
       )}
     </MenuWrapper>

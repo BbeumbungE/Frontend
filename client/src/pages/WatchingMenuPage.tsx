@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
-import { getUserTopic } from '../api/menu';
+import { getTotalTopic } from '../api/menu';
 import menuTreeIcon from '../assets/image/etc/menuTree.svg';
 import menuMountainIcon from '../assets/image/etc/mainMountain.svg';
 import ExitBox from '../components/organisms/ExitBox';
@@ -92,21 +92,34 @@ const BalloonTail = styled.div`
 function WatchingMenuPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
-  const [totalTopics, setTotalTopics] = useState<any[]>([]);
+  const [totalTopics, setTotalTopics] = useState<{ topic: any[]; page: any }>({
+    topic: [],
+    page: {},
+  });
 
-  // const numPages = Math.ceil(total / limit);
-  console.log('유저 프로필', userProfile);
-  console.log('메뉴로 가는 데이터', userTopics);
+  const itemsPerPage = 4; // 한 페이지당 아이템 개수
+  // 첫번째 페이지, 마지막 페이지 파악하는 변수
+  const isFirstPage = currentPage === 0;
+  const isLastPage = currentPage === totalTopics.page.totalPages - 1;
+  // 화살표에 전달할 boolean 값
+  const leftDisabled = isFirstPage;
+  const rightDisabled = isLastPage;
+
+  console.log('@@@@@@@@전체 토픽 데이터', totalTopics);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await getUserTopic(currentPage, userProfile.profileId);
-        console.log('유저 보유 토픽', response);
-        const subjectArray = response.content.data.map(
-          (item) => item.item.subject,
+        const response = await getTotalTopic(
+          currentPage,
+          userProfile.profileId,
+          itemsPerPage,
         );
-        setTotalTopics(subjectArray);
+        const subjectArray = response.content.data.map((item) => item.subject);
+        setTotalTopics({
+          topic: subjectArray,
+          page: response.content.pageInfo,
+        });
       } catch (error) {
         console.error(error);
       }
@@ -115,14 +128,20 @@ function WatchingMenuPage() {
   }, [currentPage, userProfile]);
 
   const leftOnClick = () => {
-    const prevPage = currentPage - 1;
-    setCurrentPage(prevPage);
+    if (currentPage > 0) {
+      const prevPage = currentPage - 1;
+      setCurrentPage(prevPage);
+    }
   };
 
   const rightOnClick = () => {
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
   };
+
+  // 현재 페이지에 따라 표시할 데이터 슬라이싱
+  // const startIndex = currentPage * itemsPerPage;
+  // const endIndex = startIndex + itemsPerPage;
 
   return (
     <MainMenuWrapper>
@@ -144,8 +163,13 @@ function WatchingMenuPage() {
         data-bottom="33%"
         data-right="74%"
       />
-      <PageChangeButton leftOnClick={leftOnClick} rightOnClick={rightOnClick} />
-      <TopicMenuBox topicData={totalTopics} />
+      <PageChangeButton
+        leftOnClick={leftOnClick}
+        rightOnClick={rightOnClick}
+        leftDisabled={leftDisabled}
+        rightDisabled={rightDisabled}
+      />
+      <TopicMenuBox topicData={totalTopics.topic} transparencyButton />
       <SvgImage
         src={menuTreeIcon}
         alt="menuTreeIcon"

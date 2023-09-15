@@ -1,18 +1,32 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ReactComponent as ViewRightArrowIcon } from '../../assets/image/etc/ViewRightArrow.svg';
 
 interface ViewRightArrowProps {
   onClick: () => void;
+  disabled: boolean | undefined;
 }
 
-const StyledViewRightArrow = styled(ViewRightArrowIcon)`
+const StyledViewRightArrow = styled(ViewRightArrowIcon)<ViewRightArrowProps>`
   cursor: pointer;
   margin: 5px;
+
+  ${(props) =>
+    props.disabled &&
+    css`
+      fill: gray;
+      cursor: default;
+    `}
 `;
 
-const ViewRightArrow = ({ onClick }: ViewRightArrowProps) => {
-  return <StyledViewRightArrow onClick={onClick} />;
+const ViewRightArrow = ({ onClick, disabled }: ViewRightArrowProps) => {
+  const handleClick = () => {
+    if (!disabled) {
+      onClick();
+    }
+  };
+
+  return <StyledViewRightArrow onClick={handleClick} disabled={disabled} />;
 };
 
 export default ViewRightArrow;
