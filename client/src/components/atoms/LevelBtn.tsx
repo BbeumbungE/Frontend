@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 interface LevelBtnProps {
   level: number;
@@ -6,11 +6,28 @@ interface LevelBtnProps {
   right: number;
 }
 
+const hoverAnimation = keyframes`
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px); /* 호버 중간에 위로 올라감 */
+  }
+  100% {
+    transform: translateY(0);
+  }
+`;
+
 const LevelWrapper = styled.div`
   position: fixed;
   width: 200px;
   height: 144px;
   margin: 10px;
+  cursor: pointer;
+
+  &:hover {
+    animation: ${hoverAnimation} 1s ease-in-out; /* 호버 시 애니메이션 적용 */
+  }
 `;
 
 const LevelText = styled.span`
