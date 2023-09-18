@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useParams } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import theme from '../style/theme';
 import PicturePostDiv from '../components/atoms/PicturePostDiv';
 import PageHeaderText from '../components/atoms/PageHeaderText';
 import ExitBox from '../components/organisms/ExitBox';
+import ExitBoxOnBlur from '../components/organisms/ExitBoxOnBlur';
 import BlurBox from '../components/atoms/BlurBox';
-import DetailRankPostBox from '../components/organisms/DetailRankPostBox';
+import PageChangeButton from '../components/organisms/PageChangeButton';
 import DetailPostBox from '../components/organisms/DetailPostBox';
 import { getPosts, getDetail, makeEmotion, deleteEmotion } from '../api/posts';
 
@@ -27,6 +29,7 @@ const PostContainer = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   width: 1200px;
+  margin-top: 27px;
 `;
 
 const ExitBoxWrapper = styled.div`
@@ -34,139 +37,161 @@ const ExitBoxWrapper = styled.div`
   top: 3%;
   left: 0%;
 `;
+const ExitBoxOnBlurWrapper = styled.div`
+  position: fixed;
+  top: 3%;
+  left: 0%;
+  z-index: 300;
+`;
 
 function TopicPage() {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any>({});
+  const [subjectTitle, setSubjectTitle] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const userProfile = useRecoilValue(UserProfileState);
+  // 게시물 상세 state
+  const [detailPost, setDetailPost] = useState<any>({});
   const [detailPostId, setDetailPostId] = useState<number>(0);
-  const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
   const [isDetail, setIsDetail] = useState<boolean>(false);
+  const [smileCnt, setSmileCnt] = useState<number>(0);
+  const [wowCnt, setWowCnt] = useState<number>(0);
+  const [sadCnt, setSadCnt] = useState<number>(0);
   const [isSmile, setIsSmile] = useState<boolean>(false);
   const [isWow, setIsWow] = useState<boolean>(false);
   const [isSad, setIsSad] = useState<boolean>(false);
-  useEffect(() => {
-    // async function loadPosts() {
-    //   try {
-    //     const response = await getRankPosts();
-    //     setPosts(response.content)
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
-    // loadPosts()
-  }, []);
+  const { topic } = useParams();
 
-  // 임시 변수
-  const title = '고양이';
-  // 게시물 클릭
+  useEffect(() => {
+    async function loadPosts(subjectId: number, curPage: number) {
+      try {
+        const response = await getPosts(subjectId, curPage);
+        const newPosts = { ...response.content };
+        await setSubjectTitle(newPosts.subjectName);
+        await setPosts(newPosts);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    loadPosts(Number(topic), currentPage);
+  }, [currentPage]);
+
+  const isFirstPage = currentPage === 0;
+  const isLastPage = currentPage === posts.totalPages - 1;
+  const leftDisabled = isFirstPage;
+  const rightDisabled = isLastPage;
+  const leftOnClick = () => {
+    const prevPage = currentPage - 1;
+    setCurrentPage(prevPage);
+  };
+
+  const rightOnClick = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+  };
+  // 게시물 클릭 및 조회
   const handlePostClick = async (postId: number, profileId: number) => {
     try {
       const response = await getDetail(postId, profileId);
+      const newDetail = { ...response.content };
+      await setDetailPost(newDetail);
       const emotionInfos = response.content.postEmotionTypeInfos;
       emotionInfos.forEach((info) => {
         if (info.emotionTypeId === 1) {
           setIsSmile(info.emoted);
+          setSmileCnt(info.emotionCount);
         } else if (info.emotionTypeId === 2) {
           setIsWow(info.emoted);
+          setWowCnt(info.emotionCount);
         } else if (info.emotionTypeId === 3) {
           setIsSad(info.emoted);
+          setSadCnt(info.emotionCount);
         }
       });
       setDetailPostId(postId);
+      if (isDetail === false) {
+        setIsDetail(true);
+      }
     } catch (error) {
-      console.log('게시물 선택 에러: ', error);
+      console.log('게시물 상세 에러: ', error);
     }
   };
   // 감정 표현 관련
-  function SmileAction() {
+  const SmileAction = async (postId: number, profileId: number) => {
     try {
       if (!isSmile) {
-        // await deleteEmotion(postId, profileId);
-        if (isWow) {
-          setIsWow(false);
+        if (isWow || isSad) {
+          await deleteEmotion(postId, profileId);
         }
-        if (isSad) {
-          setIsSad(false);
-        }
-        // await makeEmotion(postId, profileId, 1)
-        setIsSmile(true);
+        await makeEmotion(postId, profileId, 1);
       } else {
-        // await deleteEmotion(postId, profileId);
-        setIsSmile(false);
+        await deleteEmotion(postId, profileId);
       }
+      await handlePostClick(postId, profileId);
     } catch (error) {
       console.log('감정표현 갱신 실패: ', error);
     }
-  }
-  function WowAction() {
+  };
+  const WowAction = async (postId: number, profileId: number) => {
     try {
       if (!isWow) {
-        // await deleteEmotion(postId, profileId);
-        if (isSmile) {
-          setIsSmile(false);
+        if (isSmile || isSad) {
+          await deleteEmotion(postId, profileId);
         }
-        if (isSad) {
-          setIsSad(false);
-        }
-        // await makeEmotion(postId, profileId, 2)
-        setIsWow(true);
+        await makeEmotion(postId, profileId, 2);
       } else {
-        // await deleteEmotion(postId, profileId);
-        setIsWow(false);
+        await deleteEmotion(postId, profileId);
       }
+      await handlePostClick(postId, profileId);
     } catch (error) {
       console.log('감정표현 갱신 실패: ', error);
     }
-  }
-  function SadAction() {
+  };
+  const SadAction = async (postId: number, profileId: number) => {
     try {
       if (!isSad) {
-        // await deleteEmotion(postId, profileId);
-        if (isWow) {
-          setIsWow(false);
+        if (isSmile || isWow) {
+          await deleteEmotion(postId, profileId);
         }
-        if (isSmile) {
-          setIsSmile(false);
-        }
-        // await makeEmotion(postId, profileId, 1)
-        setIsSad(true);
+        await makeEmotion(postId, profileId, 3);
       } else {
-        // await deleteEmotion(postId, profileId);
-        setIsSad(false);
+        await deleteEmotion(postId, profileId);
       }
+      await handlePostClick(postId, profileId);
     } catch (error) {
       console.log('감정표현 갱신 실패: ', error);
     }
-  }
+  };
 
   return (
     <TopicPageContainer>
-      {isDetail === true && (
+      {isDetail === true && detailPost && (
         <>
-          <BlurBox
-            onClick={() => {
-              setIsDetail(false);
-              setDetailPostId(0);
-            }}
-          />
+          <BlurBox />
+          <ExitBoxOnBlurWrapper>
+            <ExitBoxOnBlur
+              color="light"
+              onClick={() => {
+                setIsDetail(false);
+                setDetailPostId(0);
+              }}
+            />
+          </ExitBoxOnBlurWrapper>
           <DetailPostBox
-            imgsrc={`${process.env.REACT_APP_IMG_URL}/item/avatar/unicorn.png`}
-            SmileCount={45}
-            WowCount={300}
-            SadCount={661}
+            imgsrc={detailPost.canvasUrl}
+            SmileCount={smileCnt}
+            WowCount={wowCnt}
+            SadCount={sadCnt}
             SmilePressed={isSmile}
             WowPressed={isWow}
             SadPressed={isSad}
             SmileClick={() => {
-              SmileAction();
-              console.log('Smile clicked');
+              SmileAction(detailPostId, userProfile.profileId);
             }}
             WowClick={() => {
-              WowAction();
-              console.log('Wow clicked');
+              WowAction(detailPostId, userProfile.profileId);
             }}
             SadClick={() => {
-              SadAction();
-              console.log('Sad clicked');
+              SadAction(detailPostId, userProfile.profileId);
             }}
           />
         </>
@@ -174,69 +199,38 @@ function TopicPage() {
       <ExitBoxWrapper>
         <ExitBox color="dark" />
       </ExitBoxWrapper>
-      <PageHeaderText content={title} color="dark" fontSize="80px" />
-      <PostContainer>
-        {/* {posts.map((post) => (
-          <RankPicturePostDiv
-            key={post.id}
-            rank={post.rank}
-            imgSrc={post.imageURL}
-            onClick={() => {
-              handlePostClick();
-            }}
-            color="dark"
-          />
-        ))} */}
-        <PicturePostDiv
-          imgSrc={`${process.env.REACT_APP_IMG_URL}/item/avatar/unicorn.png`}
-          onClick={() => {
-            handlePostClick(2, 2);
-            setIsDetail(true);
-          }}
-        />
-        <PicturePostDiv
-          imgSrc=""
-          onClick={() => {
-            console.log('clk9');
-          }}
-        />
-        <PicturePostDiv
-          imgSrc=""
-          onClick={() => {
-            console.log('clk');
-          }}
-        />
-        <PicturePostDiv
-          imgSrc=""
-          onClick={() => {
-            console.log('clk9');
-          }}
-        />
-        <PicturePostDiv
-          imgSrc=""
-          onClick={() => {
-            console.log('clk');
-          }}
-        />
-        <PicturePostDiv
-          imgSrc=""
-          onClick={() => {
-            console.log('clk9');
-          }}
-        />
-        <PicturePostDiv
-          imgSrc=""
-          onClick={() => {
-            console.log('clk');
-          }}
-        />
-        <PicturePostDiv
-          imgSrc=""
-          onClick={() => {
-            console.log('clk9');
-          }}
-        />
-      </PostContainer>
+      <PageHeaderText content={subjectTitle} color="dark" fontSize="80px" />
+      <PageChangeButton
+        leftOnClick={leftOnClick}
+        rightOnClick={rightOnClick}
+        leftDisabled={leftDisabled}
+        rightDisabled={rightDisabled}
+      />
+      {posts.postLists && (
+        <PostContainer>
+          {posts.postLists.map((post: any) => (
+            <PicturePostDiv
+              key={post.postId}
+              imgSrc={post.canvasUrl}
+              onClick={() => {
+                handlePostClick(post.postId, userProfile.profileId);
+              }}
+            />
+          ))}
+          {posts.postLists.length < 8 &&
+            Array.from({ length: 8 - posts.postLists.length }).map(
+              (_, index) => (
+                <PicturePostDiv
+                  key={`blank-${index + posts.postLists.length + 1}`}
+                  imgSrc=""
+                  onClick={() => {
+                    return null;
+                  }}
+                />
+              ),
+            )}
+        </PostContainer>
+      )}
     </TopicPageContainer>
   );
 }
