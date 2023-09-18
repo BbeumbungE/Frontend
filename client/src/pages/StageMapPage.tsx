@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
+import { getUserLevel } from '../api/stage';
 import ExitBox from '../components/organisms/ExitBox';
 import UserRupee from '../components/atoms/UserRupee';
 import LevelBtn from '../components/atoms/LevelBtn';
@@ -114,13 +115,107 @@ const GreenGround = styled.div`
   background: linear-gradient(180deg, #4ca652 0%, #8ecc51 27.6%);
 `;
 
+const cloudAnimation = keyframes`
+  0% {
+    transform: translateX(-300%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+`;
+
+const AnimatedBigWhiteCloud = styled(BigWhiteCloud)`
+  animation: ${cloudAnimation} 30s linear infinite;
+  transform: translateX(-100%);
+  animation-delay: -30s;
+`;
+
+const AnimatedSmallWhiteCloud = styled(SmallWhiteCloud)`
+  animation: ${cloudAnimation} 25s linear infinite;
+  transform: translateX(-100%);
+  animation-delay: -25s;
+`;
+
 function StageMapPage() {
   const userProfile = useRecoilValue(UserProfileState);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [userLevel, setUserLevel] = useState<{ level: any[]; page: any }>({
+    level: [],
+    page: {
+      page: 0,
+      size: 0,
+      totalElements: 0,
+      totalPages: 0,
+    },
+  });
   const [characterPosition, setCharacterPosition] = useState({
     right: 1150,
     bottom: 150,
   });
   const characterRef = useRef<HTMLDivElement | null>(null);
+
+  const itemsPerPage = 3; // 한 페이지당 아이템 개수
+  // 첫번째 페이지, 마지막 페이지 파악하는 변수
+  const isFirstPage = currentPage === 0;
+  const isLastPage = currentPage === userLevel.page.totalPages - 1;
+  // 화살표에 전달할 boolean 값
+  const leftDisabled = isFirstPage;
+  const rightDisabled = isLastPage;
+
+  console.log('$$$$$$$$$$$$$$', userLevel);
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await getUserLevel(
+          currentPage,
+          userProfile.profileId,
+          itemsPerPage,
+        );
+        setUserLevel({
+          level: response.content.data, // 데이터 배열 설정
+          page: response.content.pageInfo, // pageInfo 설정
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getData();
+  }, [currentPage, userProfile]);
+
+  useEffect(() => {
+    // userLevel.level 배열에서 record가 null인 첫 번째 요소의 위치를 찾음
+    const firstNullIndex = userLevel.level.findIndex(
+      (level) => level.record === null,
+    );
+
+    // 레벨 클리어 단계에 따라 캐릭터 위치 변동
+    if (firstNullIndex === -1) {
+      // 모든 레벨이 null이 아닌 경우, 마지막 레벨의 위치를 사용
+      const lastLevelIndex = userLevel.level.length - 1;
+      setCharacterPosition({
+        right: 272,
+        bottom: 144,
+      });
+    } else if (firstNullIndex === 2) {
+      setCharacterPosition({
+        right: 700,
+        bottom: 300,
+      });
+    } else {
+      // 첫 번째 null 이전에 레벨이 없는 경우, 초기 위치 사용
+      setCharacterPosition({ right: 1150, bottom: 150 });
+    }
+  }, [userLevel.level]);
+
+  const leftOnClick = () => {
+    const prevPage = currentPage - 1;
+    setCurrentPage(prevPage);
+  };
+
+  const rightOnClick = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+  };
 
   const handleLevelBtnClick = (
     level: number,
@@ -139,13 +234,18 @@ function StageMapPage() {
 
   return (
     <MapWrapper>
-      {/* <PageChangeButton /> */}
+      <PageChangeButton
+        leftOnClick={leftOnClick}
+        rightOnClick={rightOnClick}
+        leftDisabled={leftDisabled}
+        rightDisabled={rightDisabled}
+      />
       <BlueSky />
       <ExitWrapper>
         <ExitBox color="light" />
       </ExitWrapper>
-      <BigWhiteCloud />
-      <SmallWhiteCloud />
+      <AnimatedBigWhiteCloud />
+      <AnimatedSmallWhiteCloud />
       <CharacterImage
         ref={characterRef}
         $bgImage={userProfile.profileImg}
@@ -156,24 +256,46 @@ function StageMapPage() {
         <BottomToTopRoad bottom={270} right={750} />
         <TopToBottomRoad bottom={270} right={330} />
         <BottomToTopRoad bottom={270} right={-70} />
-        <LevelBtn
-          level={1}
-          bottom={120}
-          right={1180}
-          onClick={() => handleLevelBtnClick(1, 1150, 140)}
-        />
-        <LevelBtn
-          level={2}
-          bottom={280}
-          right={730}
-          onClick={() => handleLevelBtnClick(2, 700, 300)}
-        />
-        <LevelBtn
-          level={3}
-          bottom={120}
-          right={300}
-          onClick={() => handleLevelBtnClick(3, 272, 140)}
-        />
+        {userLevel.level.length > 0 && (
+          <>
+            <LevelBtn
+              level={1}
+              star={
+                userLevel.level[0].record
+                  ? userLevel.level[0].record.score
+                  : null
+              }
+              bottom={120}
+              right={1180}
+              imgSrc={userLevel.level[0].subjectItem.subject.subjectImage}
+              onClick={() => handleLevelBtnClick(1, 1150, 140)}
+            />
+            <LevelBtn
+              level={2}
+              star={
+                userLevel.level[1].record
+                  ? userLevel.level[1].record.score
+                  : null
+              }
+              bottom={280}
+              right={730}
+              imgSrc={userLevel.level[1].subjectItem.subject.subjectImage}
+              onClick={() => handleLevelBtnClick(2, 700, 300)}
+            />
+            <LevelBtn
+              level={3}
+              star={
+                userLevel.level[2].record
+                  ? userLevel.level[2].record.score
+                  : null
+              }
+              bottom={120}
+              right={300}
+              imgSrc={userLevel.level[2].subjectItem.subject.subjectImage}
+              onClick={() => handleLevelBtnClick(3, 272, 140)}
+            />
+          </>
+        )}
       </LevelWrapper>
       <GreenGround />
     </MapWrapper>

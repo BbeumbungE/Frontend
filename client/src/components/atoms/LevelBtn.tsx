@@ -3,10 +3,16 @@ import LevelStars from '../organisms/LevelStars';
 
 interface LevelBtnProps {
   level: number;
+  star: null | number;
   bottom: number;
   right: number;
+  imgSrc: string;
   onClick?: () => void;
 }
+
+// interface LevelSketchProps {
+//   // imgSrc: string;
+// }
 
 const hoverAnimation = keyframes`
   0% {
@@ -30,6 +36,19 @@ const LevelWrapper = styled.div`
   &:hover {
     animation: ${hoverAnimation} 1s ease-in-out; /* 호버 시 애니메이션 적용 */
   }
+`;
+
+const LevelSketch = styled.img`
+  width: 200px;
+  height: 180px;
+  position: absolute;
+  top: -130px;
+  left: 0%;
+  z-index: 200;
+  border: none !important;
+  outline: none;
+  padding: 0;
+  margin: 0;
 `;
 
 const LevelText = styled.span`
@@ -72,13 +91,21 @@ const BottomBtn = styled.div`
   z-index: 1;
 `;
 
-const LevelBtn = ({ level, bottom, right, onClick }: LevelBtnProps) => {
+const LevelBtn = ({
+  level,
+  star,
+  bottom,
+  right,
+  imgSrc,
+  onClick,
+}: LevelBtnProps) => {
   return (
     <LevelWrapper
       style={{ bottom: `${bottom || 0}px`, right: `${right || 0}px` }}
       onClick={onClick}
     >
-      <LevelStars level={level} />
+      <LevelStars star={star} />
+      <LevelSketch src={imgSrc} />
       <LevelText>{level}</LevelText>
       <TopBtn />
       <BottomBtn />

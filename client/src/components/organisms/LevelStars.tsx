@@ -56,25 +56,25 @@ const MiddleGrayStar = styled(GrayStarIcon)`
 `;
 
 interface LevelStarsProps {
-  level: number | null;
+  star: number | null;
 }
 
-function LevelStars({ level }: LevelStarsProps) {
+function LevelStars({ star }: LevelStarsProps) {
   const stars = [];
 
-  if (level === null) {
+  if (star === null) {
     stars.push(<LeftGrayStar />);
     stars.push(<MiddleGrayStar />);
     stars.push(<RightGrayStar />);
-  } else if (level === 1) {
+  } else if (star === 1) {
     stars.push(<LeftGreenStar src={GreenStarIcon} alt="Left Star" />);
     stars.push(<MiddleGrayStar />);
     stars.push(<RightGrayStar />);
-  } else if (level === 2) {
+  } else if (star === 2) {
     stars.push(<LeftGreenStar src={GreenStarIcon} alt="Left Star" />);
     stars.push(<MiddleGreenStar src={GreenStarIcon} alt="Left Star" />);
     stars.push(<RightGrayStar />);
-  } else if (level === 3) {
+  } else if (star === 3) {
     stars.push(<LeftGreenStar src={GreenStarIcon} alt="Left Star" />);
     stars.push(<MiddleGreenStar src={GreenStarIcon} alt="Left Star" />);
     stars.push(<RightGreenStar src={GreenStarIcon} alt="Left Star" />);
