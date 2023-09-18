@@ -1,9 +1,11 @@
 import styled, { keyframes } from 'styled-components';
+import LevelStars from '../organisms/LevelStars';
 
 interface LevelBtnProps {
   level: number;
   bottom: number;
   right: number;
+  onClick?: () => void;
 }
 
 const hoverAnimation = keyframes`
@@ -70,16 +72,22 @@ const BottomBtn = styled.div`
   z-index: 1;
 `;
 
-function LevelBtn({ level, bottom, right }: LevelBtnProps) {
+const LevelBtn = ({ level, bottom, right, onClick }: LevelBtnProps) => {
   return (
     <LevelWrapper
       style={{ bottom: `${bottom || 0}px`, right: `${right || 0}px` }}
+      onClick={onClick}
     >
+      <LevelStars level={level} />
       <LevelText>{level}</LevelText>
       <TopBtn />
       <BottomBtn />
     </LevelWrapper>
   );
-}
+};
+
+LevelBtn.defaultProps = {
+  onClick: undefined, // 기본값으로 빈 함수를 설정
+};
 
 export default LevelBtn;
