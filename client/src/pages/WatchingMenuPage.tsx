@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import { getTotalTopic } from '../api/menu';
 import menuTreeIcon from '../assets/image/etc/menuTree.svg';
@@ -91,7 +91,7 @@ const BalloonTail = styled.div`
 
 function WatchingMenuPage() {
   const [currentPage, setCurrentPage] = useState(0);
-  const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
+  const userProfile = useRecoilValue(UserProfileState);
   const [totalTopics, setTotalTopics] = useState<{ topic: any[]; page: any }>({
     topic: [],
     page: {},
