@@ -1,9 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface BlurBoxProps {
-  onClick: React.MouseEventHandler<HTMLDivElement>;
-}
 const BlurBox = styled.div`
   width: 100vw;
   height: 100vh;
@@ -15,7 +12,7 @@ const BlurBox = styled.div`
   z-index: 100;
 `;
 
-const BlurBoxDiv = ({ onClick }: BlurBoxProps) => {
-  return <BlurBox onClick={onClick} />;
+const BlurBoxDiv = () => {
+  return <BlurBox />;
 };
 export default BlurBoxDiv;

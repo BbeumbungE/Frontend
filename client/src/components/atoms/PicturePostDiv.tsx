@@ -11,13 +11,13 @@ const PicturePostDiv = styled.div<PicturePostDivProps>`
   height: 240px;
   background-image: ${({ imgSrc }) => (imgSrc ? `url(${imgSrc})` : 'none')};
   background-color: ${({ imgSrc }) =>
-    imgSrc ? 'transparent' : theme.colors.darkGray};
+    imgSrc ? 'transparent' : theme.colors.mainGray};
   background-size: cover;
   background-position: center;
   cursor: ${({ imgSrc }) => (imgSrc ? 'pointer' : 'default')};
   padding: 0;
   border: 0;
-  margin: 20px;
+  margin: 10px;
 `;
 
 const PicturePost = ({ imgSrc = '', onClick }: PicturePostDivProps) => {

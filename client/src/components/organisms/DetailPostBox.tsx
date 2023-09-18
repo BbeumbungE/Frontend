@@ -27,7 +27,6 @@ const CenterDiv = styled.div`
 const DetailPostBoxDiv = styled.div`
   width: 577px;
   height: 600px;
-  border: 1px solid white;
 `;
 
 const EmojiWrapperDiv = styled.div`

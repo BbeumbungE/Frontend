@@ -32,7 +32,6 @@ const DetailPostBoxDiv = styled.div`
   padding: 0;
   border: 0;
   position: relative;
-  border: 1px solid white;
 `;
 
 const EmojiWrapperDiv = styled.div`
