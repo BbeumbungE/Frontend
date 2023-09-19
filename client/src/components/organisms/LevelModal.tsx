@@ -76,6 +76,8 @@ const BtnWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 20px;
+  position: relative;
+  z-index: 700;
 `;
 
 const LevelSketch = styled.img`

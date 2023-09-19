@@ -12,18 +12,20 @@ const StarWrapper = styled.span`
   display: flex;
   left: 50%;
   transform: translateX(-50%);
-  gap: -25px;
+  margin-left: 20px;
 `;
 
 const LeftGreenStar = styled.img`
   width: 85.866px;
   height: 84.99px;
   transform: rotate(-6deg);
+  margin-right: -15px;
 `;
 const RightGreenStar = styled.img`
   width: 85.866px;
   height: 84.99px;
   transform: rotate(6deg);
+  margin-left: -15px;
 `;
 const MiddleGreenStar = styled.img`
   top: -20px;
@@ -36,11 +38,13 @@ const LeftGrayStar = styled(GrayStarIcon)`
   width: 85.866px;
   height: 84.99px;
   transform: rotate(-6deg);
+  margin-right: -15px;
 `;
 const RightGrayStar = styled(GrayStarIcon)`
   width: 85.866px;
   height: 84.99px;
   transform: rotate(6deg);
+  margin-left: -15px;
 `;
 const MiddleGrayStar = styled(GrayStarIcon)`
   top: -20px;
