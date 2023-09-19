@@ -103,7 +103,7 @@ function LevelModal({
   return (
     <ModalWrapper>
       <TopModal>
-        <LevelText>레벨 {levelData + 1}</LevelText>
+        <LevelText>레벨 {levelData}</LevelText>
       </TopModal>
       <InModal>
         <LevelSketch src={imgSrc} />
