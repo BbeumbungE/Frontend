@@ -11,7 +11,13 @@ import ExitBoxOnBlur from '../components/organisms/ExitBoxOnBlur';
 import BlurBox from '../components/atoms/BlurBox';
 import PageChangeButton from '../components/organisms/PageChangeButton';
 import DetailPostBox from '../components/organisms/DetailPostBox';
-import { getPosts, getDetail, makeEmotion, deleteEmotion } from '../api/posts';
+import {
+  getPosts,
+  getDetail,
+  makeEmotion,
+  updateEmotion,
+  deleteEmotion,
+} from '../api/posts';
 
 const TopicPageContainer = styled.div`
   display: flex;
@@ -120,13 +126,25 @@ function TopicPage() {
     try {
       if (!isSmile) {
         if (isWow || isSad) {
-          await deleteEmotion(postId, profileId);
+          await updateEmotion(postId, profileId, 1);
+          if (isWow) {
+            setIsWow(false);
+            setWowCnt(wowCnt - 1);
+          }
+          if (isSad) {
+            setIsSad(false);
+            setSadCnt(sadCnt - 1);
+          }
+        } else {
+          await makeEmotion(postId, profileId, 1);
         }
-        await makeEmotion(postId, profileId, 1);
+        setIsSmile(true);
+        setSmileCnt(smileCnt + 1);
       } else {
         await deleteEmotion(postId, profileId);
+        setIsSmile(false);
+        setSmileCnt(smileCnt - 1);
       }
-      await handlePostClick(postId, profileId);
     } catch (error) {
       console.log('감정표현 갱신 실패: ', error);
     }
@@ -135,13 +153,25 @@ function TopicPage() {
     try {
       if (!isWow) {
         if (isSmile || isSad) {
-          await deleteEmotion(postId, profileId);
+          await updateEmotion(postId, profileId, 2);
+          if (isSmile) {
+            setIsSmile(false);
+            setSmileCnt(smileCnt - 1);
+          }
+          if (isSad) {
+            setIsSad(false);
+            setSadCnt(sadCnt - 1);
+          }
+        } else {
+          await makeEmotion(postId, profileId, 2);
         }
-        await makeEmotion(postId, profileId, 2);
+        setIsWow(true);
+        setWowCnt(wowCnt + 1);
       } else {
         await deleteEmotion(postId, profileId);
+        setIsWow(false);
+        setWowCnt(wowCnt - 1);
       }
-      await handlePostClick(postId, profileId);
     } catch (error) {
       console.log('감정표현 갱신 실패: ', error);
     }
@@ -150,13 +180,25 @@ function TopicPage() {
     try {
       if (!isSad) {
         if (isSmile || isWow) {
-          await deleteEmotion(postId, profileId);
+          await updateEmotion(postId, profileId, 3);
+          if (isSmile) {
+            setIsSmile(false);
+            setSmileCnt(smileCnt - 1);
+          }
+          if (isWow) {
+            setIsWow(false);
+            setWowCnt(wowCnt - 1);
+          }
+        } else {
+          await makeEmotion(postId, profileId, 3);
         }
-        await makeEmotion(postId, profileId, 3);
+        setIsSad(true);
+        setSadCnt(sadCnt + 1);
       } else {
         await deleteEmotion(postId, profileId);
+        setIsSad(false);
+        setSadCnt(sadCnt - 1);
       }
-      await handlePostClick(postId, profileId);
     } catch (error) {
       console.log('감정표현 갱신 실패: ', error);
     }

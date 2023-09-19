@@ -114,6 +114,21 @@ const makeEmotion = async (
     throw error;
   }
 };
+const updateEmotion = async (
+  postId: number,
+  profileId: number,
+  emotionTypeId: number,
+): Promise<AxiosResponse> => {
+  try {
+    const response = await api.patch(
+      `/api/posts/${postId}/profiles/${profileId}/emotions/?emotionTypeId=${emotionTypeId}`,
+    );
+    return response;
+  } catch (error) {
+    console.log('감정표현 실패', error);
+    throw error;
+  }
+};
 
 const deleteEmotion = async (
   postId: number,
@@ -130,4 +145,11 @@ const deleteEmotion = async (
   }
 };
 
-export { getRankPosts, getPosts, getDetail, makeEmotion, deleteEmotion };
+export {
+  getRankPosts,
+  getPosts,
+  getDetail,
+  makeEmotion,
+  updateEmotion,
+  deleteEmotion,
+};

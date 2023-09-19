@@ -14,6 +14,7 @@ import {
   getRankPosts,
   getDetail,
   makeEmotion,
+  updateEmotion,
   deleteEmotion,
 } from '../api/posts';
 
@@ -68,6 +69,7 @@ function RankingPage() {
   // 게시물 상세 state
   const [detailPost, setDetailPost] = useState<any>({});
   const [detailPostId, setDetailPostId] = useState<number>(0);
+  const [postRank, setPostRank] = useState<number>(1);
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const [smileCnt, setSmileCnt] = useState<number>(0);
   const [wowCnt, setWowCnt] = useState<number>(0);
@@ -81,6 +83,7 @@ function RankingPage() {
     async function loadPosts(subjectId: number) {
       try {
         const response = await getRankPosts(subjectId);
+        console.log(response);
         const rankPosts = { ...response.content };
         await setSubjectTitle(rankPosts.subjectName);
         await setPosts(rankPosts);
@@ -128,13 +131,25 @@ function RankingPage() {
     try {
       if (!isSmile) {
         if (isWow || isSad) {
-          await deleteEmotion(postId, profileId);
+          await updateEmotion(postId, profileId, 1);
+          if (isWow) {
+            setIsWow(false);
+            setWowCnt(wowCnt - 1);
+          }
+          if (isSad) {
+            setIsSad(false);
+            setSadCnt(sadCnt - 1);
+          }
+        } else {
+          await makeEmotion(postId, profileId, 1);
         }
-        await makeEmotion(postId, profileId, 1);
+        setIsSmile(true);
+        setSmileCnt(smileCnt + 1);
       } else {
         await deleteEmotion(postId, profileId);
+        setIsSmile(false);
+        setSmileCnt(smileCnt - 1);
       }
-      await handlePostClick(postId, profileId);
     } catch (error) {
       console.log('감정표현 갱신 실패: ', error);
     }
@@ -143,13 +158,25 @@ function RankingPage() {
     try {
       if (!isWow) {
         if (isSmile || isSad) {
-          await deleteEmotion(postId, profileId);
+          await updateEmotion(postId, profileId, 2);
+          if (isSmile) {
+            setIsSmile(false);
+            setSmileCnt(smileCnt - 1);
+          }
+          if (isSad) {
+            setIsSad(false);
+            setSadCnt(sadCnt - 1);
+          }
+        } else {
+          await makeEmotion(postId, profileId, 2);
         }
-        await makeEmotion(postId, profileId, 2);
+        setIsWow(true);
+        setWowCnt(wowCnt + 1);
       } else {
         await deleteEmotion(postId, profileId);
+        setIsWow(false);
+        setWowCnt(wowCnt - 1);
       }
-      await handlePostClick(postId, profileId);
     } catch (error) {
       console.log('감정표현 갱신 실패: ', error);
     }
@@ -158,13 +185,25 @@ function RankingPage() {
     try {
       if (!isSad) {
         if (isSmile || isWow) {
-          await deleteEmotion(postId, profileId);
+          await updateEmotion(postId, profileId, 3);
+          if (isSmile) {
+            setIsSmile(false);
+            setSmileCnt(smileCnt - 1);
+          }
+          if (isWow) {
+            setIsWow(false);
+            setWowCnt(wowCnt - 1);
+          }
+        } else {
+          await makeEmotion(postId, profileId, 3);
         }
-        await makeEmotion(postId, profileId, 3);
+        setIsSad(true);
+        setSadCnt(sadCnt + 1);
       } else {
         await deleteEmotion(postId, profileId);
+        setIsSad(false);
+        setSadCnt(sadCnt - 1);
       }
-      await handlePostClick(postId, profileId);
     } catch (error) {
       console.log('감정표현 갱신 실패: ', error);
     }
@@ -185,7 +224,7 @@ function RankingPage() {
             />
           </ExitBoxOnBlurWrapper>
           <DetailRankPostBox
-            ranking={1}
+            ranking={postRank}
             imgsrc={detailPost.canvasUrl}
             SmileCount={smileCnt}
             WowCount={wowCnt}
@@ -194,13 +233,13 @@ function RankingPage() {
             WowPressed={isWow}
             SadPressed={isSad}
             SmileClick={() => {
-              SmileAction(1, 1);
+              SmileAction(detailPostId, userProfile.profileId);
             }}
             WowClick={() => {
-              WowAction(1, 1);
+              WowAction(detailPostId, userProfile.profileId);
             }}
             SadClick={() => {
-              SadAction(1, 1);
+              SadAction(detailPostId, userProfile.profileId);
             }}
           />
         </>
@@ -214,7 +253,7 @@ function RankingPage() {
         fontSize="30px"
       />
       <PageHeaderText
-        content={`${subjectTitle} 주간랭킹`}
+        content={`${subjectTitle} 주간 랭킹`}
         color="dark"
         fontSize="60px"
       />
@@ -222,10 +261,11 @@ function RankingPage() {
         <PostContainer>
           {posts.rankerList.map((post: any, index: number) => (
             <RankPicturePostDiv
-              key={`ranked-post-${index + 1}`}
+              key={post.postId}
               rank={index + 1}
               imgSrc={post.canvasUrl}
               onClick={() => {
+                setPostRank(index + 1);
                 handlePostClick(post.postId, userProfile.profileId);
               }}
               color="dark"
