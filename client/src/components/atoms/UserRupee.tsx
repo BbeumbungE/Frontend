@@ -7,7 +7,7 @@ const RupeeWrapper = styled.div`
   display: flex;
   align-items: center;
   margin: 10px;
-  position: fixed;
+  position: absolute;
   top: 10px;
   right: 10px;
 `;

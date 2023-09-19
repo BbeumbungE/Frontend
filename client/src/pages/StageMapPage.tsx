@@ -81,8 +81,8 @@ const CharacterImage = styled.div<{
 `;
 
 const BottomToTopRoad = styled.div<{
-  bottom?: number;
-  right?: number;
+  bottom: number;
+  right: number;
 }>`
   width: 579.819px;
   height: 48.096px;
@@ -94,8 +94,8 @@ const BottomToTopRoad = styled.div<{
 `;
 
 const TopToBottomRoad = styled.div<{
-  bottom?: number;
-  right?: number;
+  bottom: number;
+  right: number;
 }>`
   width: 579.819px;
   height: 48.096px;
