@@ -10,16 +10,12 @@ interface LevelBtnProps {
   onClick?: () => void;
 }
 
-// interface LevelSketchProps {
-//   // imgSrc: string;
-// }
-
 const hoverAnimation = keyframes`
   0% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-15px); /* 호버 중간에 위로 올라감 */
+    transform: translateY(-15px);
   }
   100% {
     transform: translateY(0);
@@ -34,7 +30,7 @@ const LevelWrapper = styled.div`
   cursor: pointer;
 
   &:hover {
-    animation: ${hoverAnimation} 1s ease-in-out; /* 호버 시 애니메이션 적용 */
+    animation: ${hoverAnimation} 1s ease-in-out;
   }
 `;
 

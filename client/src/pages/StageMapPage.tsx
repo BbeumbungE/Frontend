@@ -7,6 +7,8 @@ import ExitBox from '../components/organisms/ExitBox';
 import UserRupee from '../components/atoms/UserRupee';
 import LevelBtn from '../components/atoms/LevelBtn';
 import PageChangeButton from '../components/organisms/PageChangeButton';
+import BlurBox from '../components/atoms/BlurBox';
+import LevelModal from '../components/organisms/LevelModal';
 
 const MapWrapper = styled.div`
   width: 100vw;
@@ -72,12 +74,13 @@ const CharacterImage = styled.div<{
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
-  z-index: 300;
+  z-index: 50;
   transition:
     right 1s ease,
     bottom 1s ease;
   right: ${(props) => `${props.$position.right}px`};
   bottom: ${(props) => `${props.$position.bottom}px`};
+  cursor: pointer;
 `;
 
 const BottomToTopRoad = styled.div<{
@@ -153,6 +156,10 @@ function StageMapPage() {
     bottom: 150,
   });
   const characterRef = useRef<HTMLDivElement | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedLevelData, setSelectedLevelData] = useState<number | null>(
+    null,
+  );
 
   const itemsPerPage = 3; // 한 페이지당 아이템 개수
   // 첫번째 페이지, 마지막 페이지 파악하는 변수
@@ -192,21 +199,25 @@ function StageMapPage() {
     if (firstNullIndex === -1) {
       // 모든 레벨이 null이 아닌 경우, 마지막 레벨의 위치를 사용
       const lastLevelIndex = userLevel.level.length - 1;
+      setSelectedLevelData(lastLevelIndex);
       setCharacterPosition({
         right: 272,
         bottom: 144,
       });
     } else if (firstNullIndex === 2) {
+      setSelectedLevelData(1);
       setCharacterPosition({
         right: 700,
         bottom: 300,
       });
     } else {
       // 첫 번째 null 이전에 레벨이 없는 경우, 초기 위치 사용
+      setSelectedLevelData(0);
       setCharacterPosition({ right: 1150, bottom: 150 });
     }
   }, [userLevel.level]);
 
+  console.log('선택한 레벨', selectedLevelData);
   const leftOnClick = () => {
     const prevPage = currentPage - 1;
     setCurrentPage(prevPage);
@@ -217,6 +228,12 @@ function StageMapPage() {
     setCurrentPage(nextPage);
   };
 
+  const handleCharacterImageClick = (level: number) => {
+    if (level) {
+      setIsModalOpen(true);
+    }
+  };
+
   const handleLevelBtnClick = (
     level: number,
     right: number,
@@ -224,7 +241,7 @@ function StageMapPage() {
   ) => {
     // onClick 시 캐릭터 위치 변경
     setCharacterPosition({ right, bottom });
-
+    setSelectedLevelData(level);
     // ref를 사용하여 캐릭터 이동 애니메이션 트리거
     if (characterRef.current) {
       characterRef.current.style.right = `${right}px`;
@@ -234,6 +251,25 @@ function StageMapPage() {
 
   return (
     <MapWrapper>
+      {selectedLevelData && isModalOpen && (
+        <>
+          <BlurBox />
+          <LevelModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            levelData={selectedLevelData}
+            imgSrc={
+              userLevel.level[selectedLevelData - 1].subjectItem.subject
+                .subjectImage
+            }
+            star={
+              userLevel.level[selectedLevelData - 1].record
+                ? userLevel.level[selectedLevelData - 1].record.score
+                : null
+            }
+          />
+        </>
+      )}
       <PageChangeButton
         leftOnClick={leftOnClick}
         rightOnClick={rightOnClick}
@@ -250,6 +286,7 @@ function StageMapPage() {
         ref={characterRef}
         $bgImage={userProfile.profileImg}
         $position={characterPosition}
+        onClick={() => selectedLevelData !== null && setIsModalOpen(true)}
       />
       <UserRupee />
       <LevelWrapper>

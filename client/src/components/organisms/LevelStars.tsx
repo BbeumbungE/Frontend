@@ -9,50 +9,44 @@ const StarWrapper = styled.span`
   width: 270px;
   height: 120px;
   z-index: 300;
+  display: flex;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: -25px;
 `;
 
 const LeftGreenStar = styled.img`
-  position: absolute;
-  left: 0;
   width: 85.866px;
   height: 84.99px;
   transform: rotate(-6deg);
 `;
 const RightGreenStar = styled.img`
-  position: absolute;
-  left: 140px;
   width: 85.866px;
   height: 84.99px;
   transform: rotate(6deg);
 `;
 const MiddleGreenStar = styled.img`
-  position: absolute;
-  left: 65px;
   top: -20px;
   width: 98px;
   height: 97px;
+  transform: translateY(-30%);
 `;
 
 const LeftGrayStar = styled(GrayStarIcon)`
-  position: absolute;
-  left: 0;
   width: 85.866px;
   height: 84.99px;
   transform: rotate(-6deg);
 `;
 const RightGrayStar = styled(GrayStarIcon)`
-  position: absolute;
-  left: 140px;
   width: 85.866px;
   height: 84.99px;
   transform: rotate(6deg);
 `;
 const MiddleGrayStar = styled(GrayStarIcon)`
-  position: absolute;
-  left: 65px;
   top: -20px;
   width: 98px;
   height: 97px;
+  transform: translateY(-30%);
 `;
 
 interface LevelStarsProps {

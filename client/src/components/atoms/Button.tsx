@@ -4,7 +4,8 @@ import theme from '../../style/theme';
 interface ButtonProps {
   buttonText: string;
   color: string;
-  // onClick?: () => void;
+  borderColor?: string;
+  onClick?: () => void;
 }
 
 const StyledButton = styled.button<{ $bgColor: string }>`
@@ -29,9 +30,10 @@ const ButtonText = styled.span<{ $fontColor: string }>`
   margin-left: 34px;
 `;
 
-function Button({ buttonText, color }: ButtonProps) {
+function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
   let bgColor = theme.colors.mainBlue; // 기본값은 mainBlue
   let fontColor = theme.colors.mainWhite;
+  let buttonBorder = 'none';
 
   // color 값에 따라 bgColor를 설정
   switch (color) {
@@ -59,6 +61,10 @@ function Button({ buttonText, color }: ButtonProps) {
       bgColor = theme.storeColors.gray;
       fontColor = theme.colors.mainBlack;
       break;
+    case 'lightGray':
+      bgColor = theme.colors.mainGray;
+      fontColor = theme.colors.mainWhite;
+      break;
     case 'darkGray':
       bgColor = theme.colors.darkGray;
       break;
@@ -66,11 +72,23 @@ function Button({ buttonText, color }: ButtonProps) {
       bgColor = theme.colors.mainBlue;
   }
 
+  if (borderColor) {
+    buttonBorder = `6px solid ${borderColor}`;
+  }
+
   return (
-    <StyledButton $bgColor={bgColor}>
+    <StyledButton
+      $bgColor={bgColor}
+      style={{ border: buttonBorder }}
+      onClick={onClick}
+    >
       <ButtonText $fontColor={fontColor}>{buttonText}</ButtonText>
     </StyledButton>
   );
 }
 
+Button.defaultProps = {
+  borderColor: undefined,
+  onClick: undefined,
+};
 export default Button;
