@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import menuTreeIcon from '../assets/image/etc/menuTree.svg';
 import menuMountainIcon from '../assets/image/etc/mainMountain.svg';
@@ -79,6 +80,7 @@ const BalloonTail = styled.div`
 `;
 
 function MainMenuPage() {
+  const navigate = useNavigate();
   return (
     <MainMenuWrapper>
       <BalloonWrapper>
@@ -87,7 +89,11 @@ function MainMenuPage() {
           <BalloonTail />
         </Balloon>
       </BalloonWrapper>
-      <ProfileBtn />
+      <ProfileBtn
+        onClick={() => {
+          navigate('/profile/manage');
+        }}
+      />
       <BearImg
         src={`${process.env.REACT_APP_IMG_URL}/service-image/mainBear.png`}
         alt="menuTreeIcon"
