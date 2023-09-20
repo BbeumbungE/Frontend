@@ -1,4 +1,7 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { levelDataState } from '../../recoil/level/atom';
 import LevelStars from './LevelStars';
 import Button from '../atoms/Button';
 
@@ -93,11 +96,20 @@ function LevelModal({
   imgSrc,
   star,
 }: LevelModalProps) {
+  const navigate = useNavigate();
+  const [storedLevelData, setStoredLevelData] = useRecoilState(levelDataState);
+
   if (!isOpen) return null;
 
   const handleClose = () => {
     console.log('취소하기');
     onClose();
+  };
+
+  const handleChallenge = () => {
+    setStoredLevelData(levelData);
+
+    navigate('/draw/stage');
   };
 
   return (
@@ -116,7 +128,12 @@ function LevelModal({
             color="lightGray"
             onClick={handleClose}
           />
-          <Button buttonText="도전하기" color="salmon" borderColor="#F24F41" />
+          <Button
+            buttonText="도전하기"
+            color="salmon"
+            borderColor="#F24F41"
+            onClick={handleChallenge}
+          />
         </BtnWrapper>
       </InModal>
     </ModalWrapper>

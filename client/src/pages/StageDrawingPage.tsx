@@ -1,18 +1,24 @@
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
-import ProgressBar from '../components/atoms/ProgressBar';
+import { useRecoilValue } from 'recoil';
+import { UserProfileState } from '../recoil/profile/atom';
+import { levelDataState } from '../recoil/level/atom';
+import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
+import BlurBox from '../components/atoms/BlurBox';
+import CheckingModal from '../components/organisms/CheckingModal';
+import ProgressBar from '../components/atoms/ProgressTimeBar';
 import ExitBox from '../components/organisms/ExitBox';
 import Button from '../components/atoms/Button';
+import { postDrawing } from '../api/drawing';
 import { ReactComponent as PencilIcon } from '../assets/image/etc/pencil.svg';
 import { ReactComponent as MagicStickIcon } from '../assets/image/etc/magicStick.svg';
 import { ReactComponent as LockIcon } from '../assets/image/etc/drawingLock.svg';
 
 const defaultStyle = {
   display: 'inline-block',
-  background: 'white', // 배경을 하얀색으로 설정
-  borderRadius: '25px', // 테두리의 모서리를 둥글게 만듦
+  background: 'white',
+  borderRadius: '25px',
   marginRight: '-50px',
-  zIndex: '-100',
 };
 
 const DrawingPageWrapper = styled.div`
@@ -46,13 +52,17 @@ const StyledImage = styled.img`
   z-index: -100;
 `;
 
+const BtnFloating = styled.div`
+  z-index: 200;
+`;
+
 const BottomWrapper = styled.div`
   display: flex;
   margin-top: 10px;
 `;
 
 const ToolWrapper = styled.span`
-  margin-right: 100px; /* 요소들 사이의 간격을 조정할 수 있습니다. */
+  margin-right: 100px;
   display: flex;
 `;
 
@@ -90,12 +100,16 @@ const BtnWrapper = styled.div`
 `;
 
 function StageDrawingPage() {
+  const levelData = useRecoilValue(levelDataState);
+  const profileState = useRecoilValue(UserProfileState);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | undefined>();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [array, setArray] = useState<{ x: number; y: number }[]>([]);
   const [isDrawing, setIsDrawing] = useState(false); // 마우스 클릭 중인지 여부를 추적
   const [isLocked, setIsLocked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$레벨 데이터', levelData);
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -144,26 +158,47 @@ function StageDrawingPage() {
     }
   };
 
-  const handleToggleLock = () => {
+  // 변신하기 버튼
+  const handleChange = () => {
+    // 화면 잠금, 변환 중 모달 오픈
     setIsLocked(true);
+    setIsModalOpen(true);
+
+    if (canvasRef.current) {
+      const imageDataURL = canvasRef.current.toDataURL('image/png');
+      const formData = new FormData();
+      formData.append('sketchFile', imageDataURL);
+      // formData.append('profileId');
+      // formData.append('subjectId');
+      // const response = await postDrawing(
+      //   yourProfileId,
+      //   yourSubjectId,
+      //   formData,
+      // );
+    }
+
+    // SSE 연결 함수 호출
+    drawingSSE(profileState.profileId);
+
+    // SSE 연결 해제 함수 호출
+    disconnectDrawingSSE();
   };
 
   const handleToggleEdit = () => {
-    setIsLocked(false); // 수정하기 버튼을 누르면 잠금 해제
+    setIsLocked(false);
   };
 
   return (
     <DrawingPageWrapper>
+      <BlurBox />
+      <CheckingModal />
       <ProgressBar durationInSeconds={60} />
       <TopWrapper>
         <ExitBox color="dark" />
         <Button buttonText="완성 !" color="salmon" />
       </TopWrapper>
       <CanvasWrapper>
-        <div
-          className="container"
-          style={{ position: 'relative', zIndex: '-100' }}
-        >
+        <div className="container" style={{ position: 'relative' }}>
           <Lock style={{ display: isLocked ? 'block' : 'none' }} />
           <canvas
             ref={canvasRef}
@@ -184,11 +219,9 @@ function StageDrawingPage() {
             }}
           />
         </div>
-        <Button
-          buttonText="변신하기"
-          color="green"
-          onClick={handleToggleLock}
-        />
+        <BtnFloating>
+          <Button buttonText="변신하기" color="green" onClick={handleChange} />
+        </BtnFloating>
         {/* <StyledImage src={imgSrc || ''} alt="이미지" />; */}
         <StyledImage src="" alt="이미지" />
       </CanvasWrapper>
