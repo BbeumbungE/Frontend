@@ -41,6 +41,10 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
     case 'blue':
       bgColor = theme.colors.mainBlue;
       break;
+    case 'skyblue':
+      bgColor = '#F5FBFF';
+      fontColor = theme.colors.mainBlack;
+      break;
     case 'salmon':
       bgColor = theme.colors.mainSalmon;
       break;

@@ -1,10 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
 import menuTreeIcon from '../assets/image/etc/menuTree.svg';
 import menuMountainIcon from '../assets/image/etc/mainMountain.svg';
 import MenuBox from '../components/organisms/MainMenuBox';
 import ExitBox from '../components/organisms/ExitBox';
 import ProfileBtn from '../components/atoms/ProfileBtn';
+import { connectEventSSE, disconnectEventSSE } from '../sse/mainSSE';
+import { UserProfileState } from '../recoil/profile/atom';
 
 interface SvgImageProps extends React.HTMLProps<HTMLImageElement> {
   'data-bottom'?: string;
@@ -80,7 +84,16 @@ const BalloonTail = styled.div`
 `;
 
 function MainMenuPage() {
+  const userProfile = useRecoilValue(UserProfileState);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    connectEventSSE(userProfile.profileId);
+
+    return () => {
+      disconnectEventSSE();
+    };
+  });
   return (
     <MainMenuWrapper>
       <BalloonWrapper>
