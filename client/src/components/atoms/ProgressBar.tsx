@@ -37,7 +37,6 @@ const ProgressBarWrapper = styled.div`
   justify-content: center;
   width: 100%;
   background-color: #ffefc6;
-  margin-top: 5px;
 `;
 
 const ProgressBarInner = styled.div<ProgressBarInnerProps>`
