@@ -1,40 +1,6 @@
 import { AxiosResponse } from 'axios';
 import { api } from './api';
 
-interface Record {
-  id: number;
-  score: number;
-}
-
-interface Subject {
-  id: number;
-  subjectName: string;
-  subjectImage: string;
-  sketch: string;
-}
-
-interface SubjectItem {
-  id: number;
-  itemPrice: number;
-  hasItem: boolean;
-  subject: Subject;
-}
-
-interface Stage {
-  id: number;
-  stageNum: number;
-  point: number;
-  subjectItem: SubjectItem;
-  record: Record | null;
-}
-
-interface PageInfo {
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
-}
-
 interface ApiResponse {
   status: {
     httpStatus: string;
@@ -42,23 +8,27 @@ interface ApiResponse {
     message: string;
   };
   content: {
-    data: SubjectItem[];
-    pageInfo: PageInfo;
+    id: number;
+    stageNum: number;
+    point: number;
+    timeLimit: number;
+    subject: {
+      id: number;
+      subjectName: string;
+      subjectImage: string;
+      sketch: string;
+    };
   };
 }
 
-const getLevelDetail = async (
-  page: number,
-  profileId: number,
-  itemsPerPage: number,
-): Promise<ApiResponse> => {
+const getLevelDetail = async (stageId: number): Promise<ApiResponse> => {
   try {
     const response: AxiosResponse<ApiResponse> = await api.get(
-      `/api/profiles/${profileId}/stages/records?page=${page}&size=${itemsPerPage}&sort=stageNum`,
+      `/api/stages/${stageId}`,
     );
     return response.data;
   } catch (error) {
-    console.log('유저 레벨 조회 실패', error);
+    console.log('개별 스테이지 조회(그리기 시작)', error);
     throw error;
   }
 };

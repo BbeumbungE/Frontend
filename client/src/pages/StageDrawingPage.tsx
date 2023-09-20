@@ -2,17 +2,30 @@ import { useEffect, useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
-import { levelDataState } from '../recoil/level/atom';
+import { StageIdState } from '../recoil/stage/atom';
 import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
 import BlurBox from '../components/atoms/BlurBox';
 import CheckingModal from '../components/organisms/CheckingModal';
 import ProgressBar from '../components/atoms/ProgressTimeBar';
 import ExitBox from '../components/organisms/ExitBox';
 import Button from '../components/atoms/Button';
-import { postDrawing } from '../api/drawing';
+import { getLevelDetail, postDrawing } from '../api/drawing';
 import { ReactComponent as PencilIcon } from '../assets/image/etc/pencil.svg';
 import { ReactComponent as MagicStickIcon } from '../assets/image/etc/magicStick.svg';
 import { ReactComponent as LockIcon } from '../assets/image/etc/drawingLock.svg';
+
+interface ApiResponse {
+  id: number;
+  stageNum: number;
+  point: number;
+  timeLimit: number;
+  subject: {
+    id: number;
+    subjectName: string;
+    subjectImage: string;
+    sketch: string;
+  };
+}
 
 const defaultStyle = {
   display: 'inline-block',
@@ -100,8 +113,9 @@ const BtnWrapper = styled.div`
 `;
 
 function StageDrawingPage() {
-  const levelData = useRecoilValue(levelDataState);
+  const stageId = useRecoilValue(StageIdState);
   const profileState = useRecoilValue(UserProfileState);
+  const [data, setData] = useState<ApiResponse | undefined>();
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | undefined>();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [array, setArray] = useState<{ x: number; y: number }[]>([]);
@@ -109,8 +123,23 @@ function StageDrawingPage() {
   const [isLocked, setIsLocked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$레벨 데이터', levelData);
+  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
   useEffect(() => {
+    const getData = async () => {
+      try {
+        if (stageId !== null) {
+          const response = await getLevelDetail(stageId);
+          setData(response.content);
+          console.log('스테이지 단건조회', response);
+        } else {
+          console.error('stageId가 null');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getData();
+
     const canvas = canvasRef.current;
     if (canvas) {
       const context = canvas.getContext('2d');
@@ -190,60 +219,86 @@ function StageDrawingPage() {
 
   return (
     <DrawingPageWrapper>
-      <BlurBox />
-      <CheckingModal />
-      <ProgressBar durationInSeconds={60} />
-      <TopWrapper>
-        <ExitBox color="dark" />
-        <Button buttonText="완성 !" color="salmon" />
-      </TopWrapper>
-      <CanvasWrapper>
-        <div className="container" style={{ position: 'relative' }}>
-          <Lock style={{ display: isLocked ? 'block' : 'none' }} />
-          <canvas
-            ref={canvasRef}
-            width={500}
-            height={500}
-            style={defaultStyle}
-            onMouseDown={(event) => {
-              canvasEventListener(event, 'down');
-            }}
-            onMouseMove={(event) => {
-              canvasEventListener(event, 'move');
-            }}
-            onMouseLeave={(event) => {
-              canvasEventListener(event, 'leave');
-            }}
-            onMouseUp={(event) => {
-              canvasEventListener(event, 'up');
-            }}
-          />
-        </div>
-        <BtnFloating>
-          <Button buttonText="변신하기" color="green" onClick={handleChange} />
-        </BtnFloating>
-        {/* <StyledImage src={imgSrc || ''} alt="이미지" />; */}
-        <StyledImage src="" alt="이미지" />
-      </CanvasWrapper>
-      <BottomWrapper>
-        <ToolWrapper>
-          <Pencil />
-          <Eraser />
-          <MagicStick />
-        </ToolWrapper>
-        <BtnWrapper>
-          <Button
-            buttonText="수정하기"
-            color="lightGreen"
-            onClick={handleToggleEdit}
-          />
-          <Button
-            buttonText="모두 지우기"
-            color="lightGreen"
-            onClick={handleClearCanvas}
-          />
-        </BtnWrapper>
-      </BottomWrapper>
+      {isModalOpen && (
+        <>
+          <BlurBox />
+          <CheckingModal />
+        </>
+      )}
+      {data && (
+        <>
+          <ProgressBar durationInSeconds={data?.timeLimit} />
+          <TopWrapper>
+            <ExitBox color="dark" />
+            <Button buttonText="완성 !" color="salmon" />
+          </TopWrapper>
+          <CanvasWrapper>
+            <div className="container" style={{ position: 'relative' }}>
+              {data && (
+                <img
+                  src={data.subject.sketch || ''}
+                  alt="이미지"
+                  style={{
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    zIndex: '1',
+                    width: '500px',
+                    height: '500px',
+                  }}
+                />
+              )}
+              <Lock style={{ display: isLocked ? 'block' : 'none' }} />
+              <canvas
+                ref={canvasRef}
+                width={500}
+                height={500}
+                style={defaultStyle}
+                onMouseDown={(event) => {
+                  canvasEventListener(event, 'down');
+                }}
+                onMouseMove={(event) => {
+                  canvasEventListener(event, 'move');
+                }}
+                onMouseLeave={(event) => {
+                  canvasEventListener(event, 'leave');
+                }}
+                onMouseUp={(event) => {
+                  canvasEventListener(event, 'up');
+                }}
+              />
+            </div>
+            <BtnFloating>
+              <Button
+                buttonText="변신하기"
+                color="green"
+                onClick={handleChange}
+              />
+            </BtnFloating>
+            <StyledImage src={data.subject.sketch || ''} alt="이미지" />
+            {/* <StyledImage src="" alt="이미지" /> */}
+          </CanvasWrapper>
+          <BottomWrapper>
+            <ToolWrapper>
+              <Pencil />
+              <Eraser />
+              <MagicStick />
+            </ToolWrapper>
+            <BtnWrapper>
+              <Button
+                buttonText="수정하기"
+                color="lightGreen"
+                onClick={handleToggleEdit}
+              />
+              <Button
+                buttonText="모두 지우기"
+                color="lightGreen"
+                onClick={handleClearCanvas}
+              />
+            </BtnWrapper>
+          </BottomWrapper>
+        </>
+      )}
     </DrawingPageWrapper>
   );
 }

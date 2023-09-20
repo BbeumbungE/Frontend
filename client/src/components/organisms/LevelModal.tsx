@@ -1,13 +1,14 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { levelDataState } from '../../recoil/level/atom';
+import { StageIdState } from '../../recoil/stage/atom';
 import LevelStars from './LevelStars';
 import Button from '../atoms/Button';
 
 interface LevelModalProps {
   isOpen: boolean;
   onClose: () => void;
+  stageId: number;
   levelData: number;
   imgSrc: string;
   star: number;
@@ -92,12 +93,13 @@ const LevelSketch = styled.img`
 function LevelModal({
   isOpen,
   onClose,
+  stageId,
   levelData,
   imgSrc,
   star,
 }: LevelModalProps) {
   const navigate = useNavigate();
-  const [storedLevelData, setStoredLevelData] = useRecoilState(levelDataState);
+  const [storedStageId, setStoredStageId] = useRecoilState(StageIdState);
 
   if (!isOpen) return null;
 
@@ -107,7 +109,7 @@ function LevelModal({
   };
 
   const handleChallenge = () => {
-    setStoredLevelData(levelData);
+    setStoredStageId(stageId);
 
     navigate('/draw/stage');
   };
