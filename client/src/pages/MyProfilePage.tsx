@@ -22,6 +22,7 @@ const sampleData = [
   {
     id: 1,
     content: '수신한 알림이 없습니다.',
+    createdAt: '2023-09-21',
   },
 ];
 const MyProfileContainer = styled.div`
@@ -119,6 +120,7 @@ function MyProfilePage() {
         const response = await getAlarms(profileId, currentPage);
         const loadedData = { ...response.content };
         await setAlarms(loadedData);
+        console.log(loadedData);
       } catch (error) {
         console.log(error);
       }
