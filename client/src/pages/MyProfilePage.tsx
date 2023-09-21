@@ -20,12 +20,8 @@ import { getAlarms } from '../api/alarm';
 
 const sampleData = [
   {
-    id: 8, // notificationId
+    id: 1,
     content: '수신한 알림이 없습니다.',
-    type: 'sample',
-    receiver: 'sample',
-    createAt: '2023-09-15T00:18:20.204304',
-    read: false,
   },
 ];
 const MyProfileContainer = styled.div`
@@ -74,9 +70,9 @@ const ExitBoxWrapper = styled.div`
 const CharacterImage = styled.div<{ imgsrc: string }>`
   width: 300px;
   height: 300px;
-  background-image: url(${(props) => props.imgsrc}); // url() 함수 사용
-  background-size: cover; // 이미지 크기 조절
-  background-position: center; // 이미지 위치 조절
+  background-image: url(${(props) => props.imgsrc});
+  background-size: cover;
+  background-position: center;
 `;
 
 const NicknameText = styled.span`
@@ -133,8 +129,6 @@ function MyProfilePage() {
   const isLastPage = alarms.pageInfo
     ? currentPage === alarms.pageInfo.totalPages - 1
     : false;
-  // const isLastPage = false;
-  // 화살표에 전달할 boolean 값
   const leftDisabled = isFirstPage;
   const rightDisabled = isLastPage;
   const leftOnClick = () => {
@@ -156,17 +150,17 @@ function MyProfilePage() {
     navigate('/profile/drawings');
   };
 
-  const resetRecoil = useResetRecoilState(UserProfileState);
+  const resetUserRecoil = useResetRecoilState(UserProfileState);
 
   const handleLogout = () => {
-    resetRecoil();
+    resetUserRecoil();
     localStorage.removeItem('accessToken');
     window.location.href = `https://kauth.kakao.com/oauth/logout?client_id=${process.env.REACT_APP_KAUTH_ID}&logout_redirect_uri=${process.env.REACT_APP_API_URL}/logout`;
   };
 
   const handleDeleteProfile = (profileId: number) => {
     deleteProfile(profileId);
-    navigate('/profiles');
+    navigate('/login');
   };
 
   const handleNewName = async (profileId: number, inputText: string) => {
@@ -180,7 +174,7 @@ function MyProfilePage() {
       setTextInputValue('');
       setChangeName(false);
     } catch (error) {
-      alert(error);
+      alert('닉네임 변경에 실패했습니다. 다른 닉네임으로 시도해주세요');
     }
   };
 
@@ -267,7 +261,7 @@ function MyProfilePage() {
       </LeftContainer>
       <RightContainer>
         <CenteredAlarmBoard>
-          {alarms.data ? (
+          {alarms.data && alarms.data.length > 0 ? (
             <AlarmBoard alarms={alarms.data} />
           ) : (
             <AlarmBoard alarms={sampleData} />

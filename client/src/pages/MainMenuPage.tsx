@@ -90,9 +90,9 @@ function MainMenuPage() {
   useEffect(() => {
     connectEventSSE(userProfile.profileId);
 
-    return () => {
-      disconnectEventSSE();
-    };
+    // return () => {
+    //   disconnectEventSSE();
+    // };
   });
   return (
     <MainMenuWrapper>
