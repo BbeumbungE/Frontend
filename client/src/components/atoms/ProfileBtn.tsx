@@ -3,6 +3,9 @@ import { useRecoilState } from 'recoil';
 import { UserProfileState } from '../../recoil/profile/atom';
 import theme from '../../style/theme';
 
+interface ProfileBtnProps {
+  onClick: React.MouseEventHandler<HTMLDivElement>;
+}
 const ProfileWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -43,7 +46,7 @@ const ModalText = styled.span`
   color: ${(props) => props.theme.colors.mainBlack};
 `;
 
-function ProfileBtn() {
+function ProfileBtn({ onClick }: ProfileBtnProps) {
   const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
   let bgColor = theme.colors.mainWhite; // 기본값은 mainBlue
 
@@ -74,7 +77,7 @@ function ProfileBtn() {
   }
   return (
     <ProfileWrapper>
-      <StyledCharacter $bgColor={bgColor}>
+      <StyledCharacter $bgColor={bgColor} onClick={onClick}>
         <CharacterImage $bgImage={userProfile.profileImg} />
       </StyledCharacter>
       <ModalText>{userProfile.nickname}</ModalText>

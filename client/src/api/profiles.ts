@@ -63,4 +63,35 @@ const newProfile = async (name: string): Promise<AxiosResponse> => {
   }
 };
 
-export { getProfiles, newProfile };
+// 프로필을 삭제하는 메서드
+const deleteProfile = async (profileId: number): Promise<AxiosResponse> => {
+  try {
+    const response = await api.delete(`/api/profiles/${profileId}`);
+    return response;
+  } catch (error) {
+    console.log('프로필 삭제 실패', error);
+    throw error;
+  }
+};
+
+// 닉네임 교체 메서드
+const newNickname = async (
+  profileId: number,
+  name: string,
+): Promise<AxiosResponse> => {
+  try {
+    const patchData = {
+      profileName: name,
+    };
+    const response = await api.patch(
+      `/api/profiles/${profileId}/names`,
+      patchData,
+    );
+    return response;
+  } catch (error) {
+    console.log('닉네임 변경 실패', error);
+    throw error;
+  }
+};
+
+export { getProfiles, newProfile, deleteProfile, newNickname };
