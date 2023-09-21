@@ -11,8 +11,8 @@ interface ButtonProps {
 const StyledButton = styled.button<{ $bgColor: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
   display: inline-block;
-  height: 83px;
-  margin: 5px;
+  height: 63px;
+  margin: 0;
   border-radius: 50px;
   text-align: center;
   transition: all 0.3s ease-in-out;
@@ -22,16 +22,16 @@ const StyledButton = styled.button<{ $bgColor: string }>`
 `;
 
 const ButtonText = styled.span<{ $fontColor: string }>`
-  font-size: 25px;
+  font-size: 21px;
   color: ${(props) => props.$fontColor};
-  margin-top: 24px;
-  margin-bottom: 24px;
-  margin-right: 34px;
-  margin-left: 34px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-right: 5px;
+  margin-left: 5px;
   white-space: pre-wrap;
 `;
 
-function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
+function SmallButton({ buttonText, color, borderColor, onClick }: ButtonProps) {
   let bgColor = theme.colors.mainBlue; // 기본값은 mainBlue
   let fontColor = theme.colors.mainWhite;
   let buttonBorder = 'none';
@@ -43,10 +43,6 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
       break;
     case 'skyblue':
       bgColor = '#F5FBFF';
-      fontColor = theme.colors.mainBlack;
-      break;
-    case 'white':
-      bgColor = theme.colors.mainWhite;
       fontColor = theme.colors.mainBlack;
       break;
     case 'salmon':
@@ -82,7 +78,7 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
   }
 
   if (borderColor) {
-    buttonBorder = `6px solid ${borderColor}`;
+    buttonBorder = `3px solid ${borderColor}`;
   }
 
   return (
@@ -96,8 +92,8 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
   );
 }
 
-Button.defaultProps = {
+SmallButton.defaultProps = {
   borderColor: undefined,
   onClick: undefined,
 };
-export default Button;
+export default SmallButton;
