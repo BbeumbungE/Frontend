@@ -6,6 +6,7 @@ import CryIcon from '../../assets/image/etc/cry.png';
 
 interface EmojiProps {
   emotion: string;
+  isPressed: boolean;
   onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
@@ -16,7 +17,7 @@ const EmojiWrapper = styled.div`
   margin-right: 3px;
 `;
 
-const Emoji = ({ emotion, onClick }: EmojiProps) => {
+const Emoji = ({ emotion, onClick, isPressed }: EmojiProps) => {
   let EmotionIcon: string;
 
   switch (emotion) {
@@ -26,7 +27,7 @@ const Emoji = ({ emotion, onClick }: EmojiProps) => {
     case 'wow':
       EmotionIcon = WowIcon;
       break;
-    case 'cry':
+    case 'sad':
       EmotionIcon = CryIcon;
       break;
     default:
@@ -35,7 +36,13 @@ const Emoji = ({ emotion, onClick }: EmojiProps) => {
 
   return (
     <EmojiWrapper onClick={onClick}>
-      <img src={EmotionIcon} alt={emotion} width="75px" height="75px" />
+      <img
+        src={EmotionIcon}
+        alt={emotion}
+        width="75px"
+        height="75px"
+        style={{ filter: isPressed ? '' : 'grayscale(100%)' }}
+      />
     </EmojiWrapper>
   );
 };

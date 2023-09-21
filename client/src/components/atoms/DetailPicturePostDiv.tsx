@@ -6,8 +6,8 @@ interface DetailPicturePostDivProps {
 }
 
 const DetailPicturePostDiv = styled.div<DetailPicturePostDivProps>`
-  width: 664px;
-  height: 664px;
+  width: 577px;
+  height: 577px;
   background-image: ${({ imgSrc }) => (imgSrc ? `url(${imgSrc})` : 'none')};
   background-color: ${({ imgSrc }) =>
     imgSrc ? 'transparent' : theme.colors.darkGray};

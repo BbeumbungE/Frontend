@@ -54,6 +54,7 @@ const CanvasWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative; /* 캔버스와 이미지의 위치를 올바르게 조정하기 위해 추가합니다. */
 `;
 
 const StyledImage = styled.img`
@@ -116,8 +117,8 @@ function StageDrawingPage() {
   const stageId = useRecoilValue(StageIdState);
   const profileState = useRecoilValue(UserProfileState);
   const [data, setData] = useState<ApiResponse | undefined>();
-  const [ctx, setCtx] = useState<CanvasRenderingContext2D | undefined>();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D | undefined>();
   const [array, setArray] = useState<{ x: number; y: number }[]>([]);
   const [isDrawing, setIsDrawing] = useState(false); // 마우스 클릭 중인지 여부를 추적
   const [isLocked, setIsLocked] = useState(false);
@@ -139,7 +140,9 @@ function StageDrawingPage() {
       }
     };
     getData();
+  }, []);
 
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       const context = canvas.getContext('2d');
@@ -150,7 +153,37 @@ function StageDrawingPage() {
         setCtx(context);
       }
     }
-  }, []);
+  }, [data]);
+
+  console.log('밑그림', data?.subject.sketch);
+  console.log('**********************ctx', ctx);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      console.log('실행???????');
+      if (data && data.subject.sketch && ctx) {
+        const image = new Image();
+        image.src = data.subject.sketch;
+
+        image.onload = () => {
+          console.log('이미지 로드!');
+
+          if (canvasRef.current && ctx) {
+            console.log('이미지 그림!!!!!!!!!!!');
+            ctx.drawImage(
+              image,
+              0,
+              0,
+              canvasRef.current.width,
+              canvasRef.current.height,
+            );
+          }
+        };
+      }
+    };
+
+    loadImage();
+  }, [ctx]);
 
   const canvasEventListener = (
     event: React.MouseEvent<HTMLCanvasElement>,
@@ -207,10 +240,10 @@ function StageDrawingPage() {
     }
 
     // SSE 연결 함수 호출
-    drawingSSE(profileState.profileId);
+    // drawingSSE(profileState.profileId);
 
     // SSE 연결 해제 함수 호출
-    disconnectDrawingSSE();
+    // disconnectDrawingSSE();
   };
 
   const handleToggleEdit = () => {
@@ -225,7 +258,7 @@ function StageDrawingPage() {
           <CheckingModal />
         </>
       )}
-      {data && (
+      {data && data.subject.sketch && (
         <>
           <ProgressBar durationInSeconds={data?.timeLimit} />
           <TopWrapper>
@@ -234,20 +267,6 @@ function StageDrawingPage() {
           </TopWrapper>
           <CanvasWrapper>
             <div className="container" style={{ position: 'relative' }}>
-              {data && (
-                <img
-                  src={data.subject.sketch || ''}
-                  alt="이미지"
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    left: '0',
-                    zIndex: '1',
-                    width: '500px',
-                    height: '500px',
-                  }}
-                />
-              )}
               <Lock style={{ display: isLocked ? 'block' : 'none' }} />
               <canvas
                 ref={canvasRef}
@@ -275,8 +294,8 @@ function StageDrawingPage() {
                 onClick={handleChange}
               />
             </BtnFloating>
-            <StyledImage src={data.subject.sketch || ''} alt="이미지" />
-            {/* <StyledImage src="" alt="이미지" /> */}
+            {/* <StyledImage src={data.subject.sketch || ''} alt="이미지" /> */}
+            <StyledImage src="" alt="이미지" />
           </CanvasWrapper>
           <BottomWrapper>
             <ToolWrapper>

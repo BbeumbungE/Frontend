@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
@@ -96,6 +97,7 @@ function WatchingMenuPage() {
     topic: [],
     page: {},
   });
+  const navigate = useNavigate();
 
   const itemsPerPage = 4; // 한 페이지당 아이템 개수
   // 첫번째 페이지, 마지막 페이지 파악하는 변수
@@ -150,7 +152,11 @@ function WatchingMenuPage() {
           <BalloonTail />
         </Balloon>
       </BalloonWrapper>
-      <ProfileBtn />
+      <ProfileBtn
+        onClick={() => {
+          navigate('/profile/manage');
+        }}
+      />
       <BearImg
         src={`${process.env.REACT_APP_IMG_URL}/service-image/mainBear.png`}
         alt="menuTreeIcon"

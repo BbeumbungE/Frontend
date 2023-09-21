@@ -42,17 +42,6 @@ const ProgressBarInner = styled.div<ProgressBarInnerProps>`
   animation: ${progressAnimation} ${({ progress }) => progress}s linear;
 `;
 
-const RemainSec = styled.span<{ isRed: boolean }>`
-  position: absolute;
-  font-size: 25px;
-  color: ${(props) => (props.isRed ? 'red' : props.theme.colors.mainWhite)};
-  ${({ isRed }) =>
-    isRed &&
-    css`
-      animation: ${bounceAnimation} 0.5s ease infinite;
-    `};
-`;
-
 function ProgressBar() {
   const [remainingTime, setRemainingTime] = useState<number>(10);
 

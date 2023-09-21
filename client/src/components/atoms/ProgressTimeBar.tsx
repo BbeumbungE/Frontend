@@ -7,7 +7,7 @@ interface ProgressBarProps {
 
 interface ProgressBarInnerProps {
   progress: number;
-  isRed: boolean;
+  $isRed: boolean;
 }
 
 const progressAnimation = keyframes`
@@ -42,17 +42,17 @@ const ProgressBarWrapper = styled.div`
 const ProgressBarInner = styled.div<ProgressBarInnerProps>`
   height: 30px;
   background-color: ${(props) =>
-    props.isRed ? props.theme.stageColors.mainSalmon : '#ffc64a'};
+    props.$isRed ? props.theme.stageColors.mainSalmon : '#ffc64a'};
   transition: width 0.2s ease-in-out;
   animation: ${progressAnimation} ${({ progress }) => progress}s linear;
 `;
 
-const RemainSec = styled.span<{ isRed: boolean }>`
+const RemainSec = styled.span<{ $isRed: boolean }>`
   position: absolute;
   font-size: 25px;
-  color: ${(props) => (props.isRed ? 'red' : props.theme.colors.mainWhite)};
-  ${({ isRed }) =>
-    isRed &&
+  color: ${(props) => (props.$isRed ? 'red' : props.theme.colors.mainWhite)};
+  ${({ $isRed }) =>
+    $isRed &&
     css`
       animation: ${bounceAnimation} 0.5s ease infinite;
     `};
@@ -78,8 +78,8 @@ function ProgressTimeBar({ durationInSeconds }: ProgressBarProps) {
 
   return (
     <ProgressBarWrapper>
-      <ProgressBarInner isRed={isRed} progress={durationInSeconds} />
-      <RemainSec isRed={isRed}>{remainingTime}초</RemainSec>
+      <ProgressBarInner $isRed={isRed} progress={durationInSeconds} />
+      <RemainSec $isRed={isRed}>{remainingTime}초</RemainSec>
     </ProgressBarWrapper>
   );
 }

@@ -28,6 +28,7 @@ const ButtonText = styled.span<{ $fontColor: string }>`
   margin-bottom: 24px;
   margin-right: 34px;
   margin-left: 34px;
+  white-space: pre-wrap;
 `;
 
 function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
@@ -39,6 +40,10 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
   switch (color) {
     case 'blue':
       bgColor = theme.colors.mainBlue;
+      break;
+    case 'skyblue':
+      bgColor = '#F5FBFF';
+      fontColor = theme.colors.mainBlack;
       break;
     case 'salmon':
       bgColor = theme.colors.mainSalmon;
