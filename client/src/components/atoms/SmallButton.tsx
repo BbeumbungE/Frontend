@@ -6,32 +6,39 @@ interface ButtonProps {
   color: string;
   borderColor?: string;
   onClick?: () => void;
+  cursor: string;
 }
 
-const StyledButton = styled.button<{ $bgColor: string }>`
+const StyledButton = styled.button<{ $bgColor: string; $cursor: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
   display: inline-block;
-  height: 83px;
-  margin: 5px;
+  height: 63px;
+  margin: 0;
   border-radius: 50px;
   text-align: center;
   transition: all 0.3s ease-in-out;
   background-color: ${(props) => props.$bgColor};
   border: none;
-  cursor: pointer;
+  cursor: ${(props) => props.$cursor};
 `;
 
 const ButtonText = styled.span<{ $fontColor: string }>`
-  font-size: 25px;
+  font-size: 21px;
   color: ${(props) => props.$fontColor};
-  margin-top: 24px;
-  margin-bottom: 24px;
-  margin-right: 34px;
-  margin-left: 34px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-right: 5px;
+  margin-left: 5px;
   white-space: pre-wrap;
 `;
 
-function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
+function SmallButton({
+  buttonText,
+  color,
+  borderColor,
+  onClick,
+  cursor,
+}: ButtonProps) {
   let bgColor = theme.colors.mainBlue; // 기본값은 mainBlue
   let fontColor = theme.colors.mainWhite;
   let buttonBorder = 'none';
@@ -43,10 +50,6 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
       break;
     case 'skyblue':
       bgColor = '#F5FBFF';
-      fontColor = theme.colors.mainBlack;
-      break;
-    case 'white':
-      bgColor = theme.colors.mainWhite;
       fontColor = theme.colors.mainBlack;
       break;
     case 'salmon':
@@ -82,12 +85,13 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
   }
 
   if (borderColor) {
-    buttonBorder = `6px solid ${borderColor}`;
+    buttonBorder = `3px solid ${borderColor}`;
   }
 
   return (
     <StyledButton
       $bgColor={bgColor}
+      $cursor={cursor}
       style={{ border: buttonBorder }}
       onClick={onClick}
     >
@@ -96,8 +100,8 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
   );
 }
 
-Button.defaultProps = {
+SmallButton.defaultProps = {
   borderColor: undefined,
   onClick: undefined,
 };
-export default Button;
+export default SmallButton;

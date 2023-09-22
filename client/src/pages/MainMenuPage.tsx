@@ -88,8 +88,7 @@ function MainMenuPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    connectEventSSE(userProfile.profileId);
-
+    // connectEventSSE(userProfile.profileId);
     // return () => {
     //   disconnectEventSSE();
     // };
