@@ -47,6 +47,11 @@ const postDrawing = async (
     const response = await api.post(
       `/api/canvases?profileId=${profileId}&subjectId=${subjectId}`,
       formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
     );
     return response;
   } catch (error) {

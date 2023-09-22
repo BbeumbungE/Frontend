@@ -137,6 +137,7 @@ function StageDrawingPage() {
   const [isDrawing, setIsDrawing] = useState<boolean>(false); // 그리기 여부를 추정 (마우스 클릭중인지 여부)
   const [isLocked, setIsLocked] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [transformedCount, setTransformedCount] = useState<number>(0);
 
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
   useEffect(() => {
@@ -206,7 +207,6 @@ function StageDrawingPage() {
     }
   };
 
-  // 변신하기 버튼
   const handleChange = async () => {
     // 화면 잠금, 변환 중 모달 오픈
     setIsLocked(true);
@@ -224,19 +224,27 @@ function StageDrawingPage() {
       imageElement.onload = () => {
         console.log('ImageData:', imageDataURL);
       };
-      // const convertedImg = await fetch(imageDataURL);
-      // const blob = await convertedImg.blob();
+      const convertedImg = await fetch(imageDataURL);
+      const blob = await convertedImg.blob();
 
-      // const formData = new FormData();
-      // formData.append('sketchFile', blob, 'drawing.jpg');
-      // formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
-      // formData.append('subjectId', String(data?.subject.id));
-      // const response = await postDrawing(
-      //   profileState.profileId,
-      //   data.subject.id,
-      //   formData,
-      // );
-      // console.log('변환하기 후 응답!', response);
+      const formData = new FormData();
+      formData.append('sketchFile', blob, 'drawing.jpg');
+      formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
+      formData.append('subjectId', String(data?.subject.id));
+
+      formData.forEach(function (value, key) {
+        console.log(`${key}: ${value}`);
+      });
+
+      const response = await postDrawing(
+        profileState.profileId,
+        data.subject.id,
+        formData,
+      );
+      console.log('변환하기 후 응답!', response);
+
+      // 변환된 횟수 증가
+      setTransformedCount(transformedCount + 1);
     }
 
     // SSE 연결 함수 호출
@@ -245,6 +253,8 @@ function StageDrawingPage() {
     // SSE 연결 해제 함수 호출
     // disconnectDrawingSSE();
   };
+
+  console.log('프로필', profileState);
 
   const handleToggleEdit = () => {
     setIsLocked(false);
