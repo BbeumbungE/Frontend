@@ -1,17 +1,34 @@
+import { EventSourcePolyfill } from 'event-source-polyfill';
+
 const SERVER_URL = process.env.REACT_APP_API_URL;
-let eventSource: EventSource | null = null;
+let eventSource: EventSourcePolyfill | null = null;
 
 export function drawingSSE(profileId: number): void {
-  eventSource = new EventSource(
+  eventSource = new EventSourcePolyfill(
     `${SERVER_URL}/api/canvases/profile/${profileId}/sse`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+      heartbeatTimeout: 30000000,
+      withCredentials: true,
+    },
   );
 
-  eventSource.onmessage = (event: MessageEvent) => {
-    const data = JSON.parse(event.data);
-    console.log('서버에서 이벤트 수신:', data);
+  eventSource.onopen = () => {
+    console.log('알람 연결 오픈');
   };
 
-  eventSource.onerror = (error: Event) => {
+  eventSource.onmessage = (event) => {
+    const parsedData = JSON.parse(event.data);
+    console.log('서버에서 그리기 이벤트 수신:', parsedData);
+  };
+
+  eventSource.addEventListener('initial', (event) => {
+    console.log('연결 시 서버에서 쏘는 데이터', event);
+  });
+
+  eventSource.onerror = (error) => {
     console.error('SSE 연결 오류:', error);
   };
 }

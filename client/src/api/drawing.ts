@@ -1,6 +1,11 @@
 import { AxiosResponse } from 'axios';
 import { api } from './api';
 
+interface SketchList {
+  sketchId: number;
+  sketchImageUrl: string;
+}
+
 interface ApiResponse {
   status: {
     httpStatus: string;
@@ -16,7 +21,7 @@ interface ApiResponse {
       id: number;
       subjectName: string;
       subjectImage: string;
-      sketch: string;
+      sketchList: SketchList[];
     };
   };
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import { StageIdState } from '../recoil/stage/atom';
@@ -14,6 +14,11 @@ import { ReactComponent as PencilIcon } from '../assets/image/etc/pencil.svg';
 import { ReactComponent as MagicStickIcon } from '../assets/image/etc/magicStick.svg';
 import { ReactComponent as LockIcon } from '../assets/image/etc/drawingLock.svg';
 
+interface SketchList {
+  sketchId: number;
+  sketchImageUrl: string;
+}
+
 interface ApiResponse {
   id: number;
   stageNum: number;
@@ -23,15 +28,14 @@ interface ApiResponse {
     id: number;
     subjectName: string;
     subjectImage: string;
-    sketch: string;
+    sketchList: SketchList[];
   };
 }
 
 const defaultStyle = {
   display: 'inline-block',
-  background: 'white',
   borderRadius: '25px',
-  marginRight: '-50px',
+  marginLeft: '-50px',
 };
 
 const DrawingPageWrapper = styled.div`
@@ -54,16 +58,8 @@ const CanvasWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* 캔버스와 이미지의 위치를 올바르게 조정하기 위해 추가합니다. */
-`;
-
-const StyledImage = styled.img`
-  width: 500px;
-  height: 500px;
-  background-color: white;
-  border-radius: 25px;
+  position: relative;
   margin-left: -50px;
-  z-index: -100;
 `;
 
 const BtnFloating = styled.div`
@@ -85,7 +81,7 @@ const Lock = styled(LockIcon)`
   height: 100px;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: -20px;
   /* z-index: 1; */
 `;
 
@@ -113,6 +109,24 @@ const BtnWrapper = styled.div`
   gap: 10px;
 `;
 
+const SketchImage = styled.img`
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 25px;
+  margin-left: -50px;
+  z-index: -100;
+`;
+
+const StyledImage = styled.img`
+  width: 500px;
+  height: 500px;
+  background-color: white;
+  border-radius: 25px;
+  margin-left: -50px;
+  z-index: -100;
+`;
+
 function StageDrawingPage() {
   const stageId = useRecoilValue(StageIdState);
   const profileState = useRecoilValue(UserProfileState);
@@ -120,9 +134,9 @@ function StageDrawingPage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | undefined>();
   const [array, setArray] = useState<{ x: number; y: number }[]>([]);
-  const [isDrawing, setIsDrawing] = useState(false); // 마우스 클릭 중인지 여부를 추적
-  const [isLocked, setIsLocked] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDrawing, setIsDrawing] = useState<boolean>(false); // 그리기 여부를 추정 (마우스 클릭중인지 여부)
+  const [isLocked, setIsLocked] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
   useEffect(() => {
@@ -147,6 +161,8 @@ function StageDrawingPage() {
     if (canvas) {
       const context = canvas.getContext('2d');
       if (context) {
+        context.fillStyle = 'transparent'; // 캔버스 배경색을 투명으로 설정
+        context.fillRect(0, 0, canvas.width, canvas.height);
         context.lineJoin = 'round';
         context.lineWidth = 3;
         context.strokeStyle = 'black';
@@ -154,36 +170,6 @@ function StageDrawingPage() {
       }
     }
   }, [data]);
-
-  console.log('밑그림', data?.subject.sketch);
-  console.log('**********************ctx', ctx);
-
-  useEffect(() => {
-    const loadImage = async () => {
-      console.log('실행???????');
-      if (data && data.subject.sketch && ctx) {
-        const image = new Image();
-        image.src = data.subject.sketch;
-
-        image.onload = () => {
-          console.log('이미지 로드!');
-
-          if (canvasRef.current && ctx) {
-            console.log('이미지 그림!!!!!!!!!!!');
-            ctx.drawImage(
-              image,
-              0,
-              0,
-              canvasRef.current.width,
-              canvasRef.current.height,
-            );
-          }
-        };
-      }
-    };
-
-    loadImage();
-  }, [ctx]);
 
   const canvasEventListener = (
     event: React.MouseEvent<HTMLCanvasElement>,
@@ -221,26 +207,40 @@ function StageDrawingPage() {
   };
 
   // 변신하기 버튼
-  const handleChange = () => {
+  const handleChange = async () => {
     // 화면 잠금, 변환 중 모달 오픈
     setIsLocked(true);
     setIsModalOpen(true);
 
-    if (canvasRef.current) {
+    if (canvasRef.current && data) {
       const imageDataURL = canvasRef.current.toDataURL('image/png');
-      const formData = new FormData();
-      formData.append('sketchFile', imageDataURL);
-      // formData.append('profileId');
-      // formData.append('subjectId');
+
+      // 이미지 데이터 확인을 위한 img 요소 생성
+      const imageElement = new Image();
+      imageElement.src = imageDataURL;
+      // imageElement.crossOrigin = 'anonymous';
+
+      // 이미지를 콘솔에 출력하여 확인
+      imageElement.onload = () => {
+        console.log('ImageData:', imageDataURL);
+      };
+      // const convertedImg = await fetch(imageDataURL);
+      // const blob = await convertedImg.blob();
+
+      // const formData = new FormData();
+      // formData.append('sketchFile', blob, 'drawing.jpg');
+      // formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
+      // formData.append('subjectId', String(data?.subject.id));
       // const response = await postDrawing(
-      //   yourProfileId,
-      //   yourSubjectId,
+      //   profileState.profileId,
+      //   data.subject.id,
       //   formData,
       // );
+      // console.log('변환하기 후 응답!', response);
     }
 
     // SSE 연결 함수 호출
-    // drawingSSE(profileState.profileId);
+    drawingSSE(profileState.profileId);
 
     // SSE 연결 해제 함수 호출
     // disconnectDrawingSSE();
@@ -258,7 +258,7 @@ function StageDrawingPage() {
           <CheckingModal />
         </>
       )}
-      {data && data.subject.sketch && (
+      {data && data.subject.sketchList.length > 0 && (
         <>
           <ProgressBar durationInSeconds={data?.timeLimit} />
           <TopWrapper>
@@ -266,8 +266,32 @@ function StageDrawingPage() {
             <Button buttonText="완성 !" color="salmon" />
           </TopWrapper>
           <CanvasWrapper>
-            <div className="container" style={{ position: 'relative' }}>
+            <div
+              className="container"
+              style={{
+                position: 'relative',
+                marginRight: '-50px',
+                padding: '0px',
+              }}
+            >
               <Lock style={{ display: isLocked ? 'block' : 'none' }} />
+              <div
+                style={{
+                  position: 'absolute',
+                  width: '500px',
+                  height: '500px',
+                  backgroundColor: 'white',
+                  borderRadius: '25px',
+                  marginLeft: '-50px',
+                  zIndex: -200,
+                  padding: '0px',
+                }}
+              />
+              <SketchImage
+                src={data.subject.sketchList[0].sketchImageUrl || ''}
+                alt="이미지"
+                style={{ display: isDrawing ? 'none' : 'block' }}
+              />
               <canvas
                 ref={canvasRef}
                 width={500}
@@ -275,6 +299,7 @@ function StageDrawingPage() {
                 style={defaultStyle}
                 onMouseDown={(event) => {
                   canvasEventListener(event, 'down');
+                  // 마우스 클릭 시 이미지 요소 숨기기
                 }}
                 onMouseMove={(event) => {
                   canvasEventListener(event, 'move');
