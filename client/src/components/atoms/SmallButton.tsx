@@ -6,9 +6,10 @@ interface ButtonProps {
   color: string;
   borderColor?: string;
   onClick?: () => void;
+  cursor: string;
 }
 
-const StyledButton = styled.button<{ $bgColor: string }>`
+const StyledButton = styled.button<{ $bgColor: string; $cursor: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
   display: inline-block;
   height: 63px;
@@ -18,7 +19,7 @@ const StyledButton = styled.button<{ $bgColor: string }>`
   transition: all 0.3s ease-in-out;
   background-color: ${(props) => props.$bgColor};
   border: none;
-  cursor: pointer;
+  cursor: ${(props) => props.$cursor};
 `;
 
 const ButtonText = styled.span<{ $fontColor: string }>`
@@ -31,7 +32,13 @@ const ButtonText = styled.span<{ $fontColor: string }>`
   white-space: pre-wrap;
 `;
 
-function SmallButton({ buttonText, color, borderColor, onClick }: ButtonProps) {
+function SmallButton({
+  buttonText,
+  color,
+  borderColor,
+  onClick,
+  cursor,
+}: ButtonProps) {
   let bgColor = theme.colors.mainBlue; // 기본값은 mainBlue
   let fontColor = theme.colors.mainWhite;
   let buttonBorder = 'none';
@@ -84,6 +91,7 @@ function SmallButton({ buttonText, color, borderColor, onClick }: ButtonProps) {
   return (
     <StyledButton
       $bgColor={bgColor}
+      $cursor={cursor}
       style={{ border: buttonBorder }}
       onClick={onClick}
     >

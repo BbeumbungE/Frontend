@@ -2,11 +2,13 @@ import styled from 'styled-components';
 import theme from '../../style/theme';
 import ItemRupee from '../atoms/ItemRupee';
 import Button from '../atoms/SmallButton';
+import stamp from '../../assets/image/etc/stamp.svg';
 
 interface StoreItemProps {
   itemimg: string;
   itemvalue: number;
   onClick: () => void;
+  alreadyGet: boolean;
 }
 
 const ItemDiv = styled.div`
@@ -43,25 +45,43 @@ const ImageDiv = styled.div<{ itemimg: string }>`
   }
 `;
 
-const DetailStoreItem = ({
+const StoreItem = ({
   itemimg = '',
   itemvalue,
   onClick,
+  alreadyGet,
 }: StoreItemProps) => {
   return (
     <ItemDiv>
-      {/* <PicturePost imgSrc={itemimg} onClick={() => console.log('a')} /> */}
-      <ImageDiv itemimg={itemimg} />
-      <ItemRupee value={itemvalue} />
-      <Button
-        buttonText="구매하기"
-        color="yellow"
-        borderColor="white"
-        onClick={onClick}
-      />
-      <CircleDiv />
+      {alreadyGet ? (
+        <>
+          <ImageDiv itemimg={itemimg} />
+          <ItemRupee value={itemvalue} />
+          <Button
+            buttonText="보유중"
+            color="lightGray"
+            borderColor="lightGray"
+            onClick={() => console.log('보유 중 알림')}
+            cursor="not-allowed"
+          />
+          <CircleDiv />
+        </>
+      ) : (
+        <>
+          <ImageDiv itemimg={itemimg} />
+          <ItemRupee value={itemvalue} />
+          <Button
+            buttonText="구매하기"
+            color="yellow"
+            borderColor="white"
+            onClick={onClick}
+            cursor="pointer"
+          />
+          <CircleDiv />
+        </>
+      )}
     </ItemDiv>
   );
 };
 
-export default DetailStoreItem;
+export default StoreItem;

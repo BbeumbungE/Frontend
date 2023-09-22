@@ -1,13 +1,12 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import theme from '../../style/theme';
 import LargeItemRupee from '../atoms/LargeItemRupee';
-import Button from '../atoms/Button';
+import ProgressBarWithoutRed from '../atoms/ProgressBarWithoutRed';
+import stamp from '../../assets/image/etc/stamp.svg';
 
 interface DetailStoreItemProps {
   itemimg: string;
   itemvalue: number;
-  noClick: () => void;
-  okClick: () => void;
 }
 const CenterDiv = styled.div`
   position: fixed;
@@ -52,44 +51,56 @@ const ImageDiv = styled.div<{ itemimg: string }>`
   }
 `;
 
-const ButtonDiv = styled.div`
+const BarDiv = styled.div`
+  width: 400px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
-  z-index: 105;
+  margin-top: 25px;
+  z-index: 107;
 `;
 
-const DetailStoreItem = ({
+const StampAnimation = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  90% {
+    transform: scale(5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
+
+const StampImage = styled.img`
+  position: absolute;
+  top: 30%;
+  left: 5%;
+  animation: ${StampAnimation} 1s ease-in-out;
+  z-index: 106;
+`;
+
+const DetailStoreItemBuy = ({
   itemimg = '',
   itemvalue,
-  noClick,
-  okClick,
 }: DetailStoreItemProps) => {
   return (
     <CenterDiv>
       <ItemDiv>
         <ImageDiv itemimg={itemimg} />
         <LargeItemRupee value={itemvalue} />
-        <ButtonDiv>
-          <Button
-            buttonText="취소하기"
-            color="gray"
-            borderColor="white"
-            onClick={noClick}
-          />
-          <Button
-            buttonText="구매하기"
-            color="yellow"
-            borderColor="white"
-            onClick={okClick}
-          />
-        </ButtonDiv>
+        <BarDiv>
+          <ProgressBarWithoutRed durationInSeconds={3} />
+        </BarDiv>
         <CircleDiv />
+        <StampImage src={stamp} alt="Stamp" />
       </ItemDiv>
     </CenterDiv>
   );
 };
 
-export default DetailStoreItem;
+export default DetailStoreItemBuy;
