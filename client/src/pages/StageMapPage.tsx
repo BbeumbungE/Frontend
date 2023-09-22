@@ -7,6 +7,9 @@ import ExitBox from '../components/organisms/ExitBox';
 import UserRupee from '../components/atoms/UserRupee';
 import LevelBtn from '../components/atoms/LevelBtn';
 import PageChangeButton from '../components/organisms/PageChangeButton';
+import BlurBox from '../components/atoms/BlurBox';
+import LevelModal from '../components/organisms/LevelModal';
+import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
 
 const MapWrapper = styled.div`
   width: 100vw;
@@ -72,12 +75,13 @@ const CharacterImage = styled.div<{
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
-  z-index: 300;
+  z-index: 50;
   transition:
     right 1s ease,
     bottom 1s ease;
   right: ${(props) => `${props.$position.right}px`};
   bottom: ${(props) => `${props.$position.bottom}px`};
+  cursor: pointer;
 `;
 
 const BottomToTopRoad = styled.div<{
@@ -153,6 +157,13 @@ function StageMapPage() {
     bottom: 150,
   });
   const characterRef = useRef<HTMLDivElement | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedLevelData, setSelectedLevelData] = useState<number | null>(
+    null,
+  );
+
+  // 스테이지 Id
+  const [stageId, setStageId] = useState<number | null>(null);
 
   const itemsPerPage = 3; // 한 페이지당 아이템 개수
   // 첫번째 페이지, 마지막 페이지 파악하는 변수
@@ -188,24 +199,42 @@ function StageMapPage() {
       (level) => level.record === null,
     );
 
+    console.log('첫번째 위치 찾음');
     // 레벨 클리어 단계에 따라 캐릭터 위치 변동
     if (firstNullIndex === -1) {
       // 모든 레벨이 null이 아닌 경우, 마지막 레벨의 위치를 사용
       const lastLevelIndex = userLevel.level.length - 1;
+      setSelectedLevelData(lastLevelIndex);
       setCharacterPosition({
         right: 272,
         bottom: 144,
       });
     } else if (firstNullIndex === 2) {
+      setSelectedLevelData(1);
       setCharacterPosition({
         right: 700,
         bottom: 300,
       });
     } else {
       // 첫 번째 null 이전에 레벨이 없는 경우, 초기 위치 사용
+      setSelectedLevelData(0);
       setCharacterPosition({ right: 1150, bottom: 150 });
     }
   }, [userLevel.level]);
+
+  useEffect(() => {
+    // selectedLevelData가 null이 아니고 userLevel.level 배열이 존재하는 경우에만 실행
+    if (selectedLevelData !== null && userLevel.level.length > 0) {
+      console.log('선택 값', selectedLevelData);
+      console.log('여기 언제 실행?');
+      // 해당 레벨의 ID 값을 전달
+      setStageId(userLevel.level[selectedLevelData].id);
+      console.log('클릭된 스테이지id', stageId);
+    }
+  }, [selectedLevelData]);
+
+  console.log('선택한 레벨', selectedLevelData);
+  console.log('클릭된 스테이지id', stageId);
 
   const leftOnClick = () => {
     const prevPage = currentPage - 1;
@@ -224,6 +253,7 @@ function StageMapPage() {
   ) => {
     // onClick 시 캐릭터 위치 변경
     setCharacterPosition({ right, bottom });
+    setSelectedLevelData(level);
 
     // ref를 사용하여 캐릭터 이동 애니메이션 트리거
     if (characterRef.current) {
@@ -234,6 +264,26 @@ function StageMapPage() {
 
   return (
     <MapWrapper>
+      {selectedLevelData !== null && isModalOpen && stageId && (
+        <>
+          <BlurBox />
+          <LevelModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            stageId={stageId}
+            levelData={selectedLevelData}
+            imgSrc={
+              userLevel.level[selectedLevelData].subjectItem.subject
+                .subjectImage
+            }
+            star={
+              userLevel.level[selectedLevelData].record
+                ? userLevel.level[selectedLevelData].record.score
+                : null
+            }
+          />
+        </>
+      )}
       <PageChangeButton
         leftOnClick={leftOnClick}
         rightOnClick={rightOnClick}
@@ -250,6 +300,7 @@ function StageMapPage() {
         ref={characterRef}
         $bgImage={userProfile.profileImg}
         $position={characterPosition}
+        onClick={() => selectedLevelData !== null && setIsModalOpen(true)}
       />
       <UserRupee />
       <LevelWrapper>
@@ -268,7 +319,7 @@ function StageMapPage() {
               bottom={120}
               right={1180}
               imgSrc={userLevel.level[0].subjectItem.subject.subjectImage}
-              onClick={() => handleLevelBtnClick(1, 1150, 140)}
+              onClick={() => handleLevelBtnClick(0, 1150, 140)}
             />
             <LevelBtn
               level={2}
@@ -280,7 +331,7 @@ function StageMapPage() {
               bottom={280}
               right={730}
               imgSrc={userLevel.level[1].subjectItem.subject.subjectImage}
-              onClick={() => handleLevelBtnClick(2, 700, 300)}
+              onClick={() => handleLevelBtnClick(1, 700, 300)}
             />
             <LevelBtn
               level={3}
@@ -292,7 +343,7 @@ function StageMapPage() {
               bottom={120}
               right={300}
               imgSrc={userLevel.level[2].subjectItem.subject.subjectImage}
-              onClick={() => handleLevelBtnClick(3, 272, 140)}
+              onClick={() => handleLevelBtnClick(2, 272, 140)}
             />
           </>
         )}

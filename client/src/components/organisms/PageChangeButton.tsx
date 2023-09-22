@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import ViewLeftArrow from '../atoms/ViewLeftArrow';
 import ViewRightArrow from '../atoms/ViewRightArrow';
@@ -12,11 +11,13 @@ interface PageChangeButtonProps {
 
 const ButtonDiv = styled.div`
   display: flex;
+  position: relative;
+  z-index: 400;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   position: absolute;
-  top: 45%;
+  top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
 `;

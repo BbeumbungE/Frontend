@@ -32,7 +32,7 @@ const AppRouter: React.FC = () => {
 
         <Route path="/draw/:topic" element={<TopicDrawingPage />} />
         <Route path="/stage" element={<StageMapPage />} />
-        <Route path="/draw/stage/:level" element={<StageDrawingPage />} />
+        <Route path="/draw/stage" element={<StageDrawingPage />} />
 
         <Route path="/board/ranking/:topic" element={<RankingPage />} />
         <Route path="/board/:topic" element={<TopicPage />} />

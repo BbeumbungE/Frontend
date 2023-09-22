@@ -46,6 +46,7 @@ interface ApiResponse {
     pageInfo: PageInfo;
   };
 }
+
 const getUserLevel = async (
   page: number,
   profileId: number,
