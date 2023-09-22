@@ -3,14 +3,17 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
+import { UserRupeeState } from '../recoil/rupee/atom';
 import { getProfiles, newProfile } from '../api/profiles';
 import { deleteUser } from '../api/user';
+import { getRupee } from '../api/rupee';
 import theme from '../style/theme';
 import LargeProfile from '../components/organisms/LargeProfileBox';
 import NewProfileBox from '../components/organisms/NewProfileBox';
 import PageHeaderText from '../components/atoms/PageHeaderText';
 import DeleteText from '../components/atoms/DeleteText';
 import LargeNewProfileBtn from '../components/atoms/LargeNewProfileBtn';
+import { connectEventSSE, disconnectEventSSE } from '../sse/mainSSE';
 
 const ProfilesPageContainer = styled.div`
   display: flex;
@@ -36,7 +39,7 @@ function FamilyProfilePage() {
   const [profiles, setProfiles] = useState<any[]>([]);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
-
+  const [userRupee, setUserRupee] = useRecoilState(UserRupeeState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,7 +57,7 @@ function FamilyProfilePage() {
     }
   }, [isCreating]);
 
-  const handleSelectProfile = (
+  const handleSelectProfile = async (
     Id: number,
     Char: string,
     Img: string,
@@ -66,6 +69,15 @@ function FamilyProfilePage() {
       profileImg: Img,
       nickname: Name,
     });
+    const response = await getRupee(Id);
+    console.log(response);
+    console.log(response.content.point);
+    const rupeeValue = Number(response.content.point);
+    await setUserRupee({
+      rupee: rupeeValue,
+    });
+    connectEventSSE(Id);
+    console.log(userRupee);
     navigate('/menu');
   };
   const handleCreateProfile = async () => {
