@@ -93,7 +93,7 @@ function StorePage() {
       console.log(error);
     }
   }
-  const okClick = async (profileId: number, itemId: number) => {
+  const handleBuy = async (profileId: number, itemId: number) => {
     const curRupee = userRupee.rupee;
     console.log(curRupee);
     if (curRupee >= detailPrice) {
@@ -136,9 +136,9 @@ function StorePage() {
             <DetailStoreItem
               itemimg={detailItemImg}
               itemvalue={detailPrice}
-              noClick={() => setIsDetail(false)}
-              okClick={() => {
-                okClick(userProfile.profileId, detailItemId);
+              handleCancel={() => setIsDetail(false)}
+              handleBuy={() => {
+                handleBuy(userProfile.profileId, detailItemId);
               }}
             />
           )}

@@ -6,8 +6,8 @@ import Button from '../atoms/Button';
 interface DetailStoreItemProps {
   itemimg: string;
   itemvalue: number;
-  noClick: () => void;
-  okClick: () => void;
+  handleCancel: () => void;
+  handleBuy: () => void;
 }
 const CenterDiv = styled.div`
   position: fixed;
@@ -64,8 +64,8 @@ const ButtonDiv = styled.div`
 const DetailStoreItem = ({
   itemimg = '',
   itemvalue,
-  noClick,
-  okClick,
+  handleCancel,
+  handleBuy,
 }: DetailStoreItemProps) => {
   return (
     <CenterDiv>
@@ -77,13 +77,13 @@ const DetailStoreItem = ({
             buttonText="취소하기"
             color="gray"
             borderColor="white"
-            onClick={noClick}
+            onClick={handleCancel}
           />
           <Button
             buttonText="구매하기"
             color="yellow"
             borderColor="white"
-            onClick={okClick}
+            onClick={handleBuy}
           />
         </ButtonDiv>
         <CircleDiv />
