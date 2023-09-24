@@ -26,6 +26,18 @@ interface ApiResponse {
   };
 }
 
+interface PostDrawingResponse {
+  status: {
+    httpStatus: string;
+    code: number;
+    message: string;
+  };
+  content: {
+    canvasId: number;
+    topPost: string;
+  };
+}
+
 const getLevelDetail = async (stageId: number): Promise<ApiResponse> => {
   try {
     const response: AxiosResponse<ApiResponse> = await api.get(
@@ -42,7 +54,7 @@ const postDrawing = async (
   profileId: number,
   subjectId: number,
   formData: FormData,
-) => {
+): Promise<PostDrawingResponse> => {
   try {
     const response = await api.post(
       `/api/canvases?profileId=${profileId}&subjectId=${subjectId}`,
@@ -53,7 +65,7 @@ const postDrawing = async (
         },
       },
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.log('첫 변환하기 실패', error);
     throw error;

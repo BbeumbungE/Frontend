@@ -164,6 +164,12 @@ function StageMapPage() {
 
   // 스테이지 Id
   const [stageId, setStageId] = useState<number | null>(null);
+  // 레벨과 위치 정보를 관리할 배열
+  const levelPositions = [
+    { level: 0, right: 1150, bottom: 150 },
+    { level: 1, right: 700, bottom: 300 },
+    { level: 2, right: 272, bottom: 140 },
+  ];
 
   const itemsPerPage = 3; // 한 페이지당 아이템 개수
   // 첫번째 페이지, 마지막 페이지 파악하는 변수
@@ -194,31 +200,18 @@ function StageMapPage() {
   }, [currentPage, userProfile]);
 
   useEffect(() => {
-    // userLevel.level 배열에서 record가 null인 첫 번째 요소의 위치를 찾음
     const firstNullIndex = userLevel.level.findIndex(
       (level) => level.record === null,
     );
 
-    console.log('첫번째 위치 찾음');
-    // 레벨 클리어 단계에 따라 캐릭터 위치 변동
     if (firstNullIndex === -1) {
       // 모든 레벨이 null이 아닌 경우, 마지막 레벨의 위치를 사용
-      const lastLevelIndex = userLevel.level.length - 1;
-      setSelectedLevelData(lastLevelIndex);
-      setCharacterPosition({
-        right: 272,
-        bottom: 144,
-      });
+      setSelectedLevelData(levelPositions.length - 1);
     } else if (firstNullIndex === 2) {
       setSelectedLevelData(1);
-      setCharacterPosition({
-        right: 700,
-        bottom: 300,
-      });
     } else {
       // 첫 번째 null 이전에 레벨이 없는 경우, 초기 위치 사용
       setSelectedLevelData(0);
-      setCharacterPosition({ right: 1150, bottom: 150 });
     }
   }, [userLevel.level]);
 

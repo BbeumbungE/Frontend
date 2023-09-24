@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import { StageIdState } from '../recoil/stage/atom';
 import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
@@ -29,6 +29,13 @@ interface ApiResponse {
     subjectName: string;
     subjectImage: string;
     sketchList: SketchList[];
+  };
+}
+
+interface DrawingResponse {
+  content: {
+    canvasId: number;
+    topPost: string;
   };
 }
 
@@ -128,7 +135,8 @@ const StyledImage = styled.img`
 `;
 
 function StageDrawingPage() {
-  const stageId = useRecoilValue(StageIdState);
+  const stageIdState = useRecoilValue(StageIdState);
+  const { currentStageId } = stageIdState;
   const profileState = useRecoilValue(UserProfileState);
   const [data, setData] = useState<ApiResponse | undefined>();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -138,17 +146,19 @@ function StageDrawingPage() {
   const [isLocked, setIsLocked] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [transformedCount, setTransformedCount] = useState<number>(0);
+  const [changeModalData, setChangeModalData] = useState<DrawingResponse>();
+  const [canvasUrl, setCanvasUrl] = useState<string>('');
 
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
   useEffect(() => {
     const getData = async () => {
       try {
-        if (stageId !== null) {
-          const response = await getLevelDetail(stageId);
+        if (currentStageId !== null) {
+          const response = await getLevelDetail(currentStageId);
           setData(response.content);
           console.log('스테이지 단건조회', response);
         } else {
-          console.error('stageId가 null');
+          console.error('currentStageId가 null');
         }
       } catch (error) {
         console.error(error);
@@ -213,45 +223,54 @@ function StageDrawingPage() {
     setIsModalOpen(true);
 
     if (canvasRef.current && data) {
-      const imageDataURL = canvasRef.current.toDataURL('image/png');
+      const existingCanvas = canvasRef.current;
+      const resizedCanvas = document.createElement('canvas');
+      resizedCanvas.width = 256;
+      resizedCanvas.height = 256;
+      const context = resizedCanvas.getContext('2d');
 
-      // 이미지 데이터 확인을 위한 img 요소 생성
-      const imageElement = new Image();
-      imageElement.src = imageDataURL;
-      // imageElement.crossOrigin = 'anonymous';
+      if (context) {
+        context.drawImage(existingCanvas, 0, 0, 256, 256);
+        const imageDataURL = canvasRef.current.toDataURL('image/png');
 
-      // 이미지를 콘솔에 출력하여 확인
-      imageElement.onload = () => {
-        console.log('ImageData:', imageDataURL);
-      };
-      const convertedImg = await fetch(imageDataURL);
-      const blob = await convertedImg.blob();
+        // 이미지 데이터 확인을 위한 img 요소 생성
+        const imageElement = new Image();
+        imageElement.src = imageDataURL;
 
-      const formData = new FormData();
-      formData.append('sketchFile', blob, 'drawing.jpg');
-      formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
-      formData.append('subjectId', String(data?.subject.id));
+        // 이미지를 콘솔에 출력하여 확인
+        imageElement.onload = () => {
+          console.log('ImageData:', imageDataURL);
+        };
+        const convertedImg = await fetch(imageDataURL);
+        const blob = await convertedImg.blob();
 
-      formData.forEach(function (value, key) {
-        console.log(`${key}: ${value}`);
-      });
+        const formData = new FormData();
+        formData.append('sketchFile', blob, 'drawing.jpg');
+        formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
+        formData.append('subjectId', String(data?.subject.id));
 
-      const response = await postDrawing(
-        profileState.profileId,
-        data.subject.id,
-        formData,
-      );
-      console.log('변환하기 후 응답!', response);
+        formData.forEach(function (value, key) {
+          console.log(`${key}: ${value}`);
+        });
 
-      // 변환된 횟수 증가
-      setTransformedCount(transformedCount + 1);
+        const response = await postDrawing(
+          profileState.profileId,
+          data.subject.id,
+          formData,
+        );
+        console.log('변환하기 후 응답!', response);
+        setChangeModalData(response);
+
+        // 변환된 횟수 증가
+        setTransformedCount(transformedCount + 1);
+      }
+
+      // SSE 연결 함수 호출
+      drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
+
+      // SSE 연결 해제 함수 호출
+      // disconnectDrawingSSE();
     }
-
-    // SSE 연결 함수 호출
-    drawingSSE(profileState.profileId);
-
-    // SSE 연결 해제 함수 호출
-    // disconnectDrawingSSE();
   };
 
   console.log('프로필', profileState);
@@ -260,12 +279,13 @@ function StageDrawingPage() {
     setIsLocked(false);
   };
 
+  console.log('변환 데이터', changeModalData);
   return (
     <DrawingPageWrapper>
       {isModalOpen && (
         <>
           <BlurBox />
-          <CheckingModal />
+          <CheckingModal imgPath={changeModalData?.content.topPost} />
         </>
       )}
       {data && data.subject.sketchList.length > 0 && (
@@ -330,7 +350,7 @@ function StageDrawingPage() {
               />
             </BtnFloating>
             {/* <StyledImage src={data.subject.sketch || ''} alt="이미지" /> */}
-            <StyledImage src="" alt="이미지" />
+            <StyledImage src={canvasUrl} alt="이미지" />
           </CanvasWrapper>
           <BottomWrapper>
             <ToolWrapper>

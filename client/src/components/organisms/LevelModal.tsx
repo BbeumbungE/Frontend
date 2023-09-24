@@ -99,8 +99,9 @@ function LevelModal({
   star,
 }: LevelModalProps) {
   const navigate = useNavigate();
-  const [storedStageId, setStoredStageId] = useRecoilState(StageIdState);
+  const [stageIdState, setStageIdState] = useRecoilState(StageIdState);
 
+  console.log('스테이지 리코일 정보', stageIdState);
   if (!isOpen) return null;
 
   const handleClose = () => {
@@ -109,15 +110,17 @@ function LevelModal({
   };
 
   const handleChallenge = () => {
-    setStoredStageId(stageId);
-
+    setStageIdState((prevStageIdState) => ({
+      ...prevStageIdState,
+      currentStageId: stageId,
+    }));
     navigate('/draw/stage');
   };
 
   return (
     <ModalWrapper>
       <TopModal>
-        <LevelText>레벨 {levelData}</LevelText>
+        <LevelText>레벨 {levelData + 1}</LevelText>
       </TopModal>
       <InModal>
         <LevelSketch src={imgSrc} />
