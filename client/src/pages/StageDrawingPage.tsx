@@ -148,6 +148,8 @@ function StageDrawingPage() {
   const [transformedCount, setTransformedCount] = useState<number>(0);
   const [changeModalData, setChangeModalData] = useState<DrawingResponse>();
   const [canvasUrl, setCanvasUrl] = useState<string>('');
+  const [isDrawingMode, setIsDrawingMode] = useState<boolean>(true); // 그리기 모드, 지우기 모드 구분
+  const cursorRef = useRef<HTMLDivElement | null>(null);
 
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
   useEffect(() => {
@@ -182,6 +184,41 @@ function StageDrawingPage() {
     }
   }, [data]);
 
+  useEffect(() => {
+    // 캔버스와 커서 요소 참조
+    const canvas = canvasRef.current;
+    const cursor = cursorRef.current;
+
+    if (canvas && cursor && ctx && !isDrawingMode) {
+      canvas.addEventListener('mousemove', (event) => {
+          // 지우기 모드일 때는 커서를 보이게
+          cursor.style.display = 'block';
+
+          const cursorSize = 40;
+          // 커서를 마우스 위치로 이동
+          cursor.style.left = `${event.clientX - cursorSize / 2}px`;
+          cursor.style.top = `${event.clientY - cursorSize / 2}px`;
+
+          // 커서 위치에 원 그리기
+          const x = event.clientX - canvas.getBoundingClientRect().left;
+          const y = event.clientY - canvas.getBoundingClientRect().top;
+
+          // 원 그리기
+          ctx.clearRect(0, 0, canvas.width, canvas.height); // 기존 커서 지우기
+          ctx.beginPath();
+          ctx.arc(x, y, cursorSize / 2, 0, 2 * Math.PI);
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // 원의 색상 및 투명도 설정
+          ctx.fill();
+        })
+      });
+
+      // 마우스가 캔버스 바깥으로 나갈 때 커서를 숨김
+      canvas.addEventListener('mouseleave', () => {
+        cursor.style.display = 'none';
+      });
+    }
+  }, [isDrawingMode]);
+
   const canvasEventListener = (
     event: React.MouseEvent<HTMLCanvasElement>,
     type: string,
@@ -193,22 +230,65 @@ function StageDrawingPage() {
     const x = event.nativeEvent.offsetX;
     const y = event.nativeEvent.offsetY;
 
-    if (type === 'down') {
-      setIsDrawing(true); // 마우스 클릭 시작
-      array.push({ x, y });
-    } else if (type === 'move' && isDrawing) {
-      ctx?.save();
-      ctx?.beginPath();
-      ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
-      ctx?.lineTo(x, y);
-      ctx?.closePath();
-      ctx?.stroke();
-      ctx?.restore();
-      array.push({ x, y });
-    } else if (type === 'leave' || type === 'up') {
-      setIsDrawing(false); // 마우스 클릭 종료
+    if (isDrawingMode && ctx) {
+      // 그리기 모드 일 때는 그리기
+      ctx.globalCompositeOperation = 'source-over';
+      if (type === 'down') {
+        setIsDrawing(true); // 마우스 클릭 시작
+        array.push({ x, y });
+      } else if (type === 'move' && isDrawing) {
+        ctx?.save();
+        ctx?.beginPath();
+        ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
+        ctx?.lineTo(x, y);
+        ctx?.closePath();
+        ctx?.stroke();
+        ctx?.restore();
+        array.push({ x, y });
+      } else if (type === 'leave' || type === 'up') {
+        setIsDrawing(false); // 마우스 클릭 종료
+      }
+    }
+
+    if (!isDrawingMode && ctx) {
+      // 지우기 모드일 때는 지우기
+      ctx.globalCompositeOperation = 'destination-out'; // 지우기 모드로 설정
+      ctx.lineWidth = 40;
+      if (type === 'down') {
+        setIsDrawing(true);
+        array.push({ x, y });
+      } else if (type === 'move' && isDrawing) {
+        ctx?.beginPath();
+        ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
+        ctx?.lineTo(x, y);
+        ctx?.closePath();
+        ctx?.stroke();
+        array.push({ x, y });
+      } else if (type === 'leave' || type === 'up') {
+        setIsDrawing(false);
+      }
     }
   };
+
+  console.log('현재 무슨 모드?', isDrawingMode);
+  //   // 그리기 모드일 때만 그림 그리기
+  //   if (type === 'down' || type === 'move' || type === 'up') {
+  //     setIsDrawing(true);
+  //     array.push({ x, y });
+  //     // } else if ((type === 'move' || type === 'up') && isDrawing) {
+  //     ctx?.beginPath();
+  //     ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
+  //     ctx?.lineTo(x, y);
+  //     ctx?.closePath();
+  //     ctx?.stroke();
+  //     array.push({ x, y });
+  //   } else if (ctx && (type === 'leave' || type === 'up')) {
+  //     setIsDrawing(false);
+  //     ctx.globalCompositeOperation = isDrawingMode
+  //       ? 'source-over'
+  //       : 'destination-out';
+  //   }
+  // };
 
   const handleClearCanvas = () => {
     if (ctx && canvasRef.current) {
@@ -277,6 +357,14 @@ function StageDrawingPage() {
 
   const handleToggleEdit = () => {
     setIsLocked(false);
+  };
+
+  const handlePencil = () => {
+    setIsDrawingMode(true);
+  };
+
+  const handleEraser = () => {
+    setIsDrawingMode(false);
   };
 
   console.log('변환 데이터', changeModalData);
@@ -354,8 +442,8 @@ function StageDrawingPage() {
           </CanvasWrapper>
           <BottomWrapper>
             <ToolWrapper>
-              <Pencil />
-              <Eraser />
+              <Pencil onClick={handlePencil} />
+              <Eraser onClick={handleEraser} />
               <MagicStick />
             </ToolWrapper>
             <BtnWrapper>
