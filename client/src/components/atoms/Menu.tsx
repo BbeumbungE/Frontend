@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import theme from '../../style/theme';
 import Button from './Button';
 
@@ -8,10 +8,15 @@ interface ButtonProps {
   buttonText: string;
   color: string;
   svgSrc?: string;
+  srcId?: number;
   transparencyButton?: boolean;
 }
 
-const StyledMenu = styled(NavLink)<{ $bgColor: string; $border: string }>`
+const StyledMenu = styled(NavLink)<{
+  $bgColor: string;
+  $border: string;
+  to?: string | null;
+}>`
   font-family: 'TmoneyRoundWindExtraBold';
   width: 300px;
   height: 430px;
@@ -58,14 +63,26 @@ const ButtonWrapper = styled.div`
   justify-content: center;
   z-index: 100;
 `;
-
+const StyledLink = styled(Link)`
+  width: 100%;
+  height: 50%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 101;
+`;
 function Menu({
   key,
   buttonText,
   color,
   svgSrc,
+  srcId = 0,
   transparencyButton,
 }: ButtonProps) {
+  const navigate = useNavigate();
   let bgColor = theme.menuColors.pink; // 기본값은 mainBlue
   let border = 'none';
   let routeUrl = '';
@@ -117,16 +134,29 @@ function Menu({
       break;
   }
 
-  return (
-    <StyledMenu to={routeUrl} $bgColor={bgColor} $border={border}>
+  return srcId !== 0 ? (
+    <StyledMenu $bgColor={bgColor} $border={border}>
       <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
       {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
       {transparencyButton && (
         <ButtonWrapper>
-          <Button buttonText="랭킹그림 보기" color="transparency" />
-          <Button buttonText="모든그림 보기" color="transparency" />
+          <StyledLink to={`/board/ranking/${srcId}`}>
+            <Button buttonText="랭킹그림 보기" color="transparency" />
+          </StyledLink>
+          <StyledLink to={`/board/${srcId}`}>
+            <Button
+              buttonText="모든그림 보기"
+              color="transparency"
+              onClick={() => navigate(`/board/${srcId}`)}
+            />
+          </StyledLink>
         </ButtonWrapper>
       )}
+    </StyledMenu>
+  ) : (
+    <StyledMenu to={routeUrl} $bgColor={bgColor} $border={border}>
+      <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
+      {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
     </StyledMenu>
   );
 }
@@ -135,6 +165,7 @@ Menu.defaultProps = {
   key: null,
   svgSrc: '',
   transparencyButton: false,
+  srcId: 0,
 };
 
 export default Menu;
