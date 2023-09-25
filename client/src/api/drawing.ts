@@ -38,6 +38,44 @@ interface PostDrawingResponse {
   };
 }
 
+interface Sketch {
+  sketchId: number;
+  sketchImageUrl: string;
+}
+
+interface Subject {
+  id: number;
+  subjectName: string;
+  subjectImage: string;
+  sketchList: Sketch[];
+}
+
+interface SubjectItem {
+  id: number;
+  itemPrice: number;
+  hasItem: boolean;
+  subject: Subject;
+}
+
+interface Record {
+  id: number;
+  score: number;
+}
+
+interface ApiResponse {
+  status: {
+    httpStatus: string;
+    code: number;
+    message: string;
+  };
+  content: {
+    id: number;
+    stageNum: number;
+    subjectItem: SubjectItem;
+    record: Record;
+  };
+}
+
 const getLevelDetail = async (
   stageId: number,
 ): Promise<levelDetailResponse> => {

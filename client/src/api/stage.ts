@@ -1,16 +1,16 @@
 import { AxiosResponse } from 'axios';
 import { api } from './api';
 
-interface Record {
-  id: number;
-  score: number;
+interface Sketch {
+  sketchId: number;
+  sketchImageUrl: string;
 }
 
 interface Subject {
   id: number;
   subjectName: string;
   subjectImage: string;
-  sketch: string;
+  sketchList: Sketch[];
 }
 
 interface SubjectItem {
@@ -20,12 +20,11 @@ interface SubjectItem {
   subject: Subject;
 }
 
-interface Stage {
+interface Record {
   id: number;
   stageNum: number;
-  point: number;
   subjectItem: SubjectItem;
-  record: Record | null;
+  record: null;
 }
 
 interface PageInfo {
@@ -42,7 +41,10 @@ interface ApiResponse {
     message: string;
   };
   content: {
-    data: SubjectItem[];
+    data: {
+      highestClearedStageNumber: number;
+      record: Record[];
+    };
     pageInfo: PageInfo;
   };
 }
@@ -54,7 +56,7 @@ const getUserLevel = async (
 ): Promise<ApiResponse> => {
   try {
     const response: AxiosResponse<ApiResponse> = await api.get(
-      `/api/profiles/${profileId}/stages/records?page=${page}&size=${itemsPerPage}&sort=stageNum`,
+      `/api/profiles/${profileId}/stages?page=${page}&size=${itemsPerPage}&sort=stageNum`,
     );
     return response.data;
   } catch (error) {

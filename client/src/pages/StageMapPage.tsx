@@ -189,7 +189,7 @@ function StageMapPage() {
           itemsPerPage,
         );
         setUserLevel({
-          level: response.content.data, // 데이터 배열 설정
+          level: response.content.data.record, // 데이터 배열 설정
           page: response.content.pageInfo, // pageInfo 설정
         });
       } catch (error) {
