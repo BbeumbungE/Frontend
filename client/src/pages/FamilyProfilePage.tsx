@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import { UserRupeeState } from '../recoil/rupee/atom';
+import { sseMessageState } from '../recoil/mainalarm/atom';
 import { getProfiles, newProfile } from '../api/profiles';
 import { deleteUser } from '../api/user';
 import { getRupee } from '../api/rupee';
@@ -47,6 +48,9 @@ function FamilyProfilePage() {
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
   const [userRupee, setUserRupee] = useRecoilState(UserRupeeState);
+  const [isConnect, setIsConnect] = useState<boolean>(false);
+  // const [SSEList, setSSEList] = useRecoilState(sseMessageState);
+  const setSSEList = useSetRecoilState(sseMessageState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,6 +69,17 @@ function FamilyProfilePage() {
     }
   }, [isCreating]);
 
+  useEffect(() => {
+    if (isConnect) {
+      console.log('연결 시도');
+      connectEventSSE(userProfile.profileId, { onMessage: handleSSEMessage }); // setSSEList를 connectEventSSE 함수로 전달
+      setIsConnect(false);
+    }
+  }, [isConnect, userProfile.profileId]);
+
+  const handleSSEMessage = (data: any) => {
+    console.log(data);
+  };
   const handleSelectProfile = async (
     Id: number,
     Char: string,
@@ -84,9 +99,11 @@ function FamilyProfilePage() {
     await setUserRupee({
       rupee: rupeeValue,
     });
-    connectEventSSE(Id);
+    setIsConnect(true);
     console.log(userRupee);
-    navigate('/menu');
+    setTimeout(() => {
+      navigate('/menu');
+    }, 100);
   };
   const handleCreateProfile = async () => {
     try {

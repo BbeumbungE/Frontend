@@ -9,7 +9,14 @@ interface MessageEvent {
   data: string;
   lastEventId: string;
 }
-export function connectEventSSE(profileId: number): void {
+
+interface SSECallbacks {
+  onMessage: (data: any) => void;
+}
+export function connectEventSSE(
+  profileId: number,
+  callbacks: SSECallbacks,
+): void {
   eventSource = new EventSourcePolyfill(
     `${SERVER_URL}/api/profiles/${profileId}/sse/connects`,
     {
@@ -26,6 +33,7 @@ export function connectEventSSE(profileId: number): void {
   eventSource.onmessage = (event) => {
     const parsedData = JSON.parse(event.data);
     console.log('서버에서 이벤트 수신:', parsedData);
+    callbacks.onMessage(parsedData);
   };
   eventSource.addEventListener('initial', (event) => {
     console.log('연결 시 서버에서 쏘는 데이터', event);
