@@ -14,7 +14,7 @@ export function drawingSSE(
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
       },
-      heartbeatTimeout: 30000000,
+      heartbeatTimeout: 30000000, // SSE 재접속 시간
       withCredentials: true,
     },
   );

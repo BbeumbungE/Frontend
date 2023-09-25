@@ -6,7 +6,7 @@ interface SketchList {
   sketchImageUrl: string;
 }
 
-interface ApiResponse {
+interface levelDetailResponse {
   status: {
     httpStatus: string;
     code: number;
@@ -38,9 +38,11 @@ interface PostDrawingResponse {
   };
 }
 
-const getLevelDetail = async (stageId: number): Promise<ApiResponse> => {
+const getLevelDetail = async (
+  stageId: number,
+): Promise<levelDetailResponse> => {
   try {
-    const response: AxiosResponse<ApiResponse> = await api.get(
+    const response: AxiosResponse<levelDetailResponse> = await api.get(
       `/api/stages/${stageId}`,
     );
     return response.data;
@@ -67,21 +69,67 @@ const postDrawing = async (
     );
     return response.data;
   } catch (error) {
-    console.log('첫 변환하기 실패', error);
+    console.log('첫번째 변환하기 실패', error);
     throw error;
   }
 };
 
-const patchDrawing = async (canvasId: number, profileId: number) => {
+const patchDrawing = async (
+  canvasId: number,
+  profileId: number,
+  formData: FormData,
+): Promise<PostDrawingResponse> => {
   try {
     const response = await api.patch(
       `/api/canvases/${canvasId}?profileId=${profileId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.log('두번째 이후 변환하기 실패', error);
     throw error;
   }
 };
 
-export { getLevelDetail, postDrawing, patchDrawing };
+const postFirstFinishedDrawing = async (profileId: number, stageId: number) => {
+  try {
+    const response = await api.post(
+      `profiles/${profileId}/stages/${stageId}/records
+      `,
+    );
+    return response;
+  } catch (error) {
+    console.log('첫번째 기록 갱신 실패', error);
+    throw error;
+  }
+};
+
+const patchFinishedDrawing = async (
+  profileId: number,
+  stageId: number,
+  recordId: number,
+) => {
+  try {
+    const response = await api.post(
+      `profiles/${profileId}/stages/${stageId}/records/${recordId}
+      `,
+    );
+    return response;
+  } catch (error) {
+    console.log('두번째 이후 기록 갱신 실패', error);
+    throw error;
+  }
+};
+
+export {
+  getLevelDetail,
+  postDrawing,
+  patchDrawing,
+  postFirstFinishedDrawing,
+  patchFinishedDrawing,
+};

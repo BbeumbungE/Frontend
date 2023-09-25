@@ -9,7 +9,7 @@ import CheckingModal from '../components/organisms/CheckingModal';
 import ProgressBar from '../components/atoms/ProgressTimeBar';
 import ExitBox from '../components/organisms/ExitBox';
 import Button from '../components/atoms/Button';
-import { getLevelDetail, postDrawing } from '../api/drawing';
+import { getLevelDetail, postDrawing, patchDrawing } from '../api/drawing';
 import { ReactComponent as PencilIcon } from '../assets/image/etc/pencil.svg';
 import { ReactComponent as MagicStickIcon } from '../assets/image/etc/magicStick.svg';
 import { ReactComponent as LockIcon } from '../assets/image/etc/drawingLock.svg';
@@ -32,7 +32,12 @@ interface ApiResponse {
   };
 }
 
-interface DrawingResponse {
+interface PostDrawingResponse {
+  status: {
+    httpStatus: string;
+    code: number;
+    message: string;
+  };
   content: {
     canvasId: number;
     topPost: string;
@@ -66,7 +71,8 @@ const CanvasWrapper = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-left: -50px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const BtnFloating = styled.div`
@@ -75,11 +81,16 @@ const BtnFloating = styled.div`
 
 const BottomWrapper = styled.div`
   display: flex;
+  flex-direction: row-reverse;
   margin-top: 10px;
+  margin-right: 50px;
 `;
 
-const ToolWrapper = styled.span`
+const ToolWrapper = styled.div`
   margin-right: 100px;
+  position: fixed;
+  bottom: -230px;
+  left: 0px;
   display: flex;
 `;
 
@@ -96,6 +107,10 @@ const Pencil = styled(PencilIcon)`
   width: 300px;
   height: 300px;
   cursor: pointer;
+  transition: transform 0.2s;
+  &:hover {
+    transform: translateY(-15px);
+  }
 `;
 
 const Eraser = styled(PencilIcon)`
@@ -103,12 +118,20 @@ const Eraser = styled(PencilIcon)`
   height: 300px;
   cursor: pointer;
   transform: scaleY(-1);
+  transition: transform 0.2s;
+  &:hover {
+    transform: scaleY(-1) translateY(15px);
+  }
 `;
 
 const MagicStick = styled(MagicStickIcon)`
   width: 320px;
   height: 320px;
   cursor: pointer;
+  transition: transform 0.2s;
+  &:hover {
+    transform: translateY(-15px);
+  }
 `;
 
 const BtnWrapper = styled.div`
@@ -125,7 +148,7 @@ const SketchImage = styled.img`
   z-index: -100;
 `;
 
-const StyledImage = styled.img`
+const TransformedImage = styled.img`
   width: 500px;
   height: 500px;
   background-color: white;
@@ -133,6 +156,25 @@ const StyledImage = styled.img`
   margin-left: -50px;
   z-index: -100;
 `;
+
+const TransformedImageBox = styled.img`
+  width: 500px;
+  height: 500px;
+  background-color: white;
+  border-radius: 25px;
+  margin-left: -50px;
+  z-index: -100;
+`;
+
+// const eraserCursor = styled.div`
+//   width: 20px;
+//   height: 20px;
+//   border-radius: 50%;
+//   border: 0.5px solid black;
+//   position: absolute;
+//   z-index: 1;
+//   pointer-events: none;
+// `;
 
 function StageDrawingPage() {
   const stageIdState = useRecoilValue(StageIdState);
@@ -145,8 +187,8 @@ function StageDrawingPage() {
   const [isDrawing, setIsDrawing] = useState<boolean>(false); // 그리기 여부를 추정 (마우스 클릭중인지 여부)
   const [isLocked, setIsLocked] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [transformedCount, setTransformedCount] = useState<number>(0);
-  const [changeModalData, setChangeModalData] = useState<DrawingResponse>();
+  const [isFirstTransform, setIsFirstTransform] = useState<boolean>(true);
+  const [changeModalData, setChangeModalData] = useState<PostDrawingResponse>();
   const [canvasUrl, setCanvasUrl] = useState<string>('');
   const [isDrawingMode, setIsDrawingMode] = useState<boolean>(true); // 그리기 모드, 지우기 모드 구분
   const cursorRef = useRef<HTMLDivElement | null>(null);
@@ -184,41 +226,6 @@ function StageDrawingPage() {
     }
   }, [data]);
 
-  useEffect(() => {
-    // 캔버스와 커서 요소 참조
-    const canvas = canvasRef.current;
-    const cursor = cursorRef.current;
-
-    if (canvas && cursor && ctx && !isDrawingMode) {
-      canvas.addEventListener('mousemove', (event) => {
-          // 지우기 모드일 때는 커서를 보이게
-          cursor.style.display = 'block';
-
-          const cursorSize = 40;
-          // 커서를 마우스 위치로 이동
-          cursor.style.left = `${event.clientX - cursorSize / 2}px`;
-          cursor.style.top = `${event.clientY - cursorSize / 2}px`;
-
-          // 커서 위치에 원 그리기
-          const x = event.clientX - canvas.getBoundingClientRect().left;
-          const y = event.clientY - canvas.getBoundingClientRect().top;
-
-          // 원 그리기
-          ctx.clearRect(0, 0, canvas.width, canvas.height); // 기존 커서 지우기
-          ctx.beginPath();
-          ctx.arc(x, y, cursorSize / 2, 0, 2 * Math.PI);
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // 원의 색상 및 투명도 설정
-          ctx.fill();
-        })
-      });
-
-      // 마우스가 캔버스 바깥으로 나갈 때 커서를 숨김
-      canvas.addEventListener('mouseleave', () => {
-        cursor.style.display = 'none';
-      });
-    }
-  }, [isDrawingMode]);
-
   const canvasEventListener = (
     event: React.MouseEvent<HTMLCanvasElement>,
     type: string,
@@ -233,6 +240,7 @@ function StageDrawingPage() {
     if (isDrawingMode && ctx) {
       // 그리기 모드 일 때는 그리기
       ctx.globalCompositeOperation = 'source-over';
+      ctx.lineWidth = 2;
       if (type === 'down') {
         setIsDrawing(true); // 마우스 클릭 시작
         array.push({ x, y });
@@ -271,24 +279,6 @@ function StageDrawingPage() {
   };
 
   console.log('현재 무슨 모드?', isDrawingMode);
-  //   // 그리기 모드일 때만 그림 그리기
-  //   if (type === 'down' || type === 'move' || type === 'up') {
-  //     setIsDrawing(true);
-  //     array.push({ x, y });
-  //     // } else if ((type === 'move' || type === 'up') && isDrawing) {
-  //     ctx?.beginPath();
-  //     ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
-  //     ctx?.lineTo(x, y);
-  //     ctx?.closePath();
-  //     ctx?.stroke();
-  //     array.push({ x, y });
-  //   } else if (ctx && (type === 'leave' || type === 'up')) {
-  //     setIsDrawing(false);
-  //     ctx.globalCompositeOperation = isDrawingMode
-  //       ? 'source-over'
-  //       : 'destination-out';
-  //   }
-  // };
 
   const handleClearCanvas = () => {
     if (ctx && canvasRef.current) {
@@ -303,27 +293,23 @@ function StageDrawingPage() {
     setIsModalOpen(true);
 
     if (canvasRef.current && data) {
-      const existingCanvas = canvasRef.current;
-      const resizedCanvas = document.createElement('canvas');
-      resizedCanvas.width = 256;
-      resizedCanvas.height = 256;
-      const context = resizedCanvas.getContext('2d');
+      const imageDataURL = canvasRef.current.toDataURL('image/png');
 
-      if (context) {
-        context.drawImage(existingCanvas, 0, 0, 256, 256);
-        const imageDataURL = canvasRef.current.toDataURL('image/png');
+      // 이미지 데이터 확인을 위한 img 요소 생성
+      const imageElement = new Image();
+      imageElement.src = imageDataURL;
 
-        // 이미지 데이터 확인을 위한 img 요소 생성
-        const imageElement = new Image();
-        imageElement.src = imageDataURL;
+      // 이미지를 콘솔에 출력하여 확인
+      imageElement.onload = () => {
+        console.log('ImageData:', imageDataURL);
+      };
+      const convertedImg = await fetch(imageDataURL);
+      const blob = await convertedImg.blob();
 
-        // 이미지를 콘솔에 출력하여 확인
-        imageElement.onload = () => {
-          console.log('ImageData:', imageDataURL);
-        };
-        const convertedImg = await fetch(imageDataURL);
-        const blob = await convertedImg.blob();
+      let response: PostDrawingResponse;
 
+      if (isFirstTransform) {
+        // 첫 번째 변환, postDrawing 사용
         const formData = new FormData();
         formData.append('sketchFile', blob, 'drawing.jpg');
         formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
@@ -333,24 +319,37 @@ function StageDrawingPage() {
           console.log(`${key}: ${value}`);
         });
 
-        const response = await postDrawing(
+        response = await postDrawing(
           profileState.profileId,
           data.subject.id,
           formData,
         );
+        setIsFirstTransform(false);
+      } else if (changeModalData) {
+        // 이후 변환, patchDrawing 사용
+        const formData = new FormData();
+        formData.append('sketchFile', blob, 'drawing.jpg');
+
+        formData.forEach(function (value, key) {
+          console.log(`${key}: ${value}`);
+        });
+
+        response = await patchDrawing(
+          profileState.profileId,
+          changeModalData.content.canvasId,
+          formData,
+        );
+
         console.log('변환하기 후 응답!', response);
         setChangeModalData(response);
-
-        // 변환된 횟수 증가
-        setTransformedCount(transformedCount + 1);
       }
-
-      // SSE 연결 함수 호출
-      drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
-
-      // SSE 연결 해제 함수 호출
-      // disconnectDrawingSSE();
     }
+
+    // SSE 연결 함수 호출
+    drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
+
+    // SSE 연결 해제 함수 호출
+    // disconnectDrawingSSE();
   };
 
   console.log('프로필', profileState);
@@ -414,7 +413,12 @@ function StageDrawingPage() {
                 ref={canvasRef}
                 width={500}
                 height={500}
-                style={defaultStyle}
+                style={{
+                  ...defaultStyle,
+                  cursor: !isDrawingMode
+                    ? 'url("../assets/image/etc/eraserCursor.svg") 10 10, auto'
+                    : 'auto',
+                }}
                 onMouseDown={(event) => {
                   canvasEventListener(event, 'down');
                   // 마우스 클릭 시 이미지 요소 숨기기
@@ -438,7 +442,12 @@ function StageDrawingPage() {
               />
             </BtnFloating>
             {/* <StyledImage src={data.subject.sketch || ''} alt="이미지" /> */}
-            <StyledImage src={canvasUrl} alt="이미지" />
+            <TransformedImage src={canvasUrl} alt="이미지" />
+            {canvasUrl ? (
+              <TransformedImage src={canvasUrl} alt="변환된 이미지" />
+            ) : (
+              <TransformedImageBox />
+            )}
           </CanvasWrapper>
           <BottomWrapper>
             <ToolWrapper>
