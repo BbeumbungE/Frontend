@@ -441,7 +441,6 @@ function StageDrawingPage() {
                 onClick={handleChange}
               />
             </BtnFloating>
-            {/* <StyledImage src={data.subject.sketch || ''} alt="이미지" /> */}
             <TransformedImage src={canvasUrl} alt="이미지" />
             {canvasUrl ? (
               <TransformedImage src={canvasUrl} alt="변환된 이미지" />
