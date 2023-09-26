@@ -48,9 +48,6 @@ function FamilyProfilePage() {
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
   const [userRupee, setUserRupee] = useRecoilState(UserRupeeState);
-  const [isConnect, setIsConnect] = useState<boolean>(false);
-  // const [SSEList, setSSEList] = useRecoilState(sseMessageState);
-  const setSSEList = useSetRecoilState(sseMessageState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,17 +66,6 @@ function FamilyProfilePage() {
     }
   }, [isCreating]);
 
-  useEffect(() => {
-    if (isConnect) {
-      console.log('연결 시도');
-      connectEventSSE(userProfile.profileId); // setSSEList를 connectEventSSE 함수로 전달
-      setIsConnect(false);
-    }
-  }, [isConnect, userProfile.profileId]);
-
-  const handleSSEMessage = (data: any) => {
-    console.log(data);
-  };
   const handleSelectProfile = async (
     Id: number,
     Char: string,
@@ -99,11 +85,9 @@ function FamilyProfilePage() {
     await setUserRupee({
       rupee: rupeeValue,
     });
-    setIsConnect(true);
+    connectEventSSE(userProfile.profileId);
     console.log(userRupee);
-    setTimeout(() => {
-      navigate('/menu');
-    }, 100);
+    navigate('/menu');
   };
   const handleCreateProfile = async () => {
     try {
