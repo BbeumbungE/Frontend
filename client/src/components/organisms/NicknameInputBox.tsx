@@ -40,6 +40,7 @@ const NicknameInputBox = ({
         onChange={(event) => {
           onInputChange(event.target.value);
         }}
+        pressEnter={onButtonClick}
       />
       <InputButton buttonText="확인" onClick={onButtonClick} />
     </NicknameInputBoxDiv>

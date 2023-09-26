@@ -162,7 +162,9 @@ function MyProfilePage() {
 
   const handleDeleteProfile = (profileId: number) => {
     deleteProfile(profileId);
-    navigate('/login');
+    setTimeout(() => {
+      navigate('/profiles');
+    }, 100);
   };
 
   const handleNewName = async (profileId: number, inputText: string) => {

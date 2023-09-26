@@ -5,6 +5,7 @@ interface MenuItem {
   id: number; // id 필드로 수정
   subjectName: string;
   subjectImage: string;
+  subjectId?: number;
   sketch: string;
 }
 
@@ -30,6 +31,7 @@ function TopicMenuBox({ topicData, transparencyButton }: TopicMenuBoxProps) {
           buttonText={topicData[0].subjectName}
           svgSrc={topicData[0].subjectImage}
           transparencyButton={transparencyButton}
+          srcId={topicData[0].id}
         />
       )}
       {topicData.length > 1 && (
@@ -38,6 +40,7 @@ function TopicMenuBox({ topicData, transparencyButton }: TopicMenuBoxProps) {
           buttonText={topicData[1].subjectName}
           svgSrc={topicData[1].subjectImage}
           transparencyButton={transparencyButton}
+          srcId={topicData[1].id}
         />
       )}
       {topicData.length > 2 && (
@@ -46,6 +49,7 @@ function TopicMenuBox({ topicData, transparencyButton }: TopicMenuBoxProps) {
           buttonText={topicData[2].subjectName}
           svgSrc={topicData[2].subjectImage}
           transparencyButton={transparencyButton}
+          srcId={topicData[2].id}
         />
       )}
       {topicData.length > 3 && (
@@ -54,6 +58,7 @@ function TopicMenuBox({ topicData, transparencyButton }: TopicMenuBoxProps) {
           buttonText={topicData[3].subjectName}
           svgSrc={topicData[3].subjectImage}
           transparencyButton={transparencyButton}
+          srcId={topicData[3].id}
         />
       )}
     </MenuWrapper>
