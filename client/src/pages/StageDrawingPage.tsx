@@ -332,7 +332,7 @@ function StageDrawingPage() {
         // 첫 번째 변환, postDrawing 사용
         console.log('첫번째 변환 요청 보냄!!!');
         const formData = new FormData();
-        formData.append('sketchFile', blob, 'drawing.jpg');
+        formData.append('sketchFile', blob, 'drawing1.jpg');
         formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
         formData.append('subjectId', String(data?.subjectItem.id));
 
@@ -351,7 +351,7 @@ function StageDrawingPage() {
         // 이후 변환, patchDrawing 사용
         console.log('두번째 변환 이후 요청 보냄!!!');
         const formData = new FormData();
-        formData.append('file', blob, 'drawing.jpg');
+        formData.append('file', blob, 'drawing2.jpg');
 
         formData.forEach(function (value, key) {
           console.log(`${key}: ${value}`);
