@@ -69,6 +69,46 @@ interface LevelDetailResponse {
   };
 }
 
+interface PointInfo {
+  previousPoint: number;
+  currentPoint: number;
+  rewardPoint: number;
+}
+
+interface Content {
+  id: number;
+  score: number;
+  pointInfo: PointInfo;
+}
+
+interface Status {
+  httpStatus: string;
+  code: number;
+  message: string;
+}
+
+interface FirstFinishResponse {
+  status: Status;
+  content: Content;
+}
+
+interface Status {
+  httpStatus: string;
+  code: number;
+  message: string;
+}
+
+interface Content {
+  previousPoint: number;
+  currentPoint: number;
+  rewardPoint: number;
+}
+
+interface SecondFinishResponse {
+  status: Status;
+  content: Content;
+}
+
 const getLevelDetail = async (
   profileId: number,
   stageId: number,
@@ -132,7 +172,7 @@ const postFirstFinishedDrawing = async (
   profileId: number,
   stageId: number,
   canvasId: number,
-) => {
+): Promise<FirstFinishResponse> => {
   try {
     const jsonData = { canvasId };
     const response = await api.post(
@@ -140,7 +180,7 @@ const postFirstFinishedDrawing = async (
       `,
       jsonData,
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.log('첫번째 기록 갱신 실패', error);
     throw error;
@@ -152,7 +192,7 @@ const patchFinishedDrawing = async (
   stageId: number,
   recordId: number,
   canvasId: number,
-) => {
+): Promise<SecondFinishResponse> => {
   try {
     const jsonData = { canvasId };
     const response = await api.post(
@@ -160,7 +200,7 @@ const patchFinishedDrawing = async (
       `,
       jsonData,
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.log('두번째 이후 기록 갱신 실패', error);
     throw error;

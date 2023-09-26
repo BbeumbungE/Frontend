@@ -57,6 +57,46 @@ interface PostDrawingResponse {
   };
 }
 
+interface PointInfo {
+  previousPoint: number;
+  currentPoint: number;
+  rewardPoint: number;
+}
+
+interface Content {
+  id: number;
+  score: number;
+  pointInfo: PointInfo;
+}
+
+interface Status {
+  httpStatus: string;
+  code: number;
+  message: string;
+}
+
+interface FirstFinishResponse {
+  status: Status;
+  content: Content;
+}
+
+interface Status {
+  httpStatus: string;
+  code: number;
+  message: string;
+}
+
+interface Content {
+  previousPoint: number;
+  currentPoint: number;
+  rewardPoint: number;
+}
+
+interface SecondFinishResponse {
+  status: Status;
+  content: Content;
+}
+
 const defaultStyle = {
   display: 'inline-block',
   borderRadius: '25px',
@@ -202,9 +242,13 @@ function StageDrawingPage() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFirstTransform, setIsFirstTransform] = useState<boolean>(true);
   const [changeModalData, setChangeModalData] = useState<PostDrawingResponse>();
-  const [canvasUrl, setCanvasUrl] = useState<string | null>('');
+  const [canvasUrl, setCanvasUrl] = useState<string | null>(''); // 변환된 그림 url
+  const [canvasId, setCanvasId] = useState<number>(-1); // 캔버스 고유 id
   const [isDrawingMode, setIsDrawingMode] = useState<boolean>(true); // 그리기 모드, 지우기 모드 구분
   const cursorRef = useRef<HTMLDivElement | null>(null);
+  const [finishData, setFinishData] = useState<
+    FirstFinishResponse | SecondFinishResponse | undefined
+  >();
 
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
   useEffect(() => {
@@ -301,11 +345,6 @@ function StageDrawingPage() {
     }
   };
 
-  // useEffect(() => {
-  //   setCanvasUrl(String(changeModalData?.content.canvasUrl));
-  // }, [changeModalData]);
-  // console.log('캔버스 아이디 확인', changeModalData);
-
   const handleChange = async () => {
     setCanvasUrl(null);
     // 화면 잠금, 변환 중 모달 오픈
@@ -326,13 +365,18 @@ function StageDrawingPage() {
       const convertedImg = await fetch(imageDataURL);
       const blob = await convertedImg.blob();
 
+      // 파일 식별을 위한 변수 생성
+      const now = new Date();
+      const formattedTime = now.toLocaleTimeString();
+      console.log('&&&&&&&', formattedTime);
+
       let response: PostDrawingResponse;
 
       if (isFirstTransform) {
         // 첫 번째 변환, postDrawing 사용
         console.log('첫번째 변환 요청 보냄!!!');
         const formData = new FormData();
-        formData.append('sketchFile', blob, 'drawing1.jpg');
+        formData.append('sketchFile', blob, `${formattedTime}.jpg`);
         formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
         formData.append('subjectId', String(data?.subjectItem.id));
 
@@ -346,19 +390,20 @@ function StageDrawingPage() {
           formData,
         );
         setIsFirstTransform(false);
+        setCanvasId(response.content.canvasId);
         setChangeModalData(response);
-      } else if (!isFirstTransform && changeModalData) {
+      } else if (!isFirstTransform && canvasId) {
         // 이후 변환, patchDrawing 사용
         console.log('두번째 변환 이후 요청 보냄!!!');
         const formData = new FormData();
-        formData.append('file', blob, 'drawing2.jpg');
+        formData.append('file', blob, `${formattedTime}.jpg`);
 
         formData.forEach(function (value, key) {
           console.log(`${key}: ${value}`);
         });
 
         response = await patchDrawing(
-          changeModalData.content.canvasId,
+          canvasId,
           profileState.profileId,
           formData,
         );
@@ -394,13 +439,17 @@ function StageDrawingPage() {
       const convertedImg = await fetch(imageDataURL);
       const blob = await convertedImg.blob();
 
+      // 파일 식별을 위한 변수 생성
+      const now = new Date();
+      const formattedTime = now.toLocaleTimeString();
+
       let response: PostDrawingResponse | null = null;
 
       if (isFirstTransform) {
         // 첫 번째 변환, postDrawing 사용
-        console.log('첫번째 변환 요청 보냄!!!');
+        console.log('첫번째 <완료>요청 보냄!!!');
         const formData = new FormData();
-        formData.append('sketchFile', blob, 'drawing.jpg');
+        formData.append('sketchFile', blob, `${formattedTime}.jpg`);
         formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
         formData.append('subjectId', String(data?.subjectItem.id));
 
@@ -414,11 +463,11 @@ function StageDrawingPage() {
           formData,
         );
         setIsFirstTransform(false);
-      } else if (!isFirstTransform && changeModalData) {
+      } else if (!isFirstTransform && canvasId) {
         // 이후 변환, patchDrawing 사용
-        console.log('두번째 변환 이후 요청 보냄!!!');
+        console.log('두번째 변환 이후 <완료>요청 보냄!!!');
         const formData = new FormData();
-        formData.append('sketchFile', blob, 'drawing.jpg');
+        formData.append('sketchFile', blob, `${formattedTime}.jpg`);
 
         formData.forEach(function (value, key) {
           console.log(`${key}: ${value}`);
@@ -426,7 +475,7 @@ function StageDrawingPage() {
 
         response = await patchDrawing(
           profileState.profileId,
-          changeModalData.content.canvasId,
+          canvasId,
           formData,
         );
 
@@ -434,21 +483,24 @@ function StageDrawingPage() {
         setChangeModalData(response);
       }
 
+      let finishResponse: FirstFinishResponse | SecondFinishResponse;
       // 서버에 이미 기록이 있을 경우 (과거에 플레이해서 기록 생성을 했던 경우)
       if (data.record && currentStageId && response) {
-        patchFinishedDrawing(
+        finishResponse = await patchFinishedDrawing(
           profileState.profileId,
           currentStageId,
           data.record.id,
-          response.content.canvasId,
+          canvasId,
         );
+        setFinishData(finishResponse);
       } else if (!data.record && currentStageId && response) {
         // 서버에 기록이 없는 경우 (처음 플레이 하는 경우)
-        postFirstFinishedDrawing(
+        finishResponse = await postFirstFinishedDrawing(
           profileState.profileId,
           currentStageId,
-          response.content.canvasId,
+          canvasId,
         );
+        setFinishData(finishResponse);
       }
     }
 
