@@ -1,14 +1,10 @@
 import { EventSourcePolyfill } from 'event-source-polyfill';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SERVER_URL = process.env.REACT_APP_API_URL;
 let eventSource: EventSourcePolyfill | null = null;
 
-interface MessageEvent {
-  type: string;
-  target: any;
-  data: string;
-  lastEventId: string;
-}
 export function connectEventSSE(profileId: number): void {
   eventSource = new EventSourcePolyfill(
     `${SERVER_URL}/api/profiles/${profileId}/sse/connects`,
@@ -26,6 +22,11 @@ export function connectEventSSE(profileId: number): void {
   eventSource.onmessage = (event) => {
     const parsedData = JSON.parse(event.data);
     console.log('서버에서 이벤트 수신:', parsedData);
+    toast(parsedData.content, {
+      toastId: parsedData.content,
+      pauseOnHover: false,
+      autoClose: 4000,
+    });
   };
   eventSource.addEventListener('initial', (event) => {
     console.log('연결 시 서버에서 쏘는 데이터', event);

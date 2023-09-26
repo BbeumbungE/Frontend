@@ -1,15 +1,17 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import { UserRupeeState } from '../recoil/rupee/atom';
+import { sseMessageState } from '../recoil/mainalarm/atom';
 import { getProfiles, newProfile } from '../api/profiles';
 import { deleteUser } from '../api/user';
 import { getRupee } from '../api/rupee';
 import theme from '../style/theme';
 import LargeProfile from '../components/organisms/LargeProfileBox';
 import NewProfileBox from '../components/organisms/NewProfileBox';
+import ExitBox from '../components/organisms/ExitBoxOnBlur';
 import PageHeaderText from '../components/atoms/PageHeaderText';
 import DeleteText from '../components/atoms/DeleteText';
 import LargeNewProfileBtn from '../components/atoms/LargeNewProfileBtn';
@@ -34,6 +36,12 @@ const ProfilesContainer = styled.div`
   flex: 1;
 `;
 
+const ExitBoxWrapper = styled.div`
+  position: fixed;
+  top: 3%;
+  left: 0%;
+`;
+
 function FamilyProfilePage() {
   const [textInputValue, setTextInputValue] = useState<string>('');
   const [profiles, setProfiles] = useState<any[]>([]);
@@ -47,6 +55,7 @@ function FamilyProfilePage() {
       try {
         const response = await getProfiles();
         setProfiles(response.content.profileList);
+        console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -76,7 +85,7 @@ function FamilyProfilePage() {
     await setUserRupee({
       rupee: rupeeValue,
     });
-    connectEventSSE(Id);
+    connectEventSSE(userProfile.profileId);
     console.log(userRupee);
     navigate('/menu');
   };
@@ -97,67 +106,77 @@ function FamilyProfilePage() {
   if (isCreating) {
     content =
       profiles.length < 3 ? (
-        <ProfilesContainer>
-          {profiles.map((profile) => (
-            <LargeProfile
-              key={profile.id}
-              ProfileCharacter={
-                profile.profileAvatar.myAvatarItem.item.avatarResponse
-                  .avatarName
-              }
-              ProfileImage={
-                profile.profileAvatar.myAvatarItem.item.avatarResponse
-                  .avatarImage
-              }
-              ProfileName={profile.profileName}
+        <>
+          <ExitBoxWrapper>
+            <ExitBox onClick={() => setIsCreating(false)} color="dark" />
+          </ExitBoxWrapper>
+          <ProfilesContainer>
+            {profiles.map((profile) => (
+              <LargeProfile
+                key={profile.id}
+                ProfileCharacter={
+                  profile.profileAvatar.myAvatarItem.item.avatarResponse
+                    .avatarName
+                }
+                ProfileImage={
+                  profile.profileAvatar.myAvatarItem.item.avatarResponse
+                    .avatarImage
+                }
+                ProfileName={profile.profileName}
+                onClick={() => {
+                  alert('프로필 생성중에는 선택할 수 없어요');
+                }}
+              />
+            ))}
+            <NewProfileBox
+              inputValue={textInputValue}
+              onTextInputChange={setTextInputValue}
+              onClick={() => {
+                console.log(textInputValue);
+                handleCreateProfile();
+                // newProfile(textInputValue);
+                // setTextInputValue('');
+              }}
+            />
+            <LargeNewProfileBtn
               onClick={() => {
                 alert('프로필 생성중에는 선택할 수 없어요');
               }}
             />
-          ))}
-          <NewProfileBox
-            inputValue={textInputValue}
-            onTextInputChange={setTextInputValue}
-            onClick={() => {
-              console.log(textInputValue);
-              handleCreateProfile();
-              // newProfile(textInputValue);
-              // setTextInputValue('');
-            }}
-          />
-          <LargeNewProfileBtn
-            onClick={() => {
-              alert('프로필 생성중에는 선택할 수 없어요');
-            }}
-          />
-        </ProfilesContainer>
+          </ProfilesContainer>
+        </>
       ) : (
-        <ProfilesContainer>
-          {profiles.map((profile) => (
-            <LargeProfile
-              key={profile.id}
-              ProfileCharacter={
-                profile.profileAvatar.myAvatarItem.item.avatarResponse
-                  .avatarName
-              }
-              ProfileImage={
-                profile.profileAvatar.myAvatarItem.item.avatarResponse
-                  .avatarImage
-              }
-              ProfileName={profile.profileName}
+        <>
+          <ExitBoxWrapper>
+            <ExitBox onClick={() => setIsCreating(false)} color="dark" />
+          </ExitBoxWrapper>
+          <ProfilesContainer>
+            {profiles.map((profile) => (
+              <LargeProfile
+                key={profile.id}
+                ProfileCharacter={
+                  profile.profileAvatar.myAvatarItem.item.avatarResponse
+                    .avatarName
+                }
+                ProfileImage={
+                  profile.profileAvatar.myAvatarItem.item.avatarResponse
+                    .avatarImage
+                }
+                ProfileName={profile.profileName}
+                onClick={() => {
+                  alert('프로필 생성중에는 선택할 수 없어요');
+                }}
+              />
+            ))}
+            <NewProfileBox
+              inputValue={textInputValue}
+              onTextInputChange={setTextInputValue}
               onClick={() => {
-                alert('프로필 생성중에는 선택할 수 없어요');
+                handleCreateProfile();
               }}
             />
-          ))}
-          <NewProfileBox
-            inputValue={textInputValue}
-            onTextInputChange={setTextInputValue}
-            onClick={() => {
-              handleCreateProfile();
-            }}
-          />
-        </ProfilesContainer>
+          </ProfilesContainer>
+        </>
       );
   } else {
     content =

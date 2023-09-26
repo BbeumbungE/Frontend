@@ -6,6 +6,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string;
   value: string;
   setInputValue: (value: string) => void;
+  pressEnter: () => void;
 }
 
 // 스타일드 컴포넌트를 사용하여 Text input 스타일링
@@ -37,7 +38,12 @@ const Input = styled.input`
 `;
 
 // Text input Atom 컴포넌트 정의
-function TextInput({ placeholder, value, setInputValue }: InputProps) {
+function TextInput({
+  placeholder,
+  value,
+  setInputValue,
+  pressEnter,
+}: InputProps) {
   // const [inputValue, setInputValue] = useState<string>(value);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +60,7 @@ function TextInput({ placeholder, value, setInputValue }: InputProps) {
         onChange={handleInputChange} // 이벤트 핸들러 함수 연결
         placeholder={placeholder}
         maxLength={6}
+        onMouseEnter={pressEnter}
       />
     </TextInputWrapper>
   );
