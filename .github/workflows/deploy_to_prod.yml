@@ -3,7 +3,7 @@ name: Build and Deploy to Prod Server
 on:
   push:
     branches:
-      - 'main'
+      - 'fe/dev'
 
 jobs:
   build:
