@@ -32,7 +32,7 @@ const LoginButton = styled.button`
 
 const LoginPage = () => {
   const handleButtonClick = () => {
-    window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/kakao`;
+    window.location.href = `${process.env.REACT_APP_KAUTH_URL}`;
   };
 
   return (
