@@ -9,27 +9,40 @@ import CheckingModal from '../components/organisms/CheckingModal';
 import ProgressBar from '../components/atoms/ProgressTimeBar';
 import ExitBox from '../components/organisms/ExitBox';
 import Button from '../components/atoms/Button';
-import { getLevelDetail, postDrawing, patchDrawing } from '../api/drawing';
+import {
+  getLevelDetail,
+  postDrawing,
+  patchDrawing,
+  postFirstFinishedDrawing,
+  patchFinishedDrawing,
+} from '../api/drawing';
 import { ReactComponent as PencilIcon } from '../assets/image/etc/pencil.svg';
 import { ReactComponent as MagicStickIcon } from '../assets/image/etc/magicStick.svg';
 import { ReactComponent as LockIcon } from '../assets/image/etc/drawingLock.svg';
 
-interface SketchList {
+interface Sketch {
   sketchId: number;
   sketchImageUrl: string;
 }
 
-interface ApiResponse {
+interface SubjectItem {
+  id: number;
+  subjectName: string;
+  subjectImage: string;
+  sketchList: Sketch[];
+}
+
+interface Record {
+  id: number;
+  score: number;
+}
+
+interface LevelDetailResponse {
   id: number;
   stageNum: number;
-  point: number;
   timeLimit: number;
-  subject: {
-    id: number;
-    subjectName: string;
-    subjectImage: string;
-    sketchList: SketchList[];
-  };
+  subjectItem: SubjectItem;
+  record: Record;
 }
 
 interface PostDrawingResponse {
@@ -180,7 +193,7 @@ function StageDrawingPage() {
   const stageIdState = useRecoilValue(StageIdState);
   const { currentStageId } = stageIdState;
   const profileState = useRecoilValue(UserProfileState);
-  const [data, setData] = useState<ApiResponse | undefined>();
+  const [data, setData] = useState<LevelDetailResponse>();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | undefined>();
   const [array, setArray] = useState<{ x: number; y: number }[]>([]);
@@ -189,7 +202,7 @@ function StageDrawingPage() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFirstTransform, setIsFirstTransform] = useState<boolean>(true);
   const [changeModalData, setChangeModalData] = useState<PostDrawingResponse>();
-  const [canvasUrl, setCanvasUrl] = useState<string>('');
+  const [canvasUrl, setCanvasUrl] = useState<string | null>('');
   const [isDrawingMode, setIsDrawingMode] = useState<boolean>(true); // 그리기 모드, 지우기 모드 구분
   const cursorRef = useRef<HTMLDivElement | null>(null);
 
@@ -198,7 +211,10 @@ function StageDrawingPage() {
     const getData = async () => {
       try {
         if (currentStageId !== null) {
-          const response = await getLevelDetail(currentStageId);
+          const response = await getLevelDetail(
+            profileState.profileId,
+            currentStageId,
+          );
           setData(response.content);
           console.log('스테이지 단건조회', response);
         } else {
@@ -278,8 +294,6 @@ function StageDrawingPage() {
     }
   };
 
-  console.log('현재 무슨 모드?', isDrawingMode);
-
   const handleClearCanvas = () => {
     if (ctx && canvasRef.current) {
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -287,7 +301,13 @@ function StageDrawingPage() {
     }
   };
 
+  // useEffect(() => {
+  //   setCanvasUrl(String(changeModalData?.content.canvasUrl));
+  // }, [changeModalData]);
+  // console.log('캔버스 아이디 확인', changeModalData);
+
   const handleChange = async () => {
+    setCanvasUrl(null);
     // 화면 잠금, 변환 중 모달 오픈
     setIsLocked(true);
     setIsModalOpen(true);
@@ -310,10 +330,11 @@ function StageDrawingPage() {
 
       if (isFirstTransform) {
         // 첫 번째 변환, postDrawing 사용
+        console.log('첫번째 변환 요청 보냄!!!');
         const formData = new FormData();
         formData.append('sketchFile', blob, 'drawing.jpg');
         formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
-        formData.append('subjectId', String(data?.subject.id));
+        formData.append('subjectId', String(data?.subjectItem.id));
 
         formData.forEach(function (value, key) {
           console.log(`${key}: ${value}`);
@@ -321,12 +342,81 @@ function StageDrawingPage() {
 
         response = await postDrawing(
           profileState.profileId,
-          data.subject.id,
+          data.subjectItem.id,
+          formData,
+        );
+        setIsFirstTransform(false);
+        setChangeModalData(response);
+      } else if (!isFirstTransform && changeModalData) {
+        // 이후 변환, patchDrawing 사용
+        console.log('두번째 변환 이후 요청 보냄!!!');
+        const formData = new FormData();
+        formData.append('file', blob, 'drawing.jpg');
+
+        formData.forEach(function (value, key) {
+          console.log(`${key}: ${value}`);
+        });
+
+        response = await patchDrawing(
+          changeModalData.content.canvasId,
+          profileState.profileId,
+          formData,
+        );
+
+        console.log('변환하기 후 응답!', response);
+        setChangeModalData(response);
+      }
+    }
+
+    // SSE 연결 함수 호출
+    drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
+
+    // SSE 연결 해제 함수 호출
+    // disconnectDrawingSSE();
+  };
+
+  const handleFinish = async () => {
+    // 화면 잠금, 변환 중 모달 오픈
+    setIsLocked(true);
+    setIsModalOpen(true);
+
+    if (canvasRef.current && data) {
+      const imageDataURL = canvasRef.current.toDataURL('image/png');
+
+      // 이미지 데이터 확인을 위한 img 요소 생성
+      const imageElement = new Image();
+      imageElement.src = imageDataURL;
+
+      // 이미지를 콘솔에 출력하여 확인
+      imageElement.onload = () => {
+        console.log('ImageData:', imageDataURL);
+      };
+      const convertedImg = await fetch(imageDataURL);
+      const blob = await convertedImg.blob();
+
+      let response: PostDrawingResponse | null = null;
+
+      if (isFirstTransform) {
+        // 첫 번째 변환, postDrawing 사용
+        console.log('첫번째 변환 요청 보냄!!!');
+        const formData = new FormData();
+        formData.append('sketchFile', blob, 'drawing.jpg');
+        formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
+        formData.append('subjectId', String(data?.subjectItem.id));
+
+        formData.forEach(function (value, key) {
+          console.log(`${key}: ${value}`);
+        });
+
+        response = await postDrawing(
+          profileState.profileId,
+          data.subjectItem.id,
           formData,
         );
         setIsFirstTransform(false);
       } else if (!isFirstTransform && changeModalData) {
         // 이후 변환, patchDrawing 사용
+        console.log('두번째 변환 이후 요청 보냄!!!');
         const formData = new FormData();
         formData.append('sketchFile', blob, 'drawing.jpg');
 
@@ -342,6 +432,23 @@ function StageDrawingPage() {
 
         console.log('변환하기 후 응답!', response);
         setChangeModalData(response);
+      }
+
+      // 서버에 이미 기록이 있을 경우 (과거에 플레이해서 기록 생성을 했던 경우)
+      if (data.record && currentStageId && response) {
+        patchFinishedDrawing(
+          profileState.profileId,
+          currentStageId,
+          data.record.id,
+          response.content.canvasId,
+        );
+      } else if (!data.record && currentStageId && response) {
+        // 서버에 기록이 없는 경우 (처음 플레이 하는 경우)
+        postFirstFinishedDrawing(
+          profileState.profileId,
+          currentStageId,
+          response.content.canvasId,
+        );
       }
     }
 
@@ -369,18 +476,18 @@ function StageDrawingPage() {
   console.log('변환 데이터', changeModalData);
   return (
     <DrawingPageWrapper>
-      {isModalOpen && (
+      {isModalOpen && changeModalData && changeModalData.content.topPost && (
         <>
           <BlurBox />
-          <CheckingModal imgPath={changeModalData?.content.topPost} />
+          <CheckingModal imgPath={changeModalData.content.topPost} />
         </>
       )}
-      {data && data.subject.sketchList.length > 0 && (
+      {data && data.subjectItem && data.subjectItem.sketchList && (
         <>
-          <ProgressBar durationInSeconds={data?.timeLimit} />
+          <ProgressBar durationInSeconds={data.timeLimit} />
           <TopWrapper>
             <ExitBox color="dark" />
-            <Button buttonText="완성 !" color="salmon" />
+            <Button buttonText="완성 !" color="salmon" onClick={handleFinish} />
           </TopWrapper>
           <CanvasWrapper>
             <div
@@ -405,7 +512,7 @@ function StageDrawingPage() {
                 }}
               />
               <SketchImage
-                src={data.subject.sketchList[0].sketchImageUrl || ''}
+                src={data.subjectItem.sketchList[0].sketchImageUrl || ''}
                 alt="이미지"
                 style={{ display: isDrawing ? 'none' : 'block' }}
               />

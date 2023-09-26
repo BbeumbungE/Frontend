@@ -6,24 +6,23 @@ interface SketchList {
   sketchImageUrl: string;
 }
 
-interface levelDetailResponse {
-  status: {
-    httpStatus: string;
-    code: number;
-    message: string;
-  };
-  content: {
+interface RecordData {
+  id: number;
+  score: string;
+}
+
+interface ApiResponse {
+  id: number;
+  itemPrice: number;
+  hasItem: boolean;
+  timeLimit: number;
+  subject: {
     id: number;
-    stageNum: number;
-    point: number;
-    timeLimit: number;
-    subject: {
-      id: number;
-      subjectName: string;
-      subjectImage: string;
-      sketchList: SketchList[];
-    };
+    subjectName: string;
+    subjectImage: string;
+    sketchList: SketchList[];
   };
+  record: RecordData | null;
 }
 
 interface PostDrawingResponse {
@@ -43,18 +42,11 @@ interface Sketch {
   sketchImageUrl: string;
 }
 
-interface Subject {
+interface SubjectItem {
   id: number;
   subjectName: string;
   subjectImage: string;
   sketchList: Sketch[];
-}
-
-interface SubjectItem {
-  id: number;
-  itemPrice: number;
-  hasItem: boolean;
-  subject: Subject;
 }
 
 interface Record {
@@ -62,7 +54,7 @@ interface Record {
   score: number;
 }
 
-interface ApiResponse {
+interface LevelDetailResponse {
   status: {
     httpStatus: string;
     code: number;
@@ -71,17 +63,19 @@ interface ApiResponse {
   content: {
     id: number;
     stageNum: number;
+    timeLimit: number;
     subjectItem: SubjectItem;
     record: Record;
   };
 }
 
 const getLevelDetail = async (
+  profileId: number,
   stageId: number,
-): Promise<levelDetailResponse> => {
+): Promise<LevelDetailResponse> => {
   try {
-    const response: AxiosResponse<levelDetailResponse> = await api.get(
-      `/api/stages/${stageId}`,
+    const response: AxiosResponse<LevelDetailResponse> = await api.get(
+      `/api/profiles/${profileId}/stages/${stageId}`,
     );
     return response.data;
   } catch (error) {
@@ -134,11 +128,17 @@ const patchDrawing = async (
   }
 };
 
-const postFirstFinishedDrawing = async (profileId: number, stageId: number) => {
+const postFirstFinishedDrawing = async (
+  profileId: number,
+  stageId: number,
+  canvasId: number,
+) => {
   try {
+    const jsonData = { canvasId };
     const response = await api.post(
-      `profiles/${profileId}/stages/${stageId}/records
+      `/api/profiles/${profileId}/stages/${stageId}/records
       `,
+      jsonData,
     );
     return response;
   } catch (error) {
@@ -151,11 +151,14 @@ const patchFinishedDrawing = async (
   profileId: number,
   stageId: number,
   recordId: number,
+  canvasId: number,
 ) => {
   try {
+    const jsonData = { canvasId };
     const response = await api.post(
-      `profiles/${profileId}/stages/${stageId}/records/${recordId}
+      `/api/profiles/${profileId}/stages/${stageId}/records/${recordId}
       `,
+      jsonData,
     );
     return response;
   } catch (error) {

@@ -301,8 +301,7 @@ function StageMapPage() {
               stageId={stageId}
               levelData={userLevel.level[selectedLevelIndex].stageNum} // 선택한 레벨 데이터 사용
               imgSrc={
-                userLevel.level[selectedLevelIndex].subjectItem.subject
-                  .subjectImage
+                userLevel.level[selectedLevelIndex].subjectItem.subjectImage
               }
               star={
                 userLevel.level[selectedLevelIndex].record
@@ -346,7 +345,7 @@ function StageMapPage() {
               }
               bottom={120}
               right={1180}
-              imgSrc={userLevel.level[0].subjectItem.subject.subjectImage}
+              imgSrc={userLevel.level[0].subjectItem.subjectImage}
               onClick={() => handleLevelBtnClick(1)}
             />
             <LevelBtn
@@ -358,7 +357,7 @@ function StageMapPage() {
               }
               bottom={280}
               right={730}
-              imgSrc={userLevel.level[1].subjectItem.subject.subjectImage}
+              imgSrc={userLevel.level[1].subjectItem.subjectImage}
               onClick={() => handleLevelBtnClick(2)}
             />
             <LevelBtn
@@ -370,7 +369,7 @@ function StageMapPage() {
               }
               bottom={120}
               right={300}
-              imgSrc={userLevel.level[2].subjectItem.subject.subjectImage}
+              imgSrc={userLevel.level[2].subjectItem.subjectImage}
               onClick={() => handleLevelBtnClick(3)}
             />
           </>
