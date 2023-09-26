@@ -72,7 +72,7 @@ function FamilyProfilePage() {
   useEffect(() => {
     if (isConnect) {
       console.log('연결 시도');
-      connectEventSSE(userProfile.profileId, { onMessage: handleSSEMessage }); // setSSEList를 connectEventSSE 함수로 전달
+      connectEventSSE(userProfile.profileId); // setSSEList를 connectEventSSE 함수로 전달
       setIsConnect(false);
     }
   }, [isConnect, userProfile.profileId]);
