@@ -325,7 +325,7 @@ function StageDrawingPage() {
           formData,
         );
         setIsFirstTransform(false);
-      } else if (changeModalData) {
+      } else if (!isFirstTransform && changeModalData) {
         // 이후 변환, patchDrawing 사용
         const formData = new FormData();
         formData.append('sketchFile', blob, 'drawing.jpg');
@@ -441,7 +441,6 @@ function StageDrawingPage() {
                 onClick={handleChange}
               />
             </BtnFloating>
-            <TransformedImage src={canvasUrl} alt="이미지" />
             {canvasUrl ? (
               <TransformedImage src={canvasUrl} alt="변환된 이미지" />
             ) : (
