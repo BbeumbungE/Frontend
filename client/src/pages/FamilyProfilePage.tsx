@@ -2,11 +2,9 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { UserProfileState } from '../recoil/profile/atom';
 import { UserRupeeState } from '../recoil/rupee/atom';
-import { sseMessageState } from '../recoil/mainalarm/atom';
 import { getProfiles, newProfile } from '../api/profiles';
 import { deleteUser } from '../api/user';
 import { getRupee } from '../api/rupee';
@@ -57,14 +55,12 @@ function FamilyProfilePage() {
       try {
         const response = await getProfiles();
         setProfiles(response.content.profileList);
-        console.log(response);
       } catch (error) {
         console.log(error);
       }
     }
     if (isCreating !== true) {
       loadProfiles();
-      console.log('로딩');
     }
   }, [isCreating]);
 
@@ -74,21 +70,18 @@ function FamilyProfilePage() {
     Img: string,
     Name: string,
   ) => {
-    setUserProfile({
+    await setUserProfile({
       profileId: Id,
       character: Char,
       profileImg: Img,
       nickname: Name,
     });
     const response = await getRupee(Id);
-    console.log(response);
-    console.log(response.content.point);
     const rupeeValue = Number(response.content.point);
     await setUserRupee({
       rupee: rupeeValue,
     });
-    connectEventSSE(userProfile.profileId);
-    console.log(userRupee);
+    connectEventSSE(Id);
     navigate('/menu');
   };
   const handleCreateProfile = async () => {
@@ -156,10 +149,7 @@ function FamilyProfilePage() {
               inputValue={textInputValue}
               onTextInputChange={setTextInputValue}
               onClick={() => {
-                console.log(textInputValue);
                 handleCreateProfile();
-                // newProfile(textInputValue);
-                // setTextInputValue('');
               }}
             />
             <LargeNewProfileBtn
@@ -298,7 +288,6 @@ function FamilyProfilePage() {
             }).then((result) => {
               if (result.isConfirmed) {
                 deleteUser();
-                console.log('탈퇴');
                 navigate('/');
               }
             });
