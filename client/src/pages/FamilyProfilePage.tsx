@@ -288,9 +288,20 @@ function FamilyProfilePage() {
               width: '600px',
             });
           } else {
-            deleteUser();
-            console.log('탈퇴');
-            navigate('/');
+            Swal.fire({
+              title: '정말 탈퇴할까요?',
+              showDenyButton: true,
+              denyButtonText: '아니요',
+              denyButtonColor: `${theme.colors.mainGray}`,
+              confirmButtonColor: `${theme.colors.mainBlue}`,
+              confirmButtonText: '네',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                deleteUser();
+                console.log('탈퇴');
+                navigate('/');
+              }
+            });
           }
         }}
       />
