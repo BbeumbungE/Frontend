@@ -78,4 +78,15 @@ table {
 a{
   text-decoration: none
 }
+/* 기본 글꼴 크기 */
+html {
+  font-size: 16px;
+}
+
+/* 화면 너비가 1025px 미만인 경우 */
+@media (max-width: 1024px) {
+  html {
+    font-size: 12px; /* 작은 화면에 대한 글꼴 크기 설정 */
+  }
+}
 `;

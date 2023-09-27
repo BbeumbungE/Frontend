@@ -9,7 +9,7 @@ interface ViewLeftArrowProps {
 
 const StyledViewLeftArrow = styled(ViewLeftArrowIcon)<ViewLeftArrowProps>`
   cursor: pointer;
-  margin: 5px;
+  margin: 0.3125rem;
 
   ${(props) =>
     props.disabled &&
@@ -17,6 +17,9 @@ const StyledViewLeftArrow = styled(ViewLeftArrowIcon)<ViewLeftArrowProps>`
       fill: gray;
       cursor: default;
     `}
+
+  width: 7.75rem;
+  height: 7.75rem;
 `;
 
 const ViewLeftArrow = ({ onClick, disabled }: ViewLeftArrowProps) => {

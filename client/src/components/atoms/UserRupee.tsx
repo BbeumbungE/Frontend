@@ -6,16 +6,16 @@ import { UserRupeeState } from '../../recoil/rupee/atom';
 const RupeeWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin: 10px;
+  margin: 0.625rem;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0.625rem;
+  right: 0.625rem;
 `;
 
 const RupeeText = styled.span`
   font-family: 'TmoneyRoundWindRegular';
-  margin: 10px;
-  font-size: 30px;
+  margin: 0.625rem;
+  font-size: 1.875rem;
   color: ${(props) => props.theme.colors.mainBlack};
 `;
 

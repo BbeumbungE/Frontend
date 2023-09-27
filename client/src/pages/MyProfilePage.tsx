@@ -52,8 +52,8 @@ const CenteredAlarmBoard = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 520px;
-  margin-top: 22px;
+  height: 32.5rem;
+  margin-top: 1.375rem;
 `;
 const CenteredProfileBoard = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ const CenteredProfileBoard = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-top: 120px;
+  margin-top: 7.5rem;
 `;
 
 const ExitBoxWrapper = styled.div`
@@ -71,8 +71,8 @@ const ExitBoxWrapper = styled.div`
 `;
 
 const CharacterImage = styled.div<{ imgsrc: string }>`
-  width: 300px;
-  height: 300px;
+  width: 18.75rem;
+  height: 18.75rem;
   background-image: url(${(props) => props.imgsrc});
   background-size: cover;
   background-position: center;
@@ -82,7 +82,7 @@ const NicknameText = styled.span`
   display: flex;
   justify-content: center;
   font-family: 'TmoneyRoundWindExtraBold';
-  font-size: 55px;
+  font-size: 3.4375rem;
   align-items: center;
   color: ${(props) => props.theme.colors.mainBlack};
 `;
@@ -176,7 +176,7 @@ function MyProfilePage() {
       const response = await newNickname(profileId, inputText);
       Swal.fire({
         title: '닉네임이 성공적으로 바뀌었어요',
-        width: '600px',
+        width: '37.5rem',
       });
       setUserProfile((prevProfile) => ({
         ...prevProfile,
@@ -187,7 +187,7 @@ function MyProfilePage() {
     } catch (error) {
       Swal.fire({
         title: '다른 닉네임으로 시도해주세요',
-        width: '600px',
+        width: '37.5rem',
       });
     }
   };
