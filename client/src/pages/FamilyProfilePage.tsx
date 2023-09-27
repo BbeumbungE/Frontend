@@ -113,7 +113,7 @@ function FamilyProfilePage() {
           break;
         default:
           Swal.fire({
-            title: '비정상적 접근이에요.',
+            title: '다시 로그인 후 시도해주세요.',
             width: '600px',
           });
       }
