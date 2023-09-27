@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useResetRecoilState } from 'recoil';
+import Swal from 'sweetalert2';
 import theme from '../style/theme';
 import { UserProfileState } from '../recoil/profile/atom';
 import AlarmBoard from '../components/atoms/AlarmBoard';
@@ -170,7 +171,10 @@ function MyProfilePage() {
   const handleNewName = async (profileId: number, inputText: string) => {
     try {
       const response = await newNickname(profileId, inputText);
-      alert('닉네임이 성공적으로 변경되었습니다');
+      Swal.fire({
+        title: '닉네임이 성공적으로 바뀌었어요',
+        width: '600px',
+      });
       setUserProfile((prevProfile) => ({
         ...prevProfile,
         nickname: inputText,
@@ -178,7 +182,10 @@ function MyProfilePage() {
       setTextInputValue('');
       setChangeName(false);
     } catch (error) {
-      alert('닉네임 변경에 실패했습니다. 다른 닉네임으로 시도해주세요');
+      Swal.fire({
+        title: '다른 닉네임으로 시도해주세요',
+        width: '600px',
+      });
     }
   };
 

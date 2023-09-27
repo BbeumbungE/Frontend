@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import { UserRupeeState } from '../recoil/rupee/atom';
@@ -116,10 +117,17 @@ function StorePage() {
           setIsDetail(false);
         }, 3050);
       } catch (error) {
-        alert(error);
+        Swal.fire({
+          title: '에러가 발생했습니다',
+          width: '400px',
+        });
+        console.log(error);
       }
     } else {
-      alert('Rupee가 부족해요');
+      Swal.fire({
+        title: 'Rupee가 부족해요',
+        width: '400px',
+      });
     }
   };
   return (
