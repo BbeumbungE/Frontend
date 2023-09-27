@@ -17,6 +17,7 @@ import NameChangeModal from '../components/organisms/NameChangeModal';
 import ConfirmModal from '../components/organisms/ConfirmModal';
 import { deleteProfile, newNickname } from '../api/profiles';
 import { logoutUser } from '../api/user';
+import { disconnectEventSSE } from '../sse/mainSSE';
 import { getAlarms } from '../api/alarm';
 
 const sampleData = [
@@ -157,12 +158,14 @@ function MyProfilePage() {
 
   const handleLogout = () => {
     resetUserRecoil();
+    disconnectEventSSE();
     localStorage.removeItem('accessToken');
     window.location.href = `https://kauth.kakao.com/oauth/logout?client_id=${process.env.REACT_APP_KAUTH_ID}&logout_redirect_uri=${process.env.REACT_APP_API_URL}/logout`;
   };
 
   const handleDeleteProfile = (profileId: number) => {
     deleteProfile(profileId);
+    disconnectEventSSE();
     setTimeout(() => {
       navigate('/profiles');
     }, 100);
