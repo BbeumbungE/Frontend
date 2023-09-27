@@ -6,7 +6,8 @@ import { StageIdState } from '../recoil/stage/atom';
 import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
 import BlurBox from '../components/atoms/BlurBox';
 import CheckingModal from '../components/organisms/CheckingModal';
-import ProgressBar from '../components/atoms/ProgressTimeBar';
+import StageRecordModal from '../components/organisms/StageRecordModal';
+import ProgressTimeBar from '../components/atoms/ProgressTimeBar';
 import ExitBox from '../components/organisms/ExitBox';
 import Button from '../components/atoms/Button';
 import {
@@ -246,11 +247,13 @@ function StageDrawingPage() {
   const [canvasId, setCanvasId] = useState<number>(-1); // 캔버스 고유 id
   const [isDrawingMode, setIsDrawingMode] = useState<boolean>(true); // 그리기 모드, 지우기 모드 구분
   const cursorRef = useRef<HTMLDivElement | null>(null);
+  const [isFinish, setIsFinish] = useState<boolean>(false);
   const [finishData, setFinishData] = useState<
     FirstFinishResponse | SecondFinishResponse | undefined
   >();
 
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
+  console.log('$$$$$$$$$$완료 데이터', finishData);
   useEffect(() => {
     const getData = async () => {
       try {
@@ -285,6 +288,43 @@ function StageDrawingPage() {
       }
     }
   }, [data]);
+
+  useEffect(() => {
+    // 비동기 함수를 호출하는 도우미 함수를 정의합니다.
+    const fetchData = async () => {
+      let finishResponse: FirstFinishResponse | SecondFinishResponse;
+
+      // 서버에 이미 기록이 있을 경우 (과거에 플레이해서 기록 생성을 했던 경우)
+      if (isFinish && canvasUrl && data && data.record && currentStageId) {
+        finishResponse = await patchFinishedDrawing(
+          profileState.profileId,
+          currentStageId,
+          data.record.id,
+          canvasId,
+        );
+        console.log('서버에 기록 있을 경우', finishResponse);
+        setFinishData(finishResponse);
+      } else if (
+        isFinish &&
+        canvasUrl &&
+        data &&
+        !data.record &&
+        currentStageId
+      ) {
+        // 서버에 기록이 없는 경우 (처음 플레이 하는 경우)
+        finishResponse = await postFirstFinishedDrawing(
+          profileState.profileId,
+          currentStageId,
+          canvasId,
+        );
+        console.log('서버에 기록 없을 경우', finishResponse);
+        setFinishData(finishResponse);
+      }
+    };
+
+    // useEffect 내에서 fetchData 함수를 호출합니다.
+    fetchData();
+  }, [isFinish, canvasUrl]); // isFinish가 변경될 때만 실행됩니다.
 
   const canvasEventListener = (
     event: React.MouseEvent<HTMLCanvasElement>,
@@ -403,8 +443,8 @@ function StageDrawingPage() {
         });
 
         response = await patchDrawing(
-          canvasId,
           profileState.profileId,
+          canvasId,
           formData,
         );
 
@@ -421,6 +461,7 @@ function StageDrawingPage() {
   };
 
   const handleFinish = async () => {
+    setCanvasUrl(null);
     // 화면 잠금, 변환 중 모달 오픈
     setIsLocked(true);
     setIsModalOpen(true);
@@ -443,7 +484,7 @@ function StageDrawingPage() {
       const now = new Date();
       const formattedTime = now.toLocaleTimeString();
 
-      let response: PostDrawingResponse | null = null;
+      let response: PostDrawingResponse;
 
       if (isFirstTransform) {
         // 첫 번째 변환, postDrawing 사용
@@ -463,11 +504,12 @@ function StageDrawingPage() {
           formData,
         );
         setIsFirstTransform(false);
+        setCanvasId(response.content.canvasId);
       } else if (!isFirstTransform && canvasId) {
         // 이후 변환, patchDrawing 사용
         console.log('두번째 변환 이후 <완료>요청 보냄!!!');
         const formData = new FormData();
-        formData.append('sketchFile', blob, `${formattedTime}.jpg`);
+        formData.append('file', blob, `${formattedTime}.jpg`);
 
         formData.forEach(function (value, key) {
           console.log(`${key}: ${value}`);
@@ -483,29 +525,11 @@ function StageDrawingPage() {
         setChangeModalData(response);
       }
 
-      let finishResponse: FirstFinishResponse | SecondFinishResponse;
-      // 서버에 이미 기록이 있을 경우 (과거에 플레이해서 기록 생성을 했던 경우)
-      if (data.record && currentStageId && response) {
-        finishResponse = await patchFinishedDrawing(
-          profileState.profileId,
-          currentStageId,
-          data.record.id,
-          canvasId,
-        );
-        setFinishData(finishResponse);
-      } else if (!data.record && currentStageId && response) {
-        // 서버에 기록이 없는 경우 (처음 플레이 하는 경우)
-        finishResponse = await postFirstFinishedDrawing(
-          profileState.profileId,
-          currentStageId,
-          canvasId,
-        );
-        setFinishData(finishResponse);
-      }
-    }
+      // SSE 연결 함수 호출
+      drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
 
-    // SSE 연결 함수 호출
-    drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
+      setIsFinish(true);
+    }
 
     // SSE 연결 해제 함수 호출
     // disconnectDrawingSSE();
@@ -534,9 +558,18 @@ function StageDrawingPage() {
           <CheckingModal imgPath={changeModalData.content.topPost} />
         </>
       )}
+      {isModalOpen && finishData && (
+        <>
+          <BlurBox />
+          {/* <StageRecordModal finishData={finishData} /> */}
+        </>
+      )}
       {data && data.subjectItem && data.subjectItem.sketchList && (
         <>
-          <ProgressBar durationInSeconds={data.timeLimit} />
+          <ProgressTimeBar
+            durationInSeconds={data.timeLimit}
+            isModalOpen={isModalOpen}
+          />
           <TopWrapper>
             <ExitBox color="dark" />
             <Button buttonText="완성 !" color="salmon" onClick={handleFinish} />

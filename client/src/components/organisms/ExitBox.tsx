@@ -13,6 +13,10 @@ const ExitBoxDiv = styled.div`
   height: 78px;
   align-items: center;
   cursor: pointer;
+  position: fixed;
+  top: 3%;
+  left: 0%;
+  z-index: 500;
 `;
 
 const ExitBox = ({ color }: ExitBoxProps) => {

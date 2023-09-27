@@ -7,6 +7,10 @@ import { ReactComponent as Rupee } from '../../assets/image/etc/rupee.svg';
 import Button from '../atoms/Button';
 import theme from '../../style/theme';
 
+// interface StageRecordModalProps {
+
+// }
+
 const pulseAnimation = keyframes`
   0% {
     opacity: 0.4;

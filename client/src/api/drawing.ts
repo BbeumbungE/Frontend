@@ -147,8 +147,8 @@ const postDrawing = async (
 };
 
 const patchDrawing = async (
-  canvasId: number,
   profileId: number,
+  canvasId: number,
   formData: FormData,
 ): Promise<PostDrawingResponse> => {
   try {
@@ -195,7 +195,7 @@ const patchFinishedDrawing = async (
 ): Promise<SecondFinishResponse> => {
   try {
     const jsonData = { canvasId };
-    const response = await api.post(
+    const response = await api.patch(
       `/api/profiles/${profileId}/stages/${stageId}/records/${recordId}
       `,
       jsonData,

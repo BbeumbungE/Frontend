@@ -3,11 +3,14 @@ import styled, { keyframes, css } from 'styled-components';
 
 interface ProgressBarProps {
   durationInSeconds: number;
+  isModalOpen: boolean;
 }
 
 interface ProgressBarInnerProps {
   progress: number;
   $isRed: boolean;
+  $isModalOpen: boolean;
+  prevWidth: string;
 }
 
 const progressAnimation = keyframes`
@@ -44,9 +47,17 @@ const ProgressBarInner = styled.div<ProgressBarInnerProps>`
   background-color: ${(props) =>
     props.$isRed ? props.theme.stageColors.mainSalmon : '#ffc64a'};
   transition: width 0.2s ease-in-out;
-  animation: ${progressAnimation} ${({ progress }) => progress}s linear;
+  animation: ${({ progress, $isModalOpen, prevWidth }) =>
+    $isModalOpen
+      ? css`
+          animation-play-state: 'paused';
+        `
+      : css`
+          ${progress}s linear ${progressAnimation} forwards;
+          width: ${prevWidth};
+          animation-play-state: 'running';
+        `};
 `;
-
 const RemainSec = styled.span<{ $isRed: boolean }>`
   position: absolute;
   font-size: 25px;
@@ -58,27 +69,35 @@ const RemainSec = styled.span<{ $isRed: boolean }>`
     `};
 `;
 
-function ProgressTimeBar({ durationInSeconds }: ProgressBarProps) {
+function ProgressTimeBar({ durationInSeconds, isModalOpen }: ProgressBarProps) {
   const [remainingTime, setRemainingTime] = useState<number>(durationInSeconds);
+  const [prevWidth, setPrevWidth] = useState<string>('100%');
 
+  console.log('((((((((((((((이전 너비', prevWidth);
   useEffect(() => {
     const interval = setInterval(() => {
-      if (remainingTime > 0) {
+      if (!isModalOpen && remainingTime > 0) {
         setRemainingTime((prevTime) => prevTime - 1);
       } else {
         clearInterval(interval);
+        setPrevWidth(`${100 - (remainingTime / durationInSeconds) * 100}%`);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [durationInSeconds, remainingTime]);
+  }, [durationInSeconds, isModalOpen, remainingTime]);
 
   // remainingTime이 10초 이하면 프로그레스 바 빨간색으로 변경 및 남은 초 애니메이션 추가
   const isRed = remainingTime <= 10;
 
   return (
     <ProgressBarWrapper>
-      <ProgressBarInner $isRed={isRed} progress={durationInSeconds} />
+      <ProgressBarInner
+        $isRed={isRed}
+        progress={durationInSeconds}
+        $isModalOpen={isModalOpen}
+        prevWidth={prevWidth}
+      />
       <RemainSec $isRed={isRed}>{remainingTime}초</RemainSec>
     </ProgressBarWrapper>
   );
