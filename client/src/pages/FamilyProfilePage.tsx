@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import { UserProfileState } from '../recoil/profile/atom';
 import { UserRupeeState } from '../recoil/rupee/atom';
 import { sseMessageState } from '../recoil/mainalarm/atom';
@@ -94,8 +96,27 @@ function FamilyProfilePage() {
       const response = await newProfile(textInputValue);
       setTextInputValue('');
       setIsCreating(false);
-    } catch (error) {
+    } catch (error: any) {
       console.log('프로필 생성 실패: ', error);
+      switch (error.response?.data.code) {
+        case 'P002':
+          Swal.fire({
+            title: '적절하지 않은 닉네임이에요.',
+            width: '600px',
+          });
+          break;
+        case 'P001':
+          Swal.fire({
+            title: '다른 프로필과 중복되는 닉네임이에요.',
+            width: '600px',
+          });
+          break;
+        default:
+          Swal.fire({
+            title: '다시 로그인 후 시도해주세요.',
+            width: '600px',
+          });
+      }
     }
   };
 
@@ -124,7 +145,10 @@ function FamilyProfilePage() {
                 }
                 ProfileName={profile.profileName}
                 onClick={() => {
-                  alert('프로필 생성중에는 선택할 수 없어요');
+                  Swal.fire({
+                    title: '프로필 생성중에는 선택할 수 없어요',
+                    width: '600px',
+                  });
                 }}
               />
             ))}
@@ -140,7 +164,10 @@ function FamilyProfilePage() {
             />
             <LargeNewProfileBtn
               onClick={() => {
-                alert('프로필 생성중에는 선택할 수 없어요');
+                Swal.fire({
+                  title: '프로필 생성중에는 선택할 수 없어요',
+                  width: '600px',
+                });
               }}
             />
           </ProfilesContainer>
@@ -164,7 +191,10 @@ function FamilyProfilePage() {
                 }
                 ProfileName={profile.profileName}
                 onClick={() => {
-                  alert('프로필 생성중에는 선택할 수 없어요');
+                  Swal.fire({
+                    title: '프로필 생성중에는 선택할 수 없어요',
+                    width: '600px',
+                  });
                 }}
               />
             ))}
@@ -253,11 +283,25 @@ function FamilyProfilePage() {
         content="탈퇴하기"
         onClick={() => {
           if (isCreating) {
-            alert('프로필 생성 중에는 탈퇴할 수 없어요');
+            Swal.fire({
+              title: '프로필 생성중에는 선택할 수 없어요',
+              width: '600px',
+            });
           } else {
-            deleteUser();
-            console.log('탈퇴');
-            navigate('/');
+            Swal.fire({
+              title: '정말 탈퇴할까요?',
+              showDenyButton: true,
+              denyButtonText: '아니요',
+              denyButtonColor: `${theme.colors.mainGray}`,
+              confirmButtonColor: `${theme.colors.mainBlue}`,
+              confirmButtonText: '네',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                deleteUser();
+                console.log('탈퇴');
+                navigate('/');
+              }
+            });
           }
         }}
       />

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useResetRecoilState } from 'recoil';
+import Swal from 'sweetalert2';
 import theme from '../style/theme';
 import { UserProfileState } from '../recoil/profile/atom';
 import AlarmBoard from '../components/atoms/AlarmBoard';
@@ -16,6 +17,7 @@ import NameChangeModal from '../components/organisms/NameChangeModal';
 import ConfirmModal from '../components/organisms/ConfirmModal';
 import { deleteProfile, newNickname } from '../api/profiles';
 import { logoutUser } from '../api/user';
+import { disconnectEventSSE } from '../sse/mainSSE';
 import { getAlarms } from '../api/alarm';
 
 const sampleData = [
@@ -156,12 +158,14 @@ function MyProfilePage() {
 
   const handleLogout = () => {
     resetUserRecoil();
+    disconnectEventSSE();
     localStorage.removeItem('accessToken');
     window.location.href = `https://kauth.kakao.com/oauth/logout?client_id=${process.env.REACT_APP_KAUTH_ID}&logout_redirect_uri=${process.env.REACT_APP_API_URL}/logout`;
   };
 
   const handleDeleteProfile = (profileId: number) => {
     deleteProfile(profileId);
+    disconnectEventSSE();
     setTimeout(() => {
       navigate('/profiles');
     }, 100);
@@ -170,7 +174,10 @@ function MyProfilePage() {
   const handleNewName = async (profileId: number, inputText: string) => {
     try {
       const response = await newNickname(profileId, inputText);
-      alert('닉네임이 성공적으로 변경되었습니다');
+      Swal.fire({
+        title: '닉네임이 성공적으로 바뀌었어요',
+        width: '600px',
+      });
       setUserProfile((prevProfile) => ({
         ...prevProfile,
         nickname: inputText,
@@ -178,7 +185,10 @@ function MyProfilePage() {
       setTextInputValue('');
       setChangeName(false);
     } catch (error) {
-      alert('닉네임 변경에 실패했습니다. 다른 닉네임으로 시도해주세요');
+      Swal.fire({
+        title: '다른 닉네임으로 시도해주세요',
+        width: '600px',
+      });
     }
   };
 

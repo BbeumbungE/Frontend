@@ -60,7 +60,11 @@ function TextInput({
         onChange={handleInputChange} // 이벤트 핸들러 함수 연결
         placeholder={placeholder}
         maxLength={6}
-        onMouseEnter={pressEnter}
+        onKeyUp={(event) => {
+          if (event.key === 'Enter') {
+            pressEnter();
+          }
+        }}
       />
     </TextInputWrapper>
   );
