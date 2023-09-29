@@ -188,6 +188,24 @@ const MagicStick = styled(MagicStickIcon)`
   }
 `;
 
+const BackSketchModal = styled.div`
+  width: 500px;
+  display: flex;
+  position: absolute;
+  left: 460px;
+  bottom: 330px;
+  gap: 20px;
+`;
+
+const BackSketchImage = styled.img`
+  background-color: ${(props) => props.theme.colors.mainWhite};
+  border: ${(props) => props.theme.colors.lightGray} solid 2px;
+  width: 200px;
+  height: 200px;
+  border-radius: 25px;
+  cursor: pointer;
+`;
+
 const BtnWrapper = styled.div`
   display: flex;
   gap: 10px;
@@ -251,6 +269,11 @@ function StageDrawingPage() {
   const [finishData, setFinishData] = useState<
     FirstFinishResponse | SecondFinishResponse | undefined
   >();
+  const [selectedBackSketchURL, setSelectedBackSketchImageURL] = useState<
+    string | null
+  >(null);
+  const [isBackSketchModalOpen, setIsBackSketchModalOpen] =
+    useState<boolean>(false);
 
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
   console.log('$$$$$$$$$$완료 데이터', finishData);
@@ -275,6 +298,11 @@ function StageDrawingPage() {
   }, []);
 
   useEffect(() => {
+    if (data) {
+      setSelectedBackSketchImageURL(
+        data.subjectItem.sketchList[0].sketchImageUrl,
+      );
+    }
     const canvas = canvasRef.current;
     if (canvas) {
       const context = canvas.getContext('2d');
@@ -549,6 +577,15 @@ function StageDrawingPage() {
     setIsDrawingMode(false);
   };
 
+  const handleMagicStickClick = () => {
+    setIsBackSketchModalOpen(!isBackSketchModalOpen);
+  };
+
+  const handleBackSketchClick = (sketchImageUrl: string) => {
+    setSelectedBackSketchImageURL(sketchImageUrl);
+    setIsBackSketchModalOpen(false);
+  };
+
   console.log('변환 데이터', changeModalData);
   return (
     <DrawingPageWrapper>
@@ -558,10 +595,10 @@ function StageDrawingPage() {
           <CheckingModal imgPath={changeModalData.content.topPost} />
         </>
       )}
-      {isModalOpen && finishData && (
+      {finishData && (
         <>
           <BlurBox />
-          {/* <StageRecordModal finishData={finishData} /> */}
+          <StageRecordModal finishData={finishData} canvasUrl={canvasUrl} />
         </>
       )}
       {data && data.subjectItem && data.subjectItem.sketchList && (
@@ -569,6 +606,7 @@ function StageDrawingPage() {
           <ProgressTimeBar
             durationInSeconds={data.timeLimit}
             isModalOpen={isModalOpen}
+            onComplete={handleFinish}
           />
           <TopWrapper>
             <ExitBox color="dark" />
@@ -597,7 +635,7 @@ function StageDrawingPage() {
                 }}
               />
               <SketchImage
-                src={data.subjectItem.sketchList[0].sketchImageUrl || ''}
+                src={selectedBackSketchURL ?? ''}
                 alt="이미지"
                 style={{ display: isDrawing ? 'none' : 'block' }}
               />
@@ -643,7 +681,27 @@ function StageDrawingPage() {
             <ToolWrapper>
               <Pencil onClick={handlePencil} />
               <Eraser onClick={handleEraser} />
-              <MagicStick />
+              <MagicStick onClick={handleMagicStickClick} />
+              {isBackSketchModalOpen && (
+                <BackSketchModal>
+                  {data.subjectItem.sketchList.map((sketch, index) => (
+                    <BackSketchImage
+                      key={sketch.sketchImageUrl}
+                      src={sketch.sketchImageUrl}
+                      alt="밑그림"
+                      onClick={() =>
+                        handleBackSketchClick(sketch.sketchImageUrl)
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleBackSketchClick(sketch.sketchImageUrl);
+                        }
+                      }}
+                      tabIndex={index}
+                    />
+                  ))}
+                </BackSketchModal>
+              )}
             </ToolWrapper>
             <BtnWrapper>
               <Button

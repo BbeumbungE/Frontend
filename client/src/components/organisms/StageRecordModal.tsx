@@ -1,15 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { useEffect } from 'react';
 import { UserProfileState } from '../../recoil/profile/atom';
+import { UserRupeeState } from '../../recoil/rupee/atom';
 import BlurBox from '../atoms/BlurBox';
 import LevelStars from './LevelStars';
 import { ReactComponent as Rupee } from '../../assets/image/etc/rupee.svg';
 import Button from '../atoms/Button';
 import theme from '../../style/theme';
-
-// interface StageRecordModalProps {
-
-// }
 
 interface PointInfo {
   currentPoint: number;
@@ -17,17 +16,23 @@ interface PointInfo {
   rewardPoint: number;
 }
 
+interface Content {
+  id: number;
+  pointInfo: PointInfo;
+  score: number;
+}
 interface Status {
   code: number;
   httpStatus: string;
   message: string;
 }
 
-interface DaStageRecordModalPropsta {
-  id: number;
-  pointInfo: PointInfo;
-  score: number;
-  status: Status;
+interface StageRecordModalProps {
+  finishData: {
+    content: Content;
+    status: Status;
+  };
+  canvasUrl: string | null;
 }
 
 const pulseAnimation = keyframes`
@@ -88,7 +93,7 @@ const Star = styled.div`
 
 const ModalWrapper = styled.div`
   position: fixed;
-  top: 200px;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   margin-top: 50px;
@@ -104,8 +109,8 @@ const ModalWrapper = styled.div`
 `;
 
 const TopImage = styled.img`
-  width: 350px;
-  height: 350px;
+  width: 380px;
+  height: 380px;
   margin-right: auto;
   margin-left: auto;
   margin-bottom: 15px;
@@ -179,34 +184,47 @@ const CharacterImage = styled.div<{
   animation: ${jumpAnimation} 1s infinite;
 `;
 
-function StageRecordModal() {
+function StageRecordModal({ finishData, canvasUrl }: StageRecordModalProps) {
+  const navigate = useNavigate();
   const userProfile = useRecoilValue(UserProfileState);
+  const [userRupee, setUserRupee] = useRecoilState(UserRupeeState);
+
+  useEffect(() => {
+    const updatedRupee =
+      userRupee.rupee + finishData.content.pointInfo.currentPoint;
+    setUserRupee({ rupee: updatedRupee });
+  }, []);
+  console.log('업데이트한 루피!', userRupee);
+
+  const handleConfirm = () => {
+    navigate('/stage');
+  };
 
   return (
     <>
-      <BlurBox />
       <ModalWrapper>
-        <LevelStars star={2} />
-
+        <LevelStars star={finishData.content.score} />
         <Star />
-        {/* {imgPath ? ( */}
-        <TopImage
-          src="https://aicanvas-mw.s3.ap-northeast-2.amazonaws.com/profile/25/canvas/shoe/1695365797316175902.JPG"
-          alt="최종 변환된 그림"
-        />
-        {/* ) : (
-        <TopImageSkeleton />
-      )} */}
+        {canvasUrl ? (
+          <TopImage src={canvasUrl} alt="최종 변환된 그림" />
+        ) : (
+          <TopImageSkeleton />
+        )}
         <ModalText>축하합니다</ModalText>
         <RupeeWrapper>
           <RupeeIcon />
-          <RupeeText>40</RupeeText>
+          <RupeeText>{finishData.content.pointInfo.currentPoint}</RupeeText>
         </RupeeWrapper>
-        <Button buttonText="확인" color="salmon" borderColor="#F24F41" />
+        <Button
+          buttonText="확인"
+          color="salmon"
+          borderColor="#F24F41"
+          onClick={handleConfirm}
+        />
       </ModalWrapper>
       <CharacterImage
         $bgImage={userProfile.profileImg}
-        $position={{ left: 0, bottom: 0 }}
+        $position={{ left: 0, bottom: -100 }}
       />
     </>
   );

@@ -4,6 +4,7 @@ import styled, { keyframes, css } from 'styled-components';
 interface ProgressBarProps {
   durationInSeconds: number;
   isModalOpen: boolean;
+  onComplete: () => void;
 }
 
 interface ProgressBarInnerProps {
@@ -69,23 +70,35 @@ const RemainSec = styled.span<{ $isRed: boolean }>`
     `};
 `;
 
-function ProgressTimeBar({ durationInSeconds, isModalOpen }: ProgressBarProps) {
+function ProgressTimeBar({
+  durationInSeconds,
+  isModalOpen,
+  onComplete,
+}: ProgressBarProps) {
   const [remainingTime, setRemainingTime] = useState<number>(durationInSeconds);
   const [prevWidth, setPrevWidth] = useState<string>('100%');
 
   console.log('((((((((((((((이전 너비', prevWidth);
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isModalOpen && remainingTime > 0) {
-        setRemainingTime((prevTime) => prevTime - 1);
-      } else {
-        clearInterval(interval);
-        setPrevWidth(`${100 - (remainingTime / durationInSeconds) * 100}%`);
-      }
-    }, 1000);
+    let interval: NodeJS.Timeout | null = null;
 
-    return () => clearInterval(interval);
-  }, [durationInSeconds, isModalOpen, remainingTime]);
+    const handleInterval = () => {
+      if (!isModalOpen) {
+        setRemainingTime((prevTime) => prevTime - 1);
+        if (remainingTime === 0) {
+          onComplete();
+        }
+      }
+    };
+
+    interval = setInterval(handleInterval, 1000);
+
+    return () => {
+      if (interval) {
+        clearInterval(interval); // 컴포넌트가 언마운트될 때 interval 해제
+      }
+    };
+  }, [durationInSeconds, isModalOpen, remainingTime, onComplete]);
 
   // remainingTime이 10초 이하면 프로그레스 바 빨간색으로 변경 및 남은 초 애니메이션 추가
   const isRed = remainingTime <= 10;
