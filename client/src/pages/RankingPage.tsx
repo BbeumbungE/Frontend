@@ -47,7 +47,7 @@ const ExitBoxOnBlurWrapper = styled.div`
   position: fixed;
   top: 3%;
   left: 0%;
-  z-index: 300;
+  z-index: 402;
 `;
 
 // 현재 주차 계산 function

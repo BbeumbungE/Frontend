@@ -14,7 +14,7 @@ const CenterDiv = styled.div`
   top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 105;
+  z-index: 405;
 `;
 
 const ItemDiv = styled.div`
@@ -22,7 +22,7 @@ const ItemDiv = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  z-index: 105;
+  z-index: 405;
   margin: 0.9375rem 1.5625rem;
 `;
 
@@ -45,7 +45,7 @@ const ImageDiv = styled.div<{ itemimg: string }>`
   padding: 0;
   border: 0;
   margin: 0.9375rem;
-  z-index: 105;
+  z-index: 405;
   &:hover {
     transform: translateY(-0.875rem); /* 마우스 오버 시 위로 이동 */
     transition: transform 0.2s ease-in-out; /* 천천히 돌아오도록 트랜지션 설정 */
@@ -58,7 +58,7 @@ const ButtonDiv = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 1.25rem;
-  z-index: 105;
+  z-index: 405;
 `;
 
 const DetailStoreItem = ({

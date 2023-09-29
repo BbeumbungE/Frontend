@@ -13,7 +13,7 @@ const CenterDiv = styled.div`
   top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 105;
+  z-index: 405;
 `;
 
 const ItemDiv = styled.div`
@@ -21,7 +21,7 @@ const ItemDiv = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  z-index: 105;
+  z-index: 405;
   margin: 0.9375rem 1.5625rem;
 `;
 
@@ -44,7 +44,7 @@ const ImageDiv = styled.div<{ itemimg: string }>`
   padding: 0;
   border: 0;
   margin: 0.9375rem;
-  z-index: 105;
+  z-index: 405;
   &:hover {
     transform: translateY(-0.875rem); /* 마우스 오버 시 위로 이동 */
     transition: transform 0.2s ease-in-out; /* 천천히 돌아오도록 트랜지션 설정 */
@@ -58,7 +58,7 @@ const BarDiv = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 1.5625rem;
-  z-index: 107;
+  z-index: 407;
 `;
 
 const StampAnimation = keyframes`
@@ -81,7 +81,9 @@ const StampImage = styled.img`
   top: 30%;
   left: 5%;
   animation: ${StampAnimation} 1s ease-in-out;
-  z-index: 106;
+  z-index: 406;
+  width: 24.9375rem;
+  height: 16.5625rem;
 `;
 
 const DetailStoreItemBuy = ({

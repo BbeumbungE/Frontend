@@ -72,23 +72,18 @@ function StorePage() {
 
   useEffect(() => {
     loadItems(userProfile.profileId, curPage);
-    console.log(itemList);
   }, [isAvatar, isTitle, curPage]);
   async function loadItems(profileId: number, currentPage: number) {
-    console.log(userRupee);
-
     try {
       if (isAvatar) {
         const response = await getAvatars(profileId, currentPage);
         const newItems = { ...response.content };
         await setItemList(newItems);
-        console.log(newItems);
       }
       if (isTitle) {
         const response = await getPictureTitles(profileId, currentPage);
         const newItems = { ...response.content };
         await setItemList(newItems);
-        console.log(newItems);
       }
     } catch (error) {
       console.log(error);
@@ -96,16 +91,13 @@ function StorePage() {
   }
   const handleBuy = async (profileId: number, itemId: number) => {
     const curRupee = userRupee.rupee;
-    console.log(curRupee);
     if (curRupee >= detailPrice) {
       try {
         if (isAvatar) {
           const response = await buyItem(profileId, itemId, 'avatar');
-          console.log(response);
         }
         if (isTitle) {
           const response = await buyItem(profileId, itemId, 'subject');
-          console.log(response);
         }
         setIsBuy(true);
         setUserRupee((prevRupee) => ({ rupee: prevRupee.rupee - detailPrice }));
@@ -119,14 +111,13 @@ function StorePage() {
       } catch (error) {
         Swal.fire({
           title: '에러가 발생했습니다',
-          width: '25rem',
+          width: '400px',
         });
-        console.log(error);
       }
     } else {
       Swal.fire({
         title: 'Rupee가 부족해요',
-        width: '25rem',
+        width: '400px',
       });
     }
   };

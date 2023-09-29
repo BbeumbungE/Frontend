@@ -10,6 +10,7 @@ const EmojiSpanDiv = styled.div`
   font-size: 40px;
   font-family: 'TmoneyRoundWindExtraBold';
   color: ${theme.colors.mainWhite};
+  text-shadow: 0px 0px 5px black;
 `;
 
 function EmojiCounter({ count }: EmojiCountProps) {

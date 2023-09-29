@@ -14,7 +14,7 @@ const EmojiWrapper = styled.div`
   display: inline-block;
   cursor: pointer;
   z-index: 300;
-  margin-right: 3px;
+  margin-right: 0.1875rem;
 `;
 
 const Emoji = ({ emotion, onClick, isPressed }: EmojiProps) => {
