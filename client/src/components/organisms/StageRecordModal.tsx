@@ -11,6 +11,25 @@ import theme from '../../style/theme';
 
 // }
 
+interface PointInfo {
+  currentPoint: number;
+  previousPoint: number;
+  rewardPoint: number;
+}
+
+interface Status {
+  code: number;
+  httpStatus: string;
+  message: string;
+}
+
+interface DaStageRecordModalPropsta {
+  id: number;
+  pointInfo: PointInfo;
+  score: number;
+  status: Status;
+}
+
 const pulseAnimation = keyframes`
   0% {
     opacity: 0.4;
