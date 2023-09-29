@@ -1,5 +1,7 @@
 import { atom } from 'recoil';
+import { recoilPersist } from 'recoil-persist';
 
+const { persistAtom } = recoilPersist();
 interface UserProfile {
   profileId: number;
   character: string;
@@ -15,4 +17,5 @@ export const UserProfileState = atom<UserProfile>({
     profileImg: `${process.env.REACT_APP_IMG_URL}/item/avatar/hamster.png`,
     nickname: '론빵이',
   },
+  effects_UNSTABLE: [persistAtom],
 });
