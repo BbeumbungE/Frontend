@@ -92,14 +92,14 @@ const ExitBoxOnBlurWrapper = styled.div`
   position: fixed;
   top: 3%;
   left: 0%;
-  z-index: 300;
+  z-index: 405;
 `;
 
 const WhiteModalWrapper = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 300;
+  z-index: 405;
   transform: translate(-50%, -50%);
 `;
 
@@ -237,7 +237,7 @@ function MyProfilePage() {
           <BlurBox />
           <WhiteModalWrapper>
             <ConfirmModal
-              title="정말로 로그아웃 할까요?"
+              title="정말 로그아웃 할까요?"
               noCheck={() => setIsLogout(false)}
               okCheck={() => {
                 handleLogout();
