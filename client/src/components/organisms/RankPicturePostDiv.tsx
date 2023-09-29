@@ -10,12 +10,12 @@ interface RankPicturePostDivProps {
 }
 
 const RankDiv = styled.div`
-  width: 240px;
-  height: 260px;
+  width: 15rem;
+  height: 16.25rem;
   padding: 0;
   border: 0;
   position: relative;
-  margin: 10px;
+  margin: 0.625rem;
 `;
 
 const RankPicturePostDiv = ({

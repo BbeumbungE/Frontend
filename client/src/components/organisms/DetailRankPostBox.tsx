@@ -27,8 +27,8 @@ const CenterDiv = styled.div`
 `;
 
 const DetailPostBoxDiv = styled.div`
-  width: 577px;
-  height: 600px;
+  width: 36.0625rem;
+  height: 37.5rem;
   padding: 0;
   border: 0;
   position: relative;
@@ -36,7 +36,7 @@ const DetailPostBoxDiv = styled.div`
 
 const EmojiWrapperDiv = styled.div`
   position: relative;
-  width: 550px;
+  width: 34.375rem;
   bottom: 7%;
   left: 27%;
 `;
@@ -45,7 +45,7 @@ const RankTextWrapperDiv = styled.div`
   position: absolute;
   bottom: -5%;
   left: 0%;
-  width: 2px;
+  width: 0.125rem;
 `;
 
 const DetailPostBox = ({

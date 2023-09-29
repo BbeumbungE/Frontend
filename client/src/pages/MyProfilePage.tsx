@@ -16,7 +16,6 @@ import BlurBox from '../components/atoms/BlurBox';
 import NameChangeModal from '../components/organisms/NameChangeModal';
 import ConfirmModal from '../components/organisms/ConfirmModal';
 import { deleteProfile, newNickname } from '../api/profiles';
-import { logoutUser } from '../api/user';
 import { disconnectEventSSE } from '../sse/mainSSE';
 import { getAlarms } from '../api/alarm';
 
@@ -38,6 +37,7 @@ const LeftContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
   background-color: ${theme.hamsterColors.sky};
 `;
@@ -47,6 +47,7 @@ const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 const CenteredAlarmBoard = styled.div`
   align-items: center;

@@ -7,8 +7,8 @@ interface PicturePostDivProps {
 }
 
 const PicturePostDiv = styled.div<PicturePostDivProps>`
-  width: 240px;
-  height: 240px;
+  width: 15rem;
+  height: 15rem;
   background-image: ${({ imgSrc }) => (imgSrc ? `url(${imgSrc})` : 'none')};
   background-color: ${({ imgSrc }) =>
     imgSrc ? 'transparent' : theme.colors.mainGray};
@@ -17,7 +17,7 @@ const PicturePostDiv = styled.div<PicturePostDivProps>`
   cursor: ${({ imgSrc }) => (imgSrc ? 'pointer' : 'default')};
   padding: 0;
   border: 0;
-  margin: 10px;
+  margin: 0.625rem;
 `;
 
 const PicturePost = ({ imgSrc = '', onClick }: PicturePostDivProps) => {

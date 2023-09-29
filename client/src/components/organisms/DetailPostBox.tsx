@@ -25,13 +25,13 @@ const CenterDiv = styled.div`
 `;
 
 const DetailPostBoxDiv = styled.div`
-  width: 577px;
-  height: 600px;
+  width: 36.0625rem;
+  height: 37.5rem;
 `;
 
 const EmojiWrapperDiv = styled.div`
   position: relative;
-  width: 550px;
+  width: 34.375rem;
   bottom: 7%;
   left: 27%;
 `;
