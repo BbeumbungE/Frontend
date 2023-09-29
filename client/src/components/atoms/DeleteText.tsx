@@ -7,13 +7,13 @@ interface DeleteTextProps {
 }
 
 const DeleteSpan = styled.span`
-  font-size: 30px;
+  font-size: 1.875rem;
   font-family: 'TmoneyRoundWindRegular';
   color: ${theme.colors.mainGray};
   text-align: center;
   text-decoration: underline;
   cursor: pointer;
-  margin-top: 50px;
+  margin-top: 3.125rem;
 `;
 
 const DeleteText = ({ content, onClick }: DeleteTextProps) => {

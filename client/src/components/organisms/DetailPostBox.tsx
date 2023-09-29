@@ -21,7 +21,7 @@ const CenterDiv = styled.div`
   top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 200;
+  z-index: 500;
 `;
 
 const DetailPostBoxDiv = styled.div`

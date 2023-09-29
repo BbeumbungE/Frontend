@@ -9,15 +9,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const StyledButton = styled.button`
   font-family: 'TmoneyRoundWindExtraBold';
   display: inline-block;
-  min-width: 100px;
-  height: 62px;
-  border-radius: 15px;
+  min-width: 6.25rem;
+  height: 3.875rem;
+  border-radius: 0.9375rem;
   text-align: center;
   transition: all 0.3s ease-in-out;
   background-color: ${theme.colors.mainBlue};
   border: none;
   cursor: pointer;
-  font-size: 30px;
+  font-size: 1.875rem;
   color: ${theme.colors.mainWhite};
 `;
 

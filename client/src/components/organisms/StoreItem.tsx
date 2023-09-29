@@ -17,13 +17,13 @@ const ItemDiv = styled.div`
   align-items: center;
   position: relative;
   z-index: 1;
-  margin: 15px 25px;
+  margin: 0.9375rem 1.5625rem;
 `;
 
 const CircleDiv = styled.div`
   position: absolute;
-  width: 210px;
-  height: 178px;
+  width: 13.125rem;
+  height: 11.125rem;
   top: 33%;
   border-radius: 50%;
   background-color: ${theme.colors.mainWhite};
@@ -31,16 +31,16 @@ const CircleDiv = styled.div`
 `;
 
 const ImageDiv = styled.div<{ itemimg: string }>`
-  width: 177px;
-  height: 177px;
+  width: 11.0625rem;
+  height: 11.0625rem;
   background-image: ${({ itemimg }) => (itemimg ? `url(${itemimg})` : 'none')};
   background-size: cover;
   background-position: center;
   padding: 0;
   border: 0;
-  margin: 2px;
+  margin: 0.125rem;
   &:hover {
-    transform: translateY(-10px); /* 마우스 오버 시 위로 이동 */
+    transform: translateY(-0.625rem); /* 마우스 오버 시 위로 이동 */
     transition: transform 0.1s ease-in-out; /* 천천히 돌아오도록 트랜지션 설정 */
   }
 `;

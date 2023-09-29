@@ -11,8 +11,8 @@ interface NicknameInputBoxProps {
 
 const NicknameInputBoxDiv = styled.div`
   display: flex;
-  width: 342px;
-  height: 65px;
+  width: 21.375rem;
+  height: 4.0625rem;
   align-items: center;
 `;
 

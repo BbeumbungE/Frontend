@@ -11,9 +11,9 @@ interface ButtonProps {
 const StyledButton = styled.button<{ $bgColor: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
   display: inline-block;
-  height: 83px;
-  margin: 5px;
-  border-radius: 50px;
+  height: 5.1875rem;
+  margin: 0.3125rem;
+  border-radius: 3.125rem;
   text-align: center;
   transition: all 0.3s ease-in-out;
   background-color: ${(props) => props.$bgColor};
@@ -22,12 +22,12 @@ const StyledButton = styled.button<{ $bgColor: string }>`
 `;
 
 const ButtonText = styled.span<{ $fontColor: string }>`
-  font-size: 25px;
+  font-size: 1.5625rem;
   color: ${(props) => props.$fontColor};
-  margin-top: 24px;
-  margin-bottom: 24px;
-  margin-right: 34px;
-  margin-left: 34px;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-right: 2.125rem;
+  margin-left: 2.125rem;
   white-space: pre-wrap;
 `;
 
@@ -82,7 +82,7 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
   }
 
   if (borderColor) {
-    buttonBorder = `6px solid ${borderColor}`;
+    buttonBorder = `0.375rem solid ${borderColor}`;
   }
 
   return (

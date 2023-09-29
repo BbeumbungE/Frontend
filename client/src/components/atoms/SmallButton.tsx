@@ -12,9 +12,9 @@ interface ButtonProps {
 const StyledButton = styled.button<{ $bgColor: string; $cursor: string }>`
   font-family: 'TmoneyRoundWindExtraBold';
   display: inline-block;
-  height: 63px;
+  height: 3.9375rem;
   margin: 0;
-  border-radius: 50px;
+  border-radius: 3.125rem;
   text-align: center;
   transition: all 0.3s ease-in-out;
   background-color: ${(props) => props.$bgColor};
@@ -23,12 +23,12 @@ const StyledButton = styled.button<{ $bgColor: string; $cursor: string }>`
 `;
 
 const ButtonText = styled.span<{ $fontColor: string }>`
-  font-size: 21px;
+  font-size: 1.3125rem;
   color: ${(props) => props.$fontColor};
-  margin-top: 4px;
-  margin-bottom: 4px;
-  margin-right: 5px;
-  margin-left: 5px;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  margin-right: 0.3125rem;
+  margin-left: 0.3125rem;
   white-space: pre-wrap;
 `;
 
@@ -85,7 +85,7 @@ function SmallButton({
   }
 
   if (borderColor) {
-    buttonBorder = `3px solid ${borderColor}`;
+    buttonBorder = `0.1875rem solid ${borderColor}`;
   }
 
   return (

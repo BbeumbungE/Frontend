@@ -23,17 +23,19 @@ const ProfilesPageContainer = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: ${theme.colors.mainSkyblue};
-  padding: 80px;
+  padding: 5rem;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ProfilesContainer = styled.div`
   display: flex;
   flex-direction: row;
-  height: 420px;
-  margin-top: 50px;
+  height: 26.25rem;
+  margin-top: 3.125rem;
   align-items: flex-start;
   justify-content: center;
-  flex: 1;
+  /* flex: 1; */
 `;
 
 const ExitBoxWrapper = styled.div`
@@ -95,19 +97,19 @@ function FamilyProfilePage() {
         case 'P002':
           Swal.fire({
             title: '적절하지 않은 닉네임이에요.',
-            width: '600px',
+            width: '37.5rem',
           });
           break;
         case 'P001':
           Swal.fire({
             title: '다른 프로필과 중복되는 닉네임이에요.',
-            width: '600px',
+            width: '37.5rem',
           });
           break;
         default:
           Swal.fire({
             title: '다시 로그인 후 시도해주세요.',
-            width: '600px',
+            width: '37.5rem',
           });
       }
     }
@@ -140,7 +142,7 @@ function FamilyProfilePage() {
                 onClick={() => {
                   Swal.fire({
                     title: '프로필 생성중에는 선택할 수 없어요',
-                    width: '600px',
+                    width: '37.5rem',
                   });
                 }}
               />
@@ -156,7 +158,7 @@ function FamilyProfilePage() {
               onClick={() => {
                 Swal.fire({
                   title: '프로필 생성중에는 선택할 수 없어요',
-                  width: '600px',
+                  width: '37.5rem',
                 });
               }}
             />
@@ -183,7 +185,7 @@ function FamilyProfilePage() {
                 onClick={() => {
                   Swal.fire({
                     title: '프로필 생성중에는 선택할 수 없어요',
-                    width: '600px',
+                    width: '37.5rem',
                   });
                 }}
               />
@@ -266,7 +268,7 @@ function FamilyProfilePage() {
       <PageHeaderText
         content="프로필을 선택해주세요"
         color="dark"
-        fontSize="90px"
+        fontSize="5.625rem"
       />
       {content}
       <DeleteText
@@ -275,7 +277,7 @@ function FamilyProfilePage() {
           if (isCreating) {
             Swal.fire({
               title: '프로필 생성중에는 선택할 수 없어요',
-              width: '600px',
+              width: '37.5rem',
             });
           } else {
             Swal.fire({

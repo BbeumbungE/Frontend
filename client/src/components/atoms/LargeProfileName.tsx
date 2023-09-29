@@ -6,10 +6,10 @@ interface LargeProfileNameProps {
 }
 
 const ProfileNameWrapper = styled.div`
-  margin-top: 13px;
+  margin-top: 0.8125rem;
   text-align: center;
   padding: 0;
-  font-size: 40px;
+  font-size: 2.5rem;
   font-family: 'TmoneyRoundWindRegular';
   color: ${theme.colors.mainBlack};
 `;

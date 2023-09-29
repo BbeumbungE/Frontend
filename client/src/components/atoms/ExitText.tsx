@@ -6,7 +6,7 @@ interface ExitTextProps {
 }
 
 const ExitSpan = styled.span<{ $txColor: string }>`
-  font-size: 25px;
+  font-size: 1.5625rem;
   font-family: 'TmoneyRoundWindExtraBold';
   color: ${(props) => props.$txColor};
   cursor: pointer;

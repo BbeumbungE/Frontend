@@ -8,20 +8,20 @@ interface RupeeProps {
 const RupeeWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin: 5px;
+  margin: 0.3125rem;
   z-index: 105;
 `;
 
 const LargeRupee = styled(Rupee)`
-  width: 42px;
-  height: 42px;
-  margin: 6px;
+  width: 2.625rem;
+  height: 2.625rem;
+  margin: 0.375rem;
 `;
 
 const RupeeText = styled.span`
   font-family: 'TmoneyRoundWindRegular';
-  margin: 4px;
-  font-size: 40px;
+  margin: 0.25rem;
+  font-size: 2.5rem;
   /* color: ${(props) => props.theme.colors.mainBlack}; */
   color: #000000;
 `;

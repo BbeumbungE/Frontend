@@ -9,9 +9,9 @@ interface ViewRightArrowProps {
 
 const StyledViewRightArrow = styled(ViewRightArrowIcon)<ViewRightArrowProps>`
   cursor: pointer;
-  margin: 5px;
-  width: 60px;
-  height: 60px;
+  margin: 0.3125rem;
+  width: 3.75rem;
+  height: 3.75rem;
 
   ${(props) =>
     props.disabled &&

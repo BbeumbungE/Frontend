@@ -14,7 +14,7 @@ const ButtonDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 630px;
+  width: 39.375rem;
   top: 50%;
   position: absolute;
   transform: translateY(-50%);
@@ -22,8 +22,8 @@ const ButtonDiv = styled.div`
 `;
 
 const PointableSpace = styled.div`
-  border: 0px;
-  margin: 0px;
+  border: 0rem;
+  margin: 0rem;
   pointer-events: auto;
 `;
 const PageChangeButton = ({

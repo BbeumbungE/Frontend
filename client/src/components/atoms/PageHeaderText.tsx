@@ -9,11 +9,12 @@ interface PageHeaderTextProps {
 
 const PageHeaderSpan = styled.span<{ txColor: string; fontSize?: string }>`
   font-size: ${(props) =>
-    props.fontSize || '90px'}; // fontSize를 props로 받거나 기본값은 '90px'
+    props.fontSize ||
+    '5.625rem'}; // fontSize를 props로 받거나 기본값은 '5.625rem'
   font-family: 'TmoneyRoundWindExtraBold';
   color: ${(props) => props.txColor};
   text-align: center;
-  margin-bottom: 3px;
+  margin-bottom: 0.1875rem;
 `;
 
 function SpanColor(color: string) {

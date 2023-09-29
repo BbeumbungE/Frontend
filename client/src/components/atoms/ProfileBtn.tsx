@@ -20,9 +20,9 @@ const StyledCharacter = styled.div<{ $bgColor: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 100px;
-  margin: 10px;
+  width: 6.25rem;
+  height: 6.25rem;
+  margin: 0.625rem;
   border-radius: 50%;
   text-align: center;
   transition: all 0.3s ease-in-out;
@@ -32,8 +32,8 @@ const StyledCharacter = styled.div<{ $bgColor: string }>`
 `;
 
 const CharacterImage = styled.div<{ $bgImage: string | null }>`
-  width: 80px;
-  height: 80px;
+  width: 5rem;
+  height: 5rem;
   background-image: url(${(props) => props.$bgImage});
   background-size: cover;
   background-repeat: no-repeat;
@@ -42,7 +42,7 @@ const CharacterImage = styled.div<{ $bgImage: string | null }>`
 
 const ModalText = styled.span`
   font-family: 'TmoneyRoundWindRegular';
-  font-size: 30px;
+  font-size: 1.875rem;
   color: ${(props) => props.theme.colors.mainBlack};
 `;
 

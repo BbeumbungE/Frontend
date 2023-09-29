@@ -23,8 +23,8 @@ const ButtonDiv = styled.div`
 `;
 
 const PointableSpace = styled.div`
-  border: 0px;
-  margin: 0px;
+  border: 0rem;
+  margin: 0rem;
   pointer-events: auto;
 `;
 

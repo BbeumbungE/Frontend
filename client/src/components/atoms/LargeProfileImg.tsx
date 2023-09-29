@@ -17,10 +17,10 @@ const ProfileWrapper = styled.div`
 
 const StyledCharacter = styled.div<{ $bgColor: string }>`
   display: inline-block;
-  width: 322px;
-  height: 322px;
-  margin: 10px;
-  padding: 40px;
+  width: 20.125rem;
+  height: 20.125rem;
+  margin: 0.625rem;
+  padding: 2.5rem;
   border-radius: 50%;
   text-align: center;
   transition: all 0.3s ease-in-out;
@@ -30,8 +30,8 @@ const StyledCharacter = styled.div<{ $bgColor: string }>`
 `;
 
 const CharacterImage = styled.div<{ $bgImage: string }>`
-  width: 242px;
-  height: 242px;
+  width: 15.125rem;
+  height: 15.125rem;
   background-image: url(${(props) => props.$bgImage});
   background-size: cover;
   background-repeat: no-repeat;
