@@ -17,6 +17,9 @@ const StyledViewRightArrow = styled(ViewRightArrowIcon)<ViewRightArrowProps>`
       fill: gray;
       cursor: default;
     `}
+
+  width: 7.75rem;
+  height: 7.75rem;
 `;
 
 const ViewRightArrow = ({ onClick, disabled }: ViewRightArrowProps) => {

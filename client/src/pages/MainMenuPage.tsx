@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { SSEMessage, sseMessageState } from '../recoil/mainalarm/atom';
 import menuTreeIcon from '../assets/image/etc/menuTree.svg';
 import menuMountainIcon from '../assets/image/etc/mainMountain.svg';
 import MenuBox from '../components/organisms/MainMenuBox';
@@ -84,7 +83,6 @@ const BalloonTail = styled.div`
 `;
 
 function MainMenuPage() {
-  const [SSEList, setSSEList] = useRecoilState(sseMessageState);
   const userProfile = useRecoilValue(UserProfileState);
   const navigate = useNavigate();
 

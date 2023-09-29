@@ -35,7 +35,7 @@ const ProfilesContainer = styled.div`
   margin-top: 3.125rem;
   align-items: flex-start;
   justify-content: center;
-  flex: 1;
+  /* flex: 1; */
 `;
 
 const ExitBoxWrapper = styled.div`

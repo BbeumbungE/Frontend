@@ -19,6 +19,11 @@ const RupeeText = styled.span`
   color: ${(props) => props.theme.colors.mainBlack};
 `;
 
+const RupeeImg = styled(Rupee)`
+  width: 3.4375rem;
+  height: 3.4375rem;
+`;
+
 function UserRupee() {
   const [userRupee, setUserRupee] = useRecoilState(UserRupeeState);
 
@@ -31,7 +36,7 @@ function UserRupee() {
 
   return (
     <RupeeWrapper>
-      <Rupee />
+      <RupeeImg />
       <RupeeText>{formattedRupee}</RupeeText>
     </RupeeWrapper>
   );

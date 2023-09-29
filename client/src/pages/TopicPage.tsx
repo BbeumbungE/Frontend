@@ -27,6 +27,7 @@ const TopicPageContainer = styled.div`
   background-color: ${theme.colors.green};
   padding: 2.5rem;
   align-items: center;
+  justify-content: center;
 `;
 
 const PostContainer = styled.div`
