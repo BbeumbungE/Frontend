@@ -5,10 +5,11 @@ import { UserProfileState } from '../recoil/profile/atom';
 import { getUserLevel } from '../api/stage';
 import ExitBox from '../components/organisms/ExitBox';
 import UserRupee from '../components/atoms/UserRupee';
-import LevelBtn from '../components/atoms/LevelBtn';
+import LevelBtn from '../components/organisms/LevelBtn';
 import PageChangeButton from '../components/organisms/PageChangeButton';
 import BlurBox from '../components/atoms/BlurBox';
 import LevelModal from '../components/organisms/LevelModal';
+import EmptyLevelBtn from '../components/organisms/EmptyLevelBtn';
 import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
 
 type CharacterImageProps = {
@@ -213,13 +214,10 @@ function StageMapPage() {
 
   function getPositionIndex(number: number | undefined): number {
     if (typeof number === 'number') {
-      if (number % 3 === 1) {
-        return 1;
+      if (number % 3 === 0) {
+        return 3;
       }
-      if (number % 3 === 2) {
-        return 2;
-      }
-      return 3;
+      return number % 3;
     }
     return 1;
   }
@@ -334,46 +332,7 @@ function StageMapPage() {
         <BottomToTopRoad bottom={270} right={750} />
         <TopToBottomRoad bottom={270} right={330} />
         <BottomToTopRoad bottom={270} right={-70} />
-        {userLevel.level.length > 0 && (
-          <>
-            <LevelBtn
-              level={1}
-              star={
-                userLevel.level[0].record
-                  ? userLevel.level[0].record.score
-                  : null
-              }
-              bottom={120}
-              right={1180}
-              imgSrc={userLevel.level[0].subjectItem.subjectImage}
-              onClick={() => handleLevelBtnClick(1)}
-            />
-            <LevelBtn
-              level={2}
-              star={
-                userLevel.level[1].record
-                  ? userLevel.level[1].record.score
-                  : null
-              }
-              bottom={280}
-              right={730}
-              imgSrc={userLevel.level[1].subjectItem.subjectImage}
-              onClick={() => handleLevelBtnClick(2)}
-            />
-            <LevelBtn
-              level={3}
-              star={
-                userLevel.level[2].record
-                  ? userLevel.level[2].record.score
-                  : null
-              }
-              bottom={120}
-              right={300}
-              imgSrc={userLevel.level[2].subjectItem.subjectImage}
-              onClick={() => handleLevelBtnClick(3)}
-            />
-          </>
-        )}
+        <EmptyLevelBtn level={1} bottom={280} right={730} />
       </LevelWrapper>
       <GreenGround />
     </MapWrapper>

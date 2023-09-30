@@ -1,25 +1,21 @@
 import styled, { keyframes } from 'styled-components';
-import LevelStars from '../organisms/LevelStars';
+import LevelStars from './LevelStars';
+import { ReactComponent as questionMarkIcon } from '../../assets/image/etc/questionMark.svg';
 
 interface LevelBtnProps {
   level: number;
-  star: null | number;
   bottom: number;
   right: number;
-  imgSrc: string;
-  onClick?: () => void;
 }
 
-const hoverAnimation = keyframes`
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+const QuestionIcon = styled(questionMarkIcon)`
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  top: -150px;
+  left: 28px;
+  z-index: 200;
+  filter: brightness(0.7);
 `;
 
 const LevelWrapper = styled.div`
@@ -27,24 +23,6 @@ const LevelWrapper = styled.div`
   width: 200px;
   height: 144px;
   margin: 10px;
-  cursor: pointer;
-
-  &:hover {
-    animation: ${hoverAnimation} 1s ease-in-out;
-  }
-`;
-
-const LevelSketch = styled.img`
-  width: 200px;
-  height: 180px;
-  position: absolute;
-  top: -130px;
-  left: 0%;
-  z-index: 200;
-  border: none !important;
-  outline: none;
-  padding: 0;
-  margin: 0;
 `;
 
 const LevelText = styled.span`
@@ -59,6 +37,7 @@ const LevelText = styled.span`
   transform: translate(-50%, -50%);
   z-index: 3;
   text-shadow: 0px -1px 3px #23232380;
+  filter: brightness(0.5);
 `;
 
 const TopBtn = styled.div`
@@ -73,6 +52,7 @@ const TopBtn = styled.div`
   top: -5%;
   left: 7%;
   z-index: 2;
+  filter: brightness(0.5);
 `;
 
 const BottomBtn = styled.div`
@@ -85,23 +65,16 @@ const BottomBtn = styled.div`
     0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   position: relative;
   z-index: 1;
+  filter: brightness(0.5);
 `;
 
-const LevelBtn = ({
-  level,
-  star,
-  bottom,
-  right,
-  imgSrc,
-  onClick,
-}: LevelBtnProps) => {
+const EmptyLevelBtn = ({ level, bottom, right }: LevelBtnProps) => {
   return (
     <LevelWrapper
       style={{ bottom: `${bottom || 0}px`, right: `${right || 0}px` }}
-      onClick={onClick}
     >
-      <LevelStars star={star} />
-      <LevelSketch src={imgSrc} />
+      <LevelStars star={null} />
+      <QuestionIcon />
       <LevelText>{level}</LevelText>
       <TopBtn />
       <BottomBtn />
@@ -109,8 +82,4 @@ const LevelBtn = ({
   );
 };
 
-LevelBtn.defaultProps = {
-  onClick: undefined, // 기본값으로 빈 함수를 설정
-};
-
-export default LevelBtn;
+export default EmptyLevelBtn;

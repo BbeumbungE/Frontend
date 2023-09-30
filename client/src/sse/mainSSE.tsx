@@ -7,7 +7,7 @@ let eventSource: EventSourcePolyfill | null = null;
 
 export function connectEventSSE(profileId: number): void {
   eventSource = new EventSourcePolyfill(
-    `${SERVER_URL}/api/profiles/${profileId}/sse/connects`,
+    `${SERVER_URL}/sse/notifications/profiles/${profileId}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

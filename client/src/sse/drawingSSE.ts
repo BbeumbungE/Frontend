@@ -9,7 +9,7 @@ export function drawingSSE(
   setCanvasUrl: (url: string) => void,
 ): void {
   eventSource = new EventSourcePolyfill(
-    `${SERVER_URL}/api/canvases/profile/${profileId}/sse`,
+    `${SERVER_URL}/sse/canvases/profile/${profileId}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
