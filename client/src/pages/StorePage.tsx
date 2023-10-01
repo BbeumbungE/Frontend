@@ -14,6 +14,7 @@ import Button from '../components/atoms/Button';
 import BlurBox from '../components/atoms/BlurBox';
 import { getPictureTitles, getAvatars, buyItem } from '../api/item';
 import { patchRupee } from '../api/rupee';
+import SoundEffects from '../sounds/SoundEffects';
 
 const StorePageContainer = styled.div`
   display: flex;
@@ -69,6 +70,8 @@ function StorePage() {
   const [isTitle, setIsTitle] = useState<boolean>(false);
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const [isBuy, setIsBuy] = useState<boolean>(false);
+
+  const { playAlarm, playClap, playBtnSmall2 } = SoundEffects();
 
   useEffect(() => {
     loadItems(userProfile.profileId, curPage);
@@ -177,6 +180,7 @@ function StorePage() {
             buttonText="   그림 주제    "
             color="white"
             onClick={() => {
+              playBtnSmall2();
               console.log('c');
             }}
           />

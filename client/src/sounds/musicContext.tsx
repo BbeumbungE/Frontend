@@ -1,8 +1,8 @@
 import React, { createContext, useState, useContext, useMemo } from 'react';
 import useSound from 'use-sound';
-import mainBGM from '../assets/sound/background/music_zapsplat_daft_cat_117.mp3';
-import stageBGM from '../assets/sound/background/African_fun_long.mp3';
 import drawBGM from '../assets/sound/background/cheeky_monkey_fun_app_playful_cheeky.mp3';
+import stageBGM from '../assets/sound/background/African_fun_long.mp3';
+import mainBGM from '../assets/sound/background/mr_clown.mp3';
 
 const BGMContext = createContext<
   | {

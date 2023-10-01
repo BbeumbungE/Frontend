@@ -19,7 +19,7 @@ import ConfirmModal from '../components/organisms/ConfirmModal';
 import { deleteProfile, newNickname } from '../api/profiles';
 import { disconnectEventSSE } from '../sse/mainSSE';
 import { getAlarms } from '../api/alarm';
-import { useBGM } from '../sounds/musicContext';
+import { useBGM } from '../sounds/MusicContext';
 
 const sampleData = [
   {

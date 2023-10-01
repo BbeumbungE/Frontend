@@ -6,7 +6,7 @@ import AppRouter from './route/AppRouter';
 import { GlobalStyle } from './style/GlobalStyle';
 import theme from './style/theme';
 import 'react-toastify/dist/ReactToastify.css';
-import { BGMProvider } from './sounds/musicContext';
+import { BGMProvider } from './sounds/MusicContext';
 
 function App() {
   return (

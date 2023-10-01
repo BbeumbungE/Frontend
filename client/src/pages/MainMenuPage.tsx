@@ -8,7 +8,7 @@ import MenuBox from '../components/organisms/MainMenuBox';
 import ExitBox from '../components/organisms/ExitBox';
 import ProfileBtn from '../components/atoms/ProfileBtn';
 import { UserProfileState } from '../recoil/profile/atom';
-import { useBGM } from '../sounds/musicContext';
+import { useBGM } from '../sounds/MusicContext';
 
 interface SvgImageProps extends React.HTMLProps<HTMLImageElement> {
   'data-bottom'?: string;

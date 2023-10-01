@@ -10,7 +10,7 @@ import PageChangeButton from '../components/organisms/PageChangeButton';
 import BlurBox from '../components/atoms/BlurBox';
 import LevelModal from '../components/organisms/LevelModal';
 import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
-import { useBGM } from '../sounds/musicContext';
+import { useBGM } from '../sounds/MusicContext';
 
 const MapWrapper = styled.div`
   width: 100vw;
