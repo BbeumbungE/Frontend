@@ -8,6 +8,7 @@ import MenuBox from '../components/organisms/MainMenuBox';
 import ExitBox from '../components/organisms/ExitBox';
 import ProfileBtn from '../components/atoms/ProfileBtn';
 import { UserProfileState } from '../recoil/profile/atom';
+import { useBGM } from '../sounds/musicContext';
 
 interface SvgImageProps extends React.HTMLProps<HTMLImageElement> {
   'data-bottom'?: string;
@@ -85,12 +86,10 @@ const BalloonTail = styled.div`
 function MainMenuPage() {
   const userProfile = useRecoilValue(UserProfileState);
   const navigate = useNavigate();
+  const { startBGM } = useBGM();
 
   useEffect(() => {
-    // connectEventSSE(userProfile.profileId);
-    // return () => {
-    //   disconnectEventSSE();
-    // };
+    startBGM('main');
   });
   return (
     <MainMenuWrapper>

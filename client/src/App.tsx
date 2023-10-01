@@ -6,6 +6,7 @@ import AppRouter from './route/AppRouter';
 import { GlobalStyle } from './style/GlobalStyle';
 import theme from './style/theme';
 import 'react-toastify/dist/ReactToastify.css';
+import { BGMProvider } from './sounds/musicContext';
 
 function App() {
   return (
@@ -13,7 +14,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <Container limit={1} position="top-center" theme="colored" />
-        <AppRouter />
+        <BGMProvider>
+          <AppRouter />
+        </BGMProvider>
       </ThemeProvider>
     </RecoilRoot>
   );

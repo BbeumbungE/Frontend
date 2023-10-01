@@ -176,7 +176,9 @@ function StorePage() {
           <Button
             buttonText="   그림 주제    "
             color="white"
-            onClick={() => console.log('c')}
+            onClick={() => {
+              console.log('c');
+            }}
           />
         ) : (
           <Button

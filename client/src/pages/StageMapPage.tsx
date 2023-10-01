@@ -10,6 +10,7 @@ import PageChangeButton from '../components/organisms/PageChangeButton';
 import BlurBox from '../components/atoms/BlurBox';
 import LevelModal from '../components/organisms/LevelModal';
 import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
+import { useBGM } from '../sounds/musicContext';
 
 const MapWrapper = styled.div`
   width: 100vw;
@@ -165,6 +166,7 @@ function StageMapPage() {
   // 스테이지 Id
   const [stageId, setStageId] = useState<number | null>(null);
 
+  const { startBGM } = useBGM();
   const itemsPerPage = 3; // 한 페이지당 아이템 개수
   // 첫번째 페이지, 마지막 페이지 파악하는 변수
   const isFirstPage = currentPage === 0;
@@ -174,6 +176,10 @@ function StageMapPage() {
   const rightDisabled = isLastPage;
 
   console.log('$$$$$$$$$$$$$$', userLevel);
+
+  useEffect(() => {
+    startBGM('stage');
+  });
   useEffect(() => {
     const getData = async () => {
       try {
