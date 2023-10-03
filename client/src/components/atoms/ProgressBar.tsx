@@ -59,7 +59,7 @@ function ProgressBar() {
 
   return (
     <ProgressBarWrapper>
-      <ProgressBarInner progress={5} />
+      <ProgressBarInner progress={10} />
     </ProgressBarWrapper>
   );
 }

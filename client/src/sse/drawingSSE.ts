@@ -3,14 +3,18 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 const SERVER_URL = process.env.REACT_APP_API_URL;
 let eventSource: EventSourcePolyfill | null = null;
 
-export function drawingSSE(profileId: number): void {
+export function drawingSSE(
+  profileId: number,
+  setModalOpen: (isOpen: boolean) => void,
+  setCanvasUrl: (url: string) => void,
+): void {
   eventSource = new EventSourcePolyfill(
-    `${SERVER_URL}/api/canvases/profile/${profileId}/sse`,
+    `${SERVER_URL}/sse/canvases/profile/${profileId}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
       },
-      heartbeatTimeout: 30000000,
+      heartbeatTimeout: 30000000, // SSE 재접속 시간
       withCredentials: true,
     },
   );
@@ -26,6 +30,14 @@ export function drawingSSE(profileId: number): void {
 
   eventSource.addEventListener('initial', (event) => {
     console.log('연결 시 서버에서 쏘는 데이터', event);
+  });
+
+  eventSource.addEventListener('drawing', (event) => {
+    const parsedData = JSON.parse((event as MessageEvent).data);
+    console.log('그림 변환 완료', parsedData);
+
+    setModalOpen(false);
+    setCanvasUrl(parsedData.canvasUrl);
   });
 
   eventSource.onerror = (error) => {

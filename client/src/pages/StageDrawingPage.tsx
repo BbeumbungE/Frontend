@@ -1,35 +1,101 @@
 import { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import { StageIdState } from '../recoil/stage/atom';
 import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
 import BlurBox from '../components/atoms/BlurBox';
 import CheckingModal from '../components/organisms/CheckingModal';
-import ProgressBar from '../components/atoms/ProgressTimeBar';
+import StageRecordModal from '../components/organisms/StageRecordModal';
+import ProgressTimeBar from '../components/atoms/ProgressTimeBar';
 import ExitBox from '../components/organisms/ExitBox';
 import Button from '../components/atoms/Button';
-import { getLevelDetail, postDrawing } from '../api/drawing';
+import {
+  getLevelDetail,
+  postDrawing,
+  patchDrawing,
+  postFirstFinishedDrawing,
+  patchFinishedDrawing,
+} from '../api/drawing';
 import { ReactComponent as PencilIcon } from '../assets/image/etc/pencil.svg';
 import { ReactComponent as MagicStickIcon } from '../assets/image/etc/magicStick.svg';
 import { ReactComponent as LockIcon } from '../assets/image/etc/drawingLock.svg';
 
-interface SketchList {
+interface Sketch {
   sketchId: number;
   sketchImageUrl: string;
 }
 
-interface ApiResponse {
+interface SubjectItem {
+  id: number;
+  subjectName: string;
+  subjectImage: string;
+  sketchList: Sketch[];
+}
+
+interface Record {
+  id: number;
+  score: number;
+}
+
+interface LevelDetailResponse {
   id: number;
   stageNum: number;
-  point: number;
   timeLimit: number;
-  subject: {
-    id: number;
-    subjectName: string;
-    subjectImage: string;
-    sketchList: SketchList[];
+  subjectItem: SubjectItem;
+  record: Record;
+}
+
+interface PostDrawingResponse {
+  status: {
+    httpStatus: string;
+    code: number;
+    message: string;
   };
+  content: {
+    canvasId: number;
+    topPost: string;
+  };
+}
+
+interface PointInfo {
+  previousPoint: number;
+  currentPoint: number;
+  rewardPoint: number;
+}
+
+interface Content {
+  id: number;
+  score: number;
+  pointInfo: PointInfo;
+}
+
+interface Status {
+  httpStatus: string;
+  code: number;
+  message: string;
+}
+
+interface FirstFinishResponse {
+  status: Status;
+  content: Content;
+}
+
+interface Status {
+  httpStatus: string;
+  code: number;
+  message: string;
+}
+
+interface Content {
+  previousPoint: number;
+  currentPoint: number;
+  rewardPoint: number;
+}
+
+interface SecondFinishResponse {
+  status: Status;
+  content: Content;
 }
 
 const defaultStyle = {
@@ -49,7 +115,7 @@ const DrawingPageWrapper = styled.div`
 
 const TopWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: row-reverse;
   margin-right: 30px;
   margin-left: 5px;
 `;
@@ -59,7 +125,8 @@ const CanvasWrapper = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-left: -50px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const BtnFloating = styled.div`
@@ -68,11 +135,16 @@ const BtnFloating = styled.div`
 
 const BottomWrapper = styled.div`
   display: flex;
+  flex-direction: row-reverse;
   margin-top: 10px;
+  margin-right: 50px;
 `;
 
-const ToolWrapper = styled.span`
+const ToolWrapper = styled.div`
   margin-right: 100px;
+  position: fixed;
+  bottom: -230px;
+  left: 0px;
   display: flex;
 `;
 
@@ -89,6 +161,10 @@ const Pencil = styled(PencilIcon)`
   width: 300px;
   height: 300px;
   cursor: pointer;
+  transition: transform 0.2s;
+  &:hover {
+    transform: translateY(-15px);
+  }
 `;
 
 const Eraser = styled(PencilIcon)`
@@ -96,11 +172,37 @@ const Eraser = styled(PencilIcon)`
   height: 300px;
   cursor: pointer;
   transform: scaleY(-1);
+  transition: transform 0.2s;
+  &:hover {
+    transform: scaleY(-1) translateY(15px);
+  }
 `;
 
 const MagicStick = styled(MagicStickIcon)`
   width: 320px;
   height: 320px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  &:hover {
+    transform: translateY(-15px);
+  }
+`;
+
+const BackSketchModal = styled.div`
+  width: 500px;
+  display: flex;
+  position: absolute;
+  left: 460px;
+  bottom: 330px;
+  gap: 20px;
+`;
+
+const BackSketchImage = styled.img`
+  background-color: ${(props) => props.theme.colors.mainWhite};
+  border: ${(props) => props.theme.colors.lightGray} solid 2px;
+  width: 200px;
+  height: 200px;
+  border-radius: 25px;
   cursor: pointer;
 `;
 
@@ -118,7 +220,7 @@ const SketchImage = styled.img`
   z-index: -100;
 `;
 
-const StyledImage = styled.img`
+const TransformedImage = styled.img`
   width: 500px;
   height: 500px;
   background-color: white;
@@ -127,27 +229,66 @@ const StyledImage = styled.img`
   z-index: -100;
 `;
 
+const TransformedImageBox = styled.img`
+  width: 500px;
+  height: 500px;
+  background-color: white;
+  border-radius: 25px;
+  margin-left: -50px;
+  z-index: -100;
+`;
+
+// const eraserCursor = styled.div`
+//   width: 20px;
+//   height: 20px;
+//   border-radius: 50%;
+//   border: 0.5px solid black;
+//   position: absolute;
+//   z-index: 1;
+//   pointer-events: none;
+// `;
+
 function StageDrawingPage() {
-  const stageId = useRecoilValue(StageIdState);
+  const stageIdState = useRecoilValue(StageIdState);
+  const { currentStageId } = stageIdState;
   const profileState = useRecoilValue(UserProfileState);
-  const [data, setData] = useState<ApiResponse | undefined>();
+  const [data, setData] = useState<LevelDetailResponse>();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | undefined>();
   const [array, setArray] = useState<{ x: number; y: number }[]>([]);
   const [isDrawing, setIsDrawing] = useState<boolean>(false); // 그리기 여부를 추정 (마우스 클릭중인지 여부)
   const [isLocked, setIsLocked] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFirstTransform, setIsFirstTransform] = useState<boolean>(true);
+  const [changeModalData, setChangeModalData] = useState<PostDrawingResponse>();
+  const [canvasUrl, setCanvasUrl] = useState<string | null>(''); // 변환된 그림 url
+  const [canvasId, setCanvasId] = useState<number>(-1); // 캔버스 고유 id
+  const [isDrawingMode, setIsDrawingMode] = useState<boolean>(true); // 그리기 모드, 지우기 모드 구분
+  const cursorRef = useRef<HTMLDivElement | null>(null);
+  const [isFinish, setIsFinish] = useState<boolean>(false);
+  const [finishData, setFinishData] = useState<
+    FirstFinishResponse | SecondFinishResponse | undefined
+  >();
+  const [selectedBackSketchURL, setSelectedBackSketchImageURL] = useState<
+    string | null
+  >(null);
+  const [isBackSketchModalOpen, setIsBackSketchModalOpen] =
+    useState<boolean>(false);
 
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
+  console.log('$$$$$$$$$$완료 데이터', finishData);
   useEffect(() => {
     const getData = async () => {
       try {
-        if (stageId !== null) {
-          const response = await getLevelDetail(stageId);
+        if (currentStageId !== null) {
+          const response = await getLevelDetail(
+            profileState.profileId,
+            currentStageId,
+          );
           setData(response.content);
           console.log('스테이지 단건조회', response);
         } else {
-          console.error('stageId가 null');
+          console.error('currentStageId가 null');
         }
       } catch (error) {
         console.error(error);
@@ -157,6 +298,11 @@ function StageDrawingPage() {
   }, []);
 
   useEffect(() => {
+    if (data) {
+      setSelectedBackSketchImageURL(
+        data.subjectItem.sketchList[0].sketchImageUrl,
+      );
+    }
     const canvas = canvasRef.current;
     if (canvas) {
       const context = canvas.getContext('2d');
@@ -171,6 +317,43 @@ function StageDrawingPage() {
     }
   }, [data]);
 
+  useEffect(() => {
+    // 비동기 함수를 호출하는 도우미 함수를 정의합니다.
+    const fetchData = async () => {
+      let finishResponse: FirstFinishResponse | SecondFinishResponse;
+
+      // 서버에 이미 기록이 있을 경우 (과거에 플레이해서 기록 생성을 했던 경우)
+      if (isFinish && canvasUrl && data && data.record && currentStageId) {
+        finishResponse = await patchFinishedDrawing(
+          profileState.profileId,
+          currentStageId,
+          data.record.id,
+          canvasId,
+        );
+        console.log('서버에 기록 있을 경우', finishResponse);
+        setFinishData(finishResponse);
+      } else if (
+        isFinish &&
+        canvasUrl &&
+        data &&
+        !data.record &&
+        currentStageId
+      ) {
+        // 서버에 기록이 없는 경우 (처음 플레이 하는 경우)
+        finishResponse = await postFirstFinishedDrawing(
+          profileState.profileId,
+          currentStageId,
+          canvasId,
+        );
+        console.log('서버에 기록 없을 경우', finishResponse);
+        setFinishData(finishResponse);
+      }
+    };
+
+    // useEffect 내에서 fetchData 함수를 호출합니다.
+    fetchData();
+  }, [isFinish, canvasUrl]); // isFinish가 변경될 때만 실행됩니다.
+
   const canvasEventListener = (
     event: React.MouseEvent<HTMLCanvasElement>,
     type: string,
@@ -182,20 +365,44 @@ function StageDrawingPage() {
     const x = event.nativeEvent.offsetX;
     const y = event.nativeEvent.offsetY;
 
-    if (type === 'down') {
-      setIsDrawing(true); // 마우스 클릭 시작
-      array.push({ x, y });
-    } else if (type === 'move' && isDrawing) {
-      ctx?.save();
-      ctx?.beginPath();
-      ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
-      ctx?.lineTo(x, y);
-      ctx?.closePath();
-      ctx?.stroke();
-      ctx?.restore();
-      array.push({ x, y });
-    } else if (type === 'leave' || type === 'up') {
-      setIsDrawing(false); // 마우스 클릭 종료
+    if (isDrawingMode && ctx) {
+      // 그리기 모드 일 때는 그리기
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.lineWidth = 2;
+      if (type === 'down') {
+        setIsDrawing(true); // 마우스 클릭 시작
+        array.push({ x, y });
+      } else if (type === 'move' && isDrawing) {
+        ctx?.save();
+        ctx?.beginPath();
+        ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
+        ctx?.lineTo(x, y);
+        ctx?.closePath();
+        ctx?.stroke();
+        ctx?.restore();
+        array.push({ x, y });
+      } else if (type === 'leave' || type === 'up') {
+        setIsDrawing(false); // 마우스 클릭 종료
+      }
+    }
+
+    if (!isDrawingMode && ctx) {
+      // 지우기 모드일 때는 지우기
+      ctx.globalCompositeOperation = 'destination-out'; // 지우기 모드로 설정
+      ctx.lineWidth = 40;
+      if (type === 'down') {
+        setIsDrawing(true);
+        array.push({ x, y });
+      } else if (type === 'move' && isDrawing) {
+        ctx?.beginPath();
+        ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
+        ctx?.lineTo(x, y);
+        ctx?.closePath();
+        ctx?.stroke();
+        array.push({ x, y });
+      } else if (type === 'leave' || type === 'up') {
+        setIsDrawing(false);
+      }
     }
   };
 
@@ -206,8 +413,8 @@ function StageDrawingPage() {
     }
   };
 
-  // 변신하기 버튼
   const handleChange = async () => {
+    setCanvasUrl(null);
     // 화면 잠금, 변환 중 모달 오픈
     setIsLocked(true);
     setIsModalOpen(true);
@@ -218,52 +425,192 @@ function StageDrawingPage() {
       // 이미지 데이터 확인을 위한 img 요소 생성
       const imageElement = new Image();
       imageElement.src = imageDataURL;
-      // imageElement.crossOrigin = 'anonymous';
 
       // 이미지를 콘솔에 출력하여 확인
       imageElement.onload = () => {
         console.log('ImageData:', imageDataURL);
       };
-      // const convertedImg = await fetch(imageDataURL);
-      // const blob = await convertedImg.blob();
+      const convertedImg = await fetch(imageDataURL);
+      const blob = await convertedImg.blob();
 
-      // const formData = new FormData();
-      // formData.append('sketchFile', blob, 'drawing.jpg');
-      // formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
-      // formData.append('subjectId', String(data?.subject.id));
-      // const response = await postDrawing(
-      //   profileState.profileId,
-      //   data.subject.id,
-      //   formData,
-      // );
-      // console.log('변환하기 후 응답!', response);
+      // 파일 식별을 위한 변수 생성
+      const now = new Date();
+      const formattedTime = now.toLocaleTimeString();
+      console.log('&&&&&&&', formattedTime);
+
+      let response: PostDrawingResponse;
+
+      if (isFirstTransform) {
+        // 첫 번째 변환, postDrawing 사용
+        console.log('첫번째 변환 요청 보냄!!!');
+        const formData = new FormData();
+        formData.append('sketchFile', blob, `${formattedTime}.jpg`);
+        formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
+        formData.append('subjectId', String(data?.subjectItem.id));
+
+        formData.forEach(function (value, key) {
+          console.log(`${key}: ${value}`);
+        });
+
+        response = await postDrawing(
+          profileState.profileId,
+          data.subjectItem.id,
+          formData,
+        );
+        setIsFirstTransform(false);
+        setCanvasId(response.content.canvasId);
+        setChangeModalData(response);
+      } else if (!isFirstTransform && canvasId) {
+        // 이후 변환, patchDrawing 사용
+        console.log('두번째 변환 이후 요청 보냄!!!');
+        const formData = new FormData();
+        formData.append('file', blob, `${formattedTime}.jpg`);
+
+        formData.forEach(function (value, key) {
+          console.log(`${key}: ${value}`);
+        });
+
+        response = await patchDrawing(
+          profileState.profileId,
+          canvasId,
+          formData,
+        );
+
+        console.log('변환하기 후 응답!', response);
+        setChangeModalData(response);
+      }
     }
 
     // SSE 연결 함수 호출
-    drawingSSE(profileState.profileId);
+    drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
 
     // SSE 연결 해제 함수 호출
     // disconnectDrawingSSE();
   };
 
+  const handleFinish = async () => {
+    setCanvasUrl(null);
+    // 화면 잠금, 변환 중 모달 오픈
+    setIsLocked(true);
+    setIsModalOpen(true);
+
+    if (canvasRef.current && data) {
+      const imageDataURL = canvasRef.current.toDataURL('image/png');
+
+      // 이미지 데이터 확인을 위한 img 요소 생성
+      const imageElement = new Image();
+      imageElement.src = imageDataURL;
+
+      // 이미지를 콘솔에 출력하여 확인
+      imageElement.onload = () => {
+        console.log('ImageData:', imageDataURL);
+      };
+      const convertedImg = await fetch(imageDataURL);
+      const blob = await convertedImg.blob();
+
+      // 파일 식별을 위한 변수 생성
+      const now = new Date();
+      const formattedTime = now.toLocaleTimeString();
+
+      let response: PostDrawingResponse;
+
+      if (isFirstTransform) {
+        // 첫 번째 변환, postDrawing 사용
+        console.log('첫번째 <완료>요청 보냄!!!');
+        const formData = new FormData();
+        formData.append('sketchFile', blob, `${formattedTime}.jpg`);
+        formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
+        formData.append('subjectId', String(data?.subjectItem.id));
+
+        formData.forEach(function (value, key) {
+          console.log(`${key}: ${value}`);
+        });
+
+        response = await postDrawing(
+          profileState.profileId,
+          data.subjectItem.id,
+          formData,
+        );
+        setIsFirstTransform(false);
+        setCanvasId(response.content.canvasId);
+      } else if (!isFirstTransform && canvasId) {
+        // 이후 변환, patchDrawing 사용
+        console.log('두번째 변환 이후 <완료>요청 보냄!!!');
+        const formData = new FormData();
+        formData.append('file', blob, `${formattedTime}.jpg`);
+
+        formData.forEach(function (value, key) {
+          console.log(`${key}: ${value}`);
+        });
+
+        response = await patchDrawing(
+          profileState.profileId,
+          canvasId,
+          formData,
+        );
+
+        console.log('변환하기 후 응답!', response);
+        setChangeModalData(response);
+      }
+
+      // SSE 연결 함수 호출
+      drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
+
+      setIsFinish(true);
+    }
+
+    // SSE 연결 해제 함수 호출
+    // disconnectDrawingSSE();
+  };
+
+  console.log('프로필', profileState);
+
   const handleToggleEdit = () => {
     setIsLocked(false);
   };
 
+  const handlePencil = () => {
+    setIsDrawingMode(true);
+  };
+
+  const handleEraser = () => {
+    setIsDrawingMode(false);
+  };
+
+  const handleMagicStickClick = () => {
+    setIsBackSketchModalOpen(!isBackSketchModalOpen);
+  };
+
+  const handleBackSketchClick = (sketchImageUrl: string) => {
+    setSelectedBackSketchImageURL(sketchImageUrl);
+    setIsBackSketchModalOpen(false);
+  };
+
+  console.log('변환 데이터', changeModalData);
   return (
     <DrawingPageWrapper>
-      {isModalOpen && (
+      {isModalOpen && changeModalData && changeModalData.content.topPost && (
         <>
           <BlurBox />
-          <CheckingModal />
+          <CheckingModal imgPath={changeModalData.content.topPost} />
         </>
       )}
-      {data && data.subject.sketchList.length > 0 && (
+      {finishData && (
         <>
-          <ProgressBar durationInSeconds={data?.timeLimit} />
+          <BlurBox />
+          <StageRecordModal finishData={finishData} canvasUrl={canvasUrl} />
+        </>
+      )}
+      {data && data.subjectItem && data.subjectItem.sketchList && (
+        <>
+          <ProgressTimeBar
+            durationInSeconds={data.timeLimit}
+            isModalOpen={isModalOpen}
+            onComplete={handleFinish}
+          />
           <TopWrapper>
             <ExitBox color="dark" />
-            <Button buttonText="완성 !" color="salmon" />
+            <Button buttonText="완성 !" color="salmon" onClick={handleFinish} />
           </TopWrapper>
           <CanvasWrapper>
             <div
@@ -288,7 +635,7 @@ function StageDrawingPage() {
                 }}
               />
               <SketchImage
-                src={data.subject.sketchList[0].sketchImageUrl || ''}
+                src={selectedBackSketchURL ?? ''}
                 alt="이미지"
                 style={{ display: isDrawing ? 'none' : 'block' }}
               />
@@ -296,7 +643,12 @@ function StageDrawingPage() {
                 ref={canvasRef}
                 width={500}
                 height={500}
-                style={defaultStyle}
+                style={{
+                  ...defaultStyle,
+                  cursor: !isDrawingMode
+                    ? 'url("../assets/image/etc/eraserCursor.svg") 10 10, auto'
+                    : 'auto',
+                }}
                 onMouseDown={(event) => {
                   canvasEventListener(event, 'down');
                   // 마우스 클릭 시 이미지 요소 숨기기
@@ -319,14 +671,37 @@ function StageDrawingPage() {
                 onClick={handleChange}
               />
             </BtnFloating>
-            {/* <StyledImage src={data.subject.sketch || ''} alt="이미지" /> */}
-            <StyledImage src="" alt="이미지" />
+            {canvasUrl ? (
+              <TransformedImage src={canvasUrl} alt="변환된 이미지" />
+            ) : (
+              <TransformedImageBox />
+            )}
           </CanvasWrapper>
           <BottomWrapper>
             <ToolWrapper>
-              <Pencil />
-              <Eraser />
-              <MagicStick />
+              <Pencil onClick={handlePencil} />
+              <Eraser onClick={handleEraser} />
+              <MagicStick onClick={handleMagicStickClick} />
+              {isBackSketchModalOpen && (
+                <BackSketchModal>
+                  {data.subjectItem.sketchList.map((sketch, index) => (
+                    <BackSketchImage
+                      key={sketch.sketchImageUrl}
+                      src={sketch.sketchImageUrl}
+                      alt="밑그림"
+                      onClick={() =>
+                        handleBackSketchClick(sketch.sketchImageUrl)
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleBackSketchClick(sketch.sketchImageUrl);
+                        }
+                      }}
+                      tabIndex={index}
+                    />
+                  ))}
+                </BackSketchModal>
+              )}
             </ToolWrapper>
             <BtnWrapper>
               <Button
