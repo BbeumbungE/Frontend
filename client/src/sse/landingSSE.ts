@@ -41,6 +41,7 @@ export function landingSSE(
 
 export function disconnectLandingSSE(): void {
   if (eventSource) {
+    console.log('랜딩 SSE 끊기');
     eventSource.close();
     eventSource = null; // eventSource 변수를 초기화하여 재사용 방지
   }

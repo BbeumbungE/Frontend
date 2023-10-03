@@ -5,7 +5,7 @@ import theme from '../style/theme';
 import { postTempId, postDrawing } from '../api/landing';
 import LandingCanvas from '../components/organisms/LandingCanvas';
 import Button from '../components/atoms/Button';
-import { landingSSE } from '../sse/landingSSE';
+import { landingSSE, disconnectLandingSSE } from '../sse/landingSSE';
 import { ReactComponent as CloudIcon } from '../assets/image/etc/cloud.svg';
 
 interface SvgImageProps extends React.HTMLProps<HTMLImageElement> {
@@ -198,9 +198,10 @@ function LandingPage() {
     }
   };
 
-  // SSE 연결 해제 함수 호출
-  // disconnectDrawingSSE();
-  // };
+  const handleNavigate = () => {
+    navigate('/login');
+    disconnectLandingSSE();
+  };
 
   console.log('백스케치', backSketchUrl);
   console.log('변환횟수??', isTransformed);
@@ -263,9 +264,7 @@ function LandingPage() {
             <Button
               buttonText="로그인 및 회원가입"
               color="blue"
-              onClick={() => {
-                navigate('/login');
-              }}
+              onClick={handleNavigate}
             />
           </BtnWrapper>
         </>
