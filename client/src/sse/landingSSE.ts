@@ -1,4 +1,3 @@
-# landingSSE.ts
 import { EventSourcePolyfill } from 'event-source-polyfill';
 
 const SERVER_URL = process.env.REACT_APP_API_URL;
