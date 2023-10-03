@@ -13,11 +13,14 @@ import Button from '../components/atoms/Button';
 import UserRupee from '../components/atoms/UserRupee';
 import DeleteText from '../components/atoms/DeleteText';
 import BlurBox from '../components/atoms/BlurBox';
+import VolumeBtn from '../components/atoms/MuteBtn';
 import NameChangeModal from '../components/organisms/NameChangeModal';
 import ConfirmModal from '../components/organisms/ConfirmModal';
 import { deleteProfile, newNickname } from '../api/profiles';
 import { disconnectEventSSE } from '../sse/mainSSE';
 import { getAlarms } from '../api/alarm';
+import { useBGM } from '../sounds/MusicContext';
+import SoundEffects from '../sounds/SoundEffects';
 
 const sampleData = [
   {
@@ -71,6 +74,12 @@ const ExitBoxWrapper = styled.div`
   left: 0%;
 `;
 
+const MuteBoxWrapper = styled.div`
+  position: fixed;
+  top: 3%;
+  right: 2%;
+`;
+
 const CharacterImage = styled.div<{ imgsrc: string }>`
   width: 18.75rem;
   height: 18.75rem;
@@ -114,7 +123,8 @@ function MyProfilePage() {
   // 알림 state
   const [currentPage, setCurrentPage] = useState(0);
   const [alarms, setAlarms] = useState<any>({});
-
+  const { startBGM, stopBGM, toggleMute, isMuted } = useBGM();
+  const { playComplete } = SoundEffects();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -158,6 +168,7 @@ function MyProfilePage() {
   const resetUserRecoil = useResetRecoilState(UserProfileState);
 
   const handleLogout = () => {
+    stopBGM();
     resetUserRecoil();
     disconnectEventSSE();
     localStorage.removeItem('accessToken');
@@ -165,6 +176,7 @@ function MyProfilePage() {
   };
 
   const handleDeleteProfile = (profileId: number) => {
+    stopBGM();
     deleteProfile(profileId);
     disconnectEventSSE();
     setTimeout(() => {
@@ -175,6 +187,7 @@ function MyProfilePage() {
   const handleNewName = async (profileId: number, inputText: string) => {
     try {
       const response = await newNickname(profileId, inputText);
+      playComplete();
       Swal.fire({
         title: '닉네임이 성공적으로 바뀌었어요',
         width: '37.5rem',
@@ -190,6 +203,17 @@ function MyProfilePage() {
         title: '다른 닉네임으로 시도해주세요',
         width: '37.5rem',
       });
+    }
+  };
+
+  const handleVolumeButtonClick = () => {
+    toggleMute();
+    if (isMuted) {
+      setTimeout(() => {
+        startBGM('main');
+      }, 500);
+    } else {
+      stopBGM();
     }
   };
 
@@ -275,6 +299,9 @@ function MyProfilePage() {
         />
       </LeftContainer>
       <RightContainer>
+        <MuteBoxWrapper>
+          <VolumeBtn isActive={isMuted} onClick={handleVolumeButtonClick} />
+        </MuteBoxWrapper>
         <CenteredAlarmBoard>
           {alarms.data && alarms.data.length > 0 ? (
             <AlarmBoard alarms={alarms.data} />

@@ -9,26 +9,26 @@ interface LevelBtnProps {
 }
 
 const QuestionIcon = styled(questionMarkIcon)`
-  width: 150px;
-  height: 150px;
+  width: 9.375rem;
+  height: 9.375rem;
   position: absolute;
-  top: -150px;
-  left: 28px;
+  top: -9.375rem;
+  left: 1.75rem;
   z-index: 200;
   filter: brightness(0.7);
 `;
 
 const LevelWrapper = styled.div`
   position: fixed;
-  width: 200px;
-  height: 144px;
-  margin: 10px;
+  width: 12.5rem;
+  height: 9rem;
+  margin: 0.625rem;
 `;
 
 const LevelText = styled.span`
   color: #97560d;
   font-family: SBAggroB;
-  font-size: 80px;
+  font-size: 5rem;
   font-style: normal;
   font-weight: 400;
   position: absolute;
@@ -36,18 +36,18 @@ const LevelText = styled.span`
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 3;
-  text-shadow: 0px -1px 3px #23232380;
+  text-shadow: 0rem -0.0625rem 0.1875rem #23232380;
   filter: brightness(0.5);
 `;
 
 const TopBtn = styled.div`
-  width: 170px;
-  height: 115px;
+  width: 10.625rem;
+  height: 7.1875rem;
   border-radius: 50%;
   background: #fbee15;
   box-shadow:
-    0px -11px 4px 0px rgba(0, 0, 0, 0.25) inset,
-    5px 9px 11px 0px rgba(255, 255, 255, 0.5) inset;
+    0rem -0.6875rem 0.25rem 0rem rgba(0, 0, 0, 0.25) inset,
+    0.3125rem 0.5625rem 0.6875rem 0rem rgba(255, 255, 255, 0.5) inset;
   position: absolute;
   top: -5%;
   left: 7%;
@@ -56,13 +56,13 @@ const TopBtn = styled.div`
 `;
 
 const BottomBtn = styled.div`
-  width: 200px;
-  height: 131px;
+  width: 12.5rem;
+  height: 8.1875rem;
   border-radius: 50%;
   background: #e7eaf8;
   box-shadow:
-    0px -10px 4px 0px rgba(0, 0, 0, 0.25) inset,
-    0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    0rem -0.625rem 0.25rem 0rem rgba(0, 0, 0, 0.25) inset,
+    0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.25);
   position: relative;
   z-index: 1;
   filter: brightness(0.5);
@@ -71,7 +71,7 @@ const BottomBtn = styled.div`
 const EmptyLevelBtn = ({ level, bottom, right }: LevelBtnProps) => {
   return (
     <LevelWrapper
-      style={{ bottom: `${bottom || 0}px`, right: `${right || 0}px` }}
+      style={{ bottom: `${bottom || 0}rem`, right: `${right || 0}rem` }}
     >
       <LevelStars star={null} />
       <QuestionIcon />

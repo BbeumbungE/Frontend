@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { ReactComponent as ViewLeftArrowIcon } from '../../assets/image/etc/ViewLeftArrow.svg';
+import SoundEffects from '../../sounds/SoundEffects';
 
 interface ViewLeftArrowProps {
   onClick: () => void;
@@ -23,8 +24,10 @@ const StyledViewLeftArrow = styled(ViewLeftArrowIcon)<ViewLeftArrowProps>`
 `;
 
 const ViewLeftArrow = ({ onClick, disabled }: ViewLeftArrowProps) => {
+  const { playBtnSmall } = SoundEffects();
   const handleClick = () => {
     if (!disabled) {
+      playBtnSmall();
       onClick();
     }
   };

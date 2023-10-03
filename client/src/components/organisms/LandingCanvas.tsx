@@ -3,59 +3,59 @@ import styled from 'styled-components';
 
 const CanvasWrapper = styled.div`
   position: absolute;
-  height: 200px;
-  bottom: 290px;
-  left: 230px;
+  height: 12.5rem;
+  bottom: 18.125rem;
+  left: 14.375rem;
   z-index: 2;
 `;
 
 const LeftFrame = styled.div`
-  width: 24px;
-  height: 236px;
+  width: 1.5rem;
+  height: 14.75rem;
   transform: rotate(10.86deg);
   position: absolute;
-  bottom: 25px;
-  left: 118px;
+  bottom: 1.5625rem;
+  left: 7.375rem;
   background: #d9d9d9;
   z-index: 1;
 `;
 
 const RightFrame = styled.div`
-  width: 24px;
-  height: 236px;
+  width: 1.5rem;
+  height: 14.75rem;
   transform: rotate(-11.671deg);
   position: absolute;
-  bottom: 25px;
-  left: 320px;
+  bottom: 1.5625rem;
+  left: 20rem;
   background: #d9d9d9;
   z-index: 1;
 `;
 
 const SketchImage = styled.img`
   position: absolute;
-  width: 450px;
-  height: 450px;
-  border-radius: 25px;
+  width: 28.125rem;
+  height: 28.125rem;
+  border-radius: 1.5625rem;
   z-index: 100;
 `;
 
 const BottomFrame = styled.div`
-  width: 500px;
-  height: 34px;
+  width: 31.25rem;
+  height: 2.125rem;
   position: absolute;
-  left: -30px;
-  bottom: -250px;
+  left: -1.875rem;
+  bottom: -15.625rem;
   background: #d9d9d9;
   z-index: 150;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
 `;
 
 const BottomStick = styled.div`
-  width: 73px;
-  height: 100px;
+  width: 4.5625rem;
+  height: 6.25rem;
   position: absolute;
-  bottom: -300px;
-  left: 190px;
+  bottom: -18.75rem;
+  left: 11.875rem;
   background: #d9d9d9;
   z-index: 1;
 `;
@@ -94,7 +94,7 @@ const LandingCanvas = ({
   useEffect(() => {
     if (ctx) {
       ctx.fillStyle = 'gray';
-      ctx.font = '25px TmoneyRoundWindRegular';
+      ctx.font = '1.5625rem TmoneyRoundWindRegular';
       ctx.fillText('판다를 그려주세요!', 125, 50); // 원하는 위치에 텍스트 추가
     }
   }, [ctx]);
@@ -139,18 +139,18 @@ const LandingCanvas = ({
         className="container"
         style={{
           position: 'relative',
-          padding: '0px',
+          padding: '0rem',
         }}
       >
         <div
           style={{
             position: 'absolute',
-            width: '450px',
-            height: '450px',
+            width: '28.125rem',
+            height: '28.125rem',
             backgroundColor: 'white',
-            borderRadius: '25px',
+            borderRadius: '1.5625rem',
             zIndex: '100',
-            padding: '0px',
+            padding: '0rem',
           }}
         />
         <SketchImage
@@ -165,7 +165,7 @@ const LandingCanvas = ({
             height={450}
             style={{
               position: 'relative',
-              borderRadius: '25px',
+              borderRadius: '1.5625rem',
               zIndex: '100',
             }}
             onMouseDown={(event) => {

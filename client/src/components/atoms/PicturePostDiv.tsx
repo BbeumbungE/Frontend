@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../style/theme';
+import SoundEffects from '../../sounds/SoundEffects';
 
 interface PicturePostDivProps {
   imgSrc: string;
@@ -21,7 +22,14 @@ const PicturePostDiv = styled.div<PicturePostDivProps>`
 `;
 
 const PicturePost = ({ imgSrc = '', onClick }: PicturePostDivProps) => {
-  return <PicturePostDiv imgSrc={imgSrc} onClick={onClick} />;
+  const { playBtnSmall } = SoundEffects();
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    playBtnSmall();
+    if (onClick) {
+      onClick(event);
+    }
+  };
+  return <PicturePostDiv imgSrc={imgSrc} onClick={handleClick} />;
 };
 
 export default PicturePost;

@@ -19,12 +19,12 @@ const ModalWrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  margin-top: 50px;
-  width: 600px;
-  height: 554px;
-  border-radius: 25px;
+  margin-top: 3.125rem;
+  width: 37.5rem;
+  height: 34.625rem;
+  border-radius: 1.5625rem;
   background: #f3cf6e;
-  box-shadow: 6px -8px 10px 0px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: 0.375rem -0.5rem 0.625rem 0rem rgba(0, 0, 0, 0.25) inset;
   position: relative;
   z-index: 600;
 `;
@@ -33,11 +33,11 @@ const InModal = styled.div`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 500px;
-  height: 500px;
-  border-radius: 25px;
+  width: 31.25rem;
+  height: 31.25rem;
+  border-radius: 1.5625rem;
   background: #fff3db;
-  box-shadow: 0px 6px 12px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0rem 0.375rem 0.75rem 0rem rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,14 +46,14 @@ const InModal = styled.div`
 
 const TopModal = styled.div`
   position: absolute;
-  top: -80px;
+  top: -5rem;
   left: 50%;
   transform: translateX(-50%);
   margin-left: auto;
   margin-right: auto;
-  width: 250px;
-  height: 130px;
-  border-radius: 25px;
+  width: 15.625rem;
+  height: 8.125rem;
+  border-radius: 1.5625rem;
   background: #fff3db;
   display: flex;
   justify-content: center;
@@ -64,30 +64,30 @@ const TopModal = styled.div`
 const LevelText = styled.span`
   color: #97560d;
   font-family: SBAggroB;
-  font-size: 60px;
+  font-size: 3.75rem;
   font-style: normal;
   font-weight: 400;
-  text-shadow: 0px -1px 3px #23232380;
+  text-shadow: 0rem -0.0625rem 0.1875rem #23232380;
 `;
 
 const StarsWrapper = styled.div`
   position: absolute;
-  bottom: -140px;
+  bottom: -8.75rem;
 `;
 
 const BtnWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 1.25rem;
   position: relative;
   z-index: 700;
 `;
 
 const LevelSketch = styled.img`
-  width: 300px;
-  height: 280px;
-  margin-bottom: 20px;
+  width: 18.75rem;
+  height: 17.5rem;
+  margin-bottom: 1.25rem;
 `;
 
 function LevelModal({

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../style/theme';
+import SoundEffects from '../../sounds/SoundEffects';
 
 interface ButtonProps {
   buttonText: string;
@@ -35,6 +36,13 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
   let bgColor = theme.colors.mainBlue; // 기본값은 mainBlue
   let fontColor = theme.colors.mainWhite;
   let buttonBorder = 'none';
+  const { playBtnSmall2 } = SoundEffects();
+  const handleClick = () => {
+    playBtnSmall2(); // 버튼 클릭시 효과음 실행
+    if (onClick) {
+      onClick(); // 만약 외부에서 전달된 onClick 핸들러가 있다면 실행
+    }
+  };
 
   // color 값에 따라 bgColor를 설정
   switch (color) {
@@ -89,7 +97,7 @@ function Button({ buttonText, color, borderColor, onClick }: ButtonProps) {
     <StyledButton
       $bgColor={bgColor}
       style={{ border: buttonBorder }}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <ButtonText $fontColor={fontColor}>{buttonText}</ButtonText>
     </StyledButton>

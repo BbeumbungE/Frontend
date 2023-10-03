@@ -20,6 +20,8 @@ import {
 import { ReactComponent as PencilIcon } from '../assets/image/etc/pencil.svg';
 import { ReactComponent as MagicStickIcon } from '../assets/image/etc/magicStick.svg';
 import { ReactComponent as LockIcon } from '../assets/image/etc/drawingLock.svg';
+import { useBGM } from '../sounds/MusicContext';
+import SoundEffects from '../sounds/SoundEffects';
 
 interface Sketch {
   sketchId: number;
@@ -242,7 +244,7 @@ const TransformedImageBox = styled.img`
 //   width: 20px;
 //   height: 20px;
 //   border-radius: 50%;
-//   border: 0.5px solid black;
+//   border: 0.5008px solid black;
 //   position: absolute;
 //   z-index: 1;
 //   pointer-events: none;
@@ -274,6 +276,18 @@ function StageDrawingPage() {
   >(null);
   const [isBackSketchModalOpen, setIsBackSketchModalOpen] =
     useState<boolean>(false);
+  const { startBGM } = useBGM();
+  const { playBtnSmall, playWand, playSuccess, playClap } = SoundEffects();
+
+  useEffect(() => {
+    startBGM('draw');
+  });
+  useEffect(() => {
+    if (isFinish && finishData) {
+      playSuccess();
+      playClap();
+    }
+  }, [isFinish, finishData]);
 
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
   console.log('$$$$$$$$$$완료 데이터', finishData);
@@ -570,14 +584,17 @@ function StageDrawingPage() {
   };
 
   const handlePencil = () => {
+    playBtnSmall();
     setIsDrawingMode(true);
   };
 
   const handleEraser = () => {
+    playBtnSmall();
     setIsDrawingMode(false);
   };
 
   const handleMagicStickClick = () => {
+    playWand();
     setIsBackSketchModalOpen(!isBackSketchModalOpen);
   };
 

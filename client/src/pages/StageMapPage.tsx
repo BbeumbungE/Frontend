@@ -12,6 +12,7 @@ import BlurBox from '../components/atoms/BlurBox';
 import LevelModal from '../components/organisms/LevelModal';
 import EmptyLevelBtn from '../components/organisms/EmptyLevelBtn';
 import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
+import { useBGM } from '../sounds/MusicContext';
 
 type CharacterImageProps = {
   $bgImage: string | null;
@@ -39,23 +40,23 @@ const BlueSky = styled.div`
 `;
 
 const BigWhiteCloud = styled.div`
-  width: 250px;
-  height: 140px;
+  width: 15.625rem;
+  height: 8.75rem;
   border-radius: 50%;
   background: var(--white, #fff);
-  box-shadow: -18px -18px 58px 0px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: -1.125rem -1.125rem 3.625rem 0rem rgba(0, 0, 0, 0.25) inset;
   z-index: 0;
   position: absolute;
-  top: -40px;
+  top: -2.5rem;
   right: 40%;
 `;
 
 const SmallWhiteCloud = styled.div`
-  width: 150px;
-  height: 100px;
+  width: 9.375rem;
+  height: 6.25rem;
   border-radius: 50%;
   background: var(--white, #fff);
-  box-shadow: -18px -18px 58px 0px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: -1.125rem -1.125rem 3.625rem 0rem rgba(0, 0, 0, 0.25) inset;
   z-index: 0;
   position: absolute;
   top: 5%;
@@ -74,8 +75,8 @@ const LevelWrapper = styled.div`
 `;
 
 const CharacterImage = styled.div<CharacterImageProps>`
-  width: 300px;
-  height: 300px;
+  width: 18.75rem;
+  height: 18.75rem;
   background-image: url(${(props) => props.$bgImage});
   background-size: cover;
   background-repeat: no-repeat;
@@ -84,8 +85,8 @@ const CharacterImage = styled.div<CharacterImageProps>`
   transition:
     right 1s ease,
     bottom 1s ease;
-  right: ${(props) => `${props.$position.right}px`};
-  bottom: ${(props) => `${props.$position.bottom}px`};
+  right: ${(props) => `${props.$position.right}rem`};
+  bottom: ${(props) => `${props.$position.bottom}rem`};
   cursor: pointer;
 `;
 
@@ -93,11 +94,11 @@ const BottomToTopRoad = styled.div<{
   bottom: number;
   right: number;
 }>`
-  width: 579.819px;
-  height: 48.096px;
+  width: 36.2387rem;
+  height: 3.006rem;
   position: fixed;
-  bottom: ${(props) => `${props.bottom || 0}px`};
-  right: ${(props) => `${props.right || 0}px`};
+  bottom: ${(props) => `${props.bottom || 0}rem`};
+  right: ${(props) => `${props.right || 0}rem`};
   transform: rotate(-20deg);
   background: #c4e2a4;
 `;
@@ -106,11 +107,11 @@ const TopToBottomRoad = styled.div<{
   bottom: number;
   right: number;
 }>`
-  width: 579.819px;
-  height: 48.096px;
+  width: 36.2387rem;
+  height: 3.006rem;
   position: fixed;
-  bottom: ${(props) => `${props.bottom || 0}px`};
-  right: ${(props) => `${props.right || 0}px`};
+  bottom: ${(props) => `${props.bottom || 0}rem`};
+  right: ${(props) => `${props.right || 0}rem`};
   transform: rotate(20deg);
   background: #c4e2a4;
 `;
@@ -163,8 +164,8 @@ function StageMapPage() {
     },
   });
   const [characterPosition, setCharacterPosition] = useState({
-    right: 1120,
-    bottom: 150,
+    right: 1120 / 16,
+    bottom: 150 / 16,
   });
   const characterRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -176,12 +177,13 @@ function StageMapPage() {
   const [stageId, setStageId] = useState<number | null>(null);
   // 레벨과 위치 정보를 관리할 배열
   const levelPositions = [
-    { right: 1150, bottom: 150 },
-    { right: 1150, bottom: 150 },
-    { right: 710, bottom: 280 },
-    { right: 310, bottom: 130 },
+    { right: 1150 / 16, bottom: 150 / 16 },
+    { right: 1150 / 16, bottom: 150 / 16 },
+    { right: 710 / 16, bottom: 280 / 16 },
+    { right: 310 / 16, bottom: 130 / 16 },
   ];
 
+  const { startBGM } = useBGM();
   const itemsPerPage = 3; // 한 페이지당 아이템 개수
   // 첫번째 페이지, 마지막 페이지 파악하는 변수
   const isFirstPage = currentPage === 0;
@@ -191,6 +193,10 @@ function StageMapPage() {
   const rightDisabled = isLastPage;
 
   console.log('$$$$$$$$$$$$$$', userLevel);
+
+  useEffect(() => {
+    startBGM('stage');
+  });
   useEffect(() => {
     const getData = async () => {
       try {
@@ -280,8 +286,8 @@ function StageMapPage() {
 
       // ref를 사용하여 캐릭터 이동 애니메이션 트리거
       if (characterRef.current) {
-        characterRef.current.style.right = `${newPosition.right}px`;
-        characterRef.current.style.bottom = `${newPosition.bottom}px`;
+        characterRef.current.style.right = `${newPosition.right}rem`;
+        characterRef.current.style.bottom = `${newPosition.bottom}rem`;
       }
     }
   };
@@ -330,9 +336,9 @@ function StageMapPage() {
       />
       <UserRupee />
       <LevelWrapper>
-        <BottomToTopRoad bottom={270} right={750} />
-        <TopToBottomRoad bottom={270} right={330} />
-        <BottomToTopRoad bottom={270} right={-70} />
+        <BottomToTopRoad bottom={270 / 16} right={750 / 16} />
+        <TopToBottomRoad bottom={270 / 16} right={330 / 16} />
+        <BottomToTopRoad bottom={270 / 16} right={-70 / 16} />
         {userLevel.level.length > 0 &&
           userLevel.level.map((level, index) => {
             const positionIndex = getPositionIndex(level.stageNum);

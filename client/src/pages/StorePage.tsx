@@ -14,6 +14,7 @@ import Button from '../components/atoms/Button';
 import BlurBox from '../components/atoms/BlurBox';
 import { getPictureTitles, getAvatars, buyItem } from '../api/item';
 import { patchRupee } from '../api/rupee';
+import SoundEffects from '../sounds/SoundEffects';
 
 const StorePageContainer = styled.div`
   display: flex;
@@ -70,6 +71,8 @@ function StorePage() {
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const [isBuy, setIsBuy] = useState<boolean>(false);
 
+  const { playComplete, playBtnSmall2, playStamp } = SoundEffects();
+
   useEffect(() => {
     loadItems(userProfile.profileId, curPage);
   }, [isAvatar, isTitle, curPage]);
@@ -100,8 +103,14 @@ function StorePage() {
           const response = await buyItem(profileId, itemId, 'subject');
         }
         setIsBuy(true);
+        playComplete();
         setUserRupee((prevRupee) => ({ rupee: prevRupee.rupee - detailPrice }));
         patchRupee(userProfile.profileId, curRupee - detailPrice);
+
+        // 1000ms 후에 stamp 효과음 실행 (도장 애니메이션 1000ms)
+        setTimeout(() => {
+          playStamp();
+        }, 1000);
         // 3050ms 후에 setIsBuy(false) 실행 (프로그레스 바 3000ms)
         setTimeout(() => {
           loadItems(userProfile.profileId, curPage);
@@ -176,7 +185,10 @@ function StorePage() {
           <Button
             buttonText="   그림 주제    "
             color="white"
-            onClick={() => console.log('c')}
+            onClick={() => {
+              playBtnSmall2();
+              console.log('c');
+            }}
           />
         ) : (
           <Button
