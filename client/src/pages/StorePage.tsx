@@ -71,7 +71,7 @@ function StorePage() {
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const [isBuy, setIsBuy] = useState<boolean>(false);
 
-  const { playAlarm, playClap, playBtnSmall2 } = SoundEffects();
+  const { playComplete, playBtnSmall2, playStamp } = SoundEffects();
 
   useEffect(() => {
     loadItems(userProfile.profileId, curPage);
@@ -103,8 +103,14 @@ function StorePage() {
           const response = await buyItem(profileId, itemId, 'subject');
         }
         setIsBuy(true);
+        playComplete();
         setUserRupee((prevRupee) => ({ rupee: prevRupee.rupee - detailPrice }));
         patchRupee(userProfile.profileId, curRupee - detailPrice);
+
+        // 1000ms 후에 stamp 효과음 실행 (도장 애니메이션 1000ms)
+        setTimeout(() => {
+          playStamp();
+        }, 1000);
         // 3050ms 후에 setIsBuy(false) 실행 (프로그레스 바 3000ms)
         setTimeout(() => {
           loadItems(userProfile.profileId, curPage);

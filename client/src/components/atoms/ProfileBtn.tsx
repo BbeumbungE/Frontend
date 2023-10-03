@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { UserProfileState } from '../../recoil/profile/atom';
 import theme from '../../style/theme';
+import SoundEffects from '../../sounds/SoundEffects';
 
 interface ProfileBtnProps {
   onClick: React.MouseEventHandler<HTMLDivElement>;
@@ -48,6 +49,13 @@ const ModalText = styled.span`
 
 function ProfileBtn({ onClick }: ProfileBtnProps) {
   const [userProfile, setUserProfile] = useRecoilState(UserProfileState);
+  const { playBtnBright } = SoundEffects();
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    playBtnBright(); // 버튼 클릭시 효과음 실행
+    if (onClick) {
+      onClick(event); // 만약 외부에서 전달된 onClick 핸들러가 있다면 실행
+    }
+  };
   let bgColor = theme.colors.mainWhite; // 기본값은 mainBlue
 
   switch (userProfile.character) {
@@ -77,7 +85,7 @@ function ProfileBtn({ onClick }: ProfileBtnProps) {
   }
   return (
     <ProfileWrapper>
-      <StyledCharacter $bgColor={bgColor} onClick={onClick}>
+      <StyledCharacter $bgColor={bgColor} onClick={handleClick}>
         <CharacterImage $bgImage={userProfile.profileImg} />
       </StyledCharacter>
       <ModalText>{userProfile.nickname}</ModalText>

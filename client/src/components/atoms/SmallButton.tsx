@@ -40,9 +40,9 @@ function SmallButton({
   onClick,
   cursor,
 }: ButtonProps) {
-  const { playBtnBright } = SoundEffects();
+  const { playBtnSmall2 } = SoundEffects();
   const handleClick = () => {
-    playBtnBright(); // 버튼 클릭시 효과음 실행
+    playBtnSmall2(); // 버튼 클릭시 효과음 실행
     if (onClick) {
       onClick(); // 만약 외부에서 전달된 onClick 핸들러가 있다면 실행
     }

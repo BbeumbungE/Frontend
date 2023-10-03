@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import theme from '../../style/theme';
 import Button from './Button';
+import SoundEffects from '../../sounds/SoundEffects';
 
 interface ButtonProps {
   key?: number;
@@ -83,6 +84,10 @@ function Menu({
   transparencyButton,
 }: ButtonProps) {
   const navigate = useNavigate();
+  const { playBtnBright } = SoundEffects();
+  const handleClick = () => {
+    playBtnBright();
+  };
   let bgColor = theme.menuColors.pink; // 기본값은 mainBlue
   let border = 'none';
   let routeUrl = '';
@@ -154,7 +159,12 @@ function Menu({
       )}
     </StyledMenu>
   ) : (
-    <StyledMenu to={routeUrl} $bgColor={bgColor} $border={border}>
+    <StyledMenu
+      to={routeUrl}
+      $bgColor={bgColor}
+      $border={border}
+      onClick={handleClick}
+    >
       <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
       {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
     </StyledMenu>

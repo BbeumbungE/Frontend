@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import SmileIcon from '../../assets/image/etc/smile.png';
 import WowIcon from '../../assets/image/etc/wow.png';
 import CryIcon from '../../assets/image/etc/cry.png';
+import SoundEffects from '../../sounds/SoundEffects';
 
 interface EmojiProps {
   emotion: string;
@@ -18,8 +19,14 @@ const EmojiWrapper = styled.div`
 `;
 
 const Emoji = ({ emotion, onClick, isPressed }: EmojiProps) => {
+  const { playBtnBright2 } = SoundEffects();
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    playBtnBright2();
+    if (onClick) {
+      onClick(event);
+    }
+  };
   let EmotionIcon: string;
-
   switch (emotion) {
     case 'smile':
       EmotionIcon = SmileIcon;
@@ -35,7 +42,7 @@ const Emoji = ({ emotion, onClick, isPressed }: EmojiProps) => {
   }
 
   return (
-    <EmojiWrapper onClick={onClick}>
+    <EmojiWrapper onClick={handleClick}>
       <img
         src={EmotionIcon}
         alt={emotion}

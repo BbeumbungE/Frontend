@@ -20,6 +20,7 @@ import { deleteProfile, newNickname } from '../api/profiles';
 import { disconnectEventSSE } from '../sse/mainSSE';
 import { getAlarms } from '../api/alarm';
 import { useBGM } from '../sounds/MusicContext';
+import SoundEffects from '../sounds/SoundEffects';
 
 const sampleData = [
   {
@@ -123,7 +124,7 @@ function MyProfilePage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [alarms, setAlarms] = useState<any>({});
   const { startBGM, stopBGM, toggleMute, isMuted } = useBGM();
-
+  const { playComplete } = SoundEffects();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -186,6 +187,7 @@ function MyProfilePage() {
   const handleNewName = async (profileId: number, inputText: string) => {
     try {
       const response = await newNickname(profileId, inputText);
+      playComplete();
       Swal.fire({
         title: '닉네임이 성공적으로 바뀌었어요',
         width: '37.5rem',
