@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useEffect, useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useRecoilValue } from 'recoil';
@@ -162,7 +163,7 @@ function StageMapPage() {
     },
   });
   const [characterPosition, setCharacterPosition] = useState({
-    right: 1150,
+    right: 1120,
     bottom: 150,
   });
   const characterRef = useRef<HTMLDivElement | null>(null);
@@ -177,8 +178,8 @@ function StageMapPage() {
   const levelPositions = [
     { right: 1150, bottom: 150 },
     { right: 1150, bottom: 150 },
-    { right: 700, bottom: 300 },
-    { right: 272, bottom: 140 },
+    { right: 710, bottom: 280 },
+    { right: 310, bottom: 130 },
   ];
 
   const itemsPerPage = 3; // 한 페이지당 아이템 개수
@@ -332,7 +333,34 @@ function StageMapPage() {
         <BottomToTopRoad bottom={270} right={750} />
         <TopToBottomRoad bottom={270} right={330} />
         <BottomToTopRoad bottom={270} right={-70} />
-        <EmptyLevelBtn level={1} bottom={280} right={730} />
+        {userLevel.level.length > 0 &&
+          userLevel.level.map((level, index) => {
+            const positionIndex = getPositionIndex(level.stageNum);
+            const star = level.record ? level.record.score : null;
+
+            if (level.id === null) {
+              return (
+                <EmptyLevelBtn
+                  key={level.rightstageNum}
+                  level={level.stageNum}
+                  bottom={levelPositions[positionIndex].bottom}
+                  right={levelPositions[positionIndex].right}
+                />
+              );
+            }
+
+            return (
+              <LevelBtn
+                key={level.stageNum}
+                level={level.stageNum}
+                star={star}
+                bottom={levelPositions[positionIndex].bottom}
+                right={levelPositions[positionIndex].right}
+                imgSrc={level.subjectItem.subjectImage}
+                onClick={() => handleLevelBtnClick(index + 1)}
+              />
+            );
+          })}
       </LevelWrapper>
       <GreenGround />
     </MapWrapper>
