@@ -15,7 +15,7 @@ const hoverAnimation = keyframes`
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-15px);
+    transform: translateY(-0.9375rem);
   }
   100% {
     transform: translateY(0);
@@ -24,9 +24,9 @@ const hoverAnimation = keyframes`
 
 const LevelWrapper = styled.div`
   position: fixed;
-  width: 200px;
-  height: 144px;
-  margin: 10px;
+  width: 12.5rem;
+  height: 9rem;
+  margin: 0.625rem;
   cursor: pointer;
 
   &:hover {
@@ -35,10 +35,10 @@ const LevelWrapper = styled.div`
 `;
 
 const LevelSketch = styled.img`
-  width: 200px;
-  height: 180px;
+  width: 12.5rem;
+  height: 11.25rem;
   position: absolute;
-  top: -130px;
+  top: -8.125rem;
   left: 0%;
   z-index: 200;
   border: none !important;
@@ -50,7 +50,7 @@ const LevelSketch = styled.img`
 const LevelText = styled.span`
   color: #97560d;
   font-family: SBAggroB;
-  font-size: 80px;
+  font-size: 5rem;
   font-style: normal;
   font-weight: 400;
   position: absolute;
@@ -58,17 +58,17 @@ const LevelText = styled.span`
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 3;
-  text-shadow: 0px -1px 3px #23232380;
+  text-shadow: 0rem -0.0625rem 0.1875rem #23232380;
 `;
 
 const TopBtn = styled.div`
-  width: 170px;
-  height: 115px;
+  width: 10.625rem;
+  height: 7.1875rem;
   border-radius: 50%;
   background: #fbee15;
   box-shadow:
-    0px -11px 4px 0px rgba(0, 0, 0, 0.25) inset,
-    5px 9px 11px 0px rgba(255, 255, 255, 0.5) inset;
+    0rem -0.6875rem 0.25rem 0rem rgba(0, 0, 0, 0.25) inset,
+    0.3125rem 0.5625rem 0.6875rem 0rem rgba(255, 255, 255, 0.5) inset;
   position: absolute;
   top: -5%;
   left: 7%;
@@ -76,13 +76,13 @@ const TopBtn = styled.div`
 `;
 
 const BottomBtn = styled.div`
-  width: 200px;
-  height: 131px;
+  width: 12.5rem;
+  height: 8.1875rem;
   border-radius: 50%;
   background: #e7eaf8;
   box-shadow:
-    0px -10px 4px 0px rgba(0, 0, 0, 0.25) inset,
-    0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    0rem -0.625rem 0.25rem 0rem rgba(0, 0, 0, 0.25) inset,
+    0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.25);
   position: relative;
   z-index: 1;
 `;
@@ -97,7 +97,7 @@ const LevelBtn = ({
 }: LevelBtnProps) => {
   return (
     <LevelWrapper
-      style={{ bottom: `${bottom || 0}px`, right: `${right || 0}px` }}
+      style={{ bottom: `${bottom || 0}rem`, right: `${right || 0}rem` }}
       onClick={onClick}
     >
       <LevelStars star={star} />

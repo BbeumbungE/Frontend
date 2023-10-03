@@ -5,51 +5,51 @@ import { ReactComponent as GrayStarIcon } from '../../assets/image/etc/grayStar.
 
 const StarWrapper = styled.span`
   position: absolute;
-  bottom: 250px;
-  width: 270px;
-  height: 120px;
+  bottom: 15.625rem;
+  width: 16.875rem;
+  height: 7.5rem;
   z-index: 300;
   display: flex;
   left: 50%;
   transform: translateX(-50%);
-  margin-left: 20px;
+  margin-left: 1.25rem;
 `;
 
 const LeftGreenStar = styled.img`
-  width: 85.866px;
-  height: 84.99px;
+  width: 5.3666rem;
+  height: 5.3119rem;
   transform: rotate(-6deg);
-  margin-right: -15px;
+  margin-right: -0.9375rem;
 `;
 const RightGreenStar = styled.img`
-  width: 85.866px;
-  height: 84.99px;
+  width: 5.3666rem;
+  height: 5.3119rem;
   transform: rotate(6deg);
-  margin-left: -15px;
+  margin-left: -0.9375rem;
 `;
 const MiddleGreenStar = styled.img`
-  top: -20px;
-  width: 98px;
-  height: 97px;
+  top: -1.25rem;
+  width: 6.125rem;
+  height: 6.0625rem;
   transform: translateY(-30%);
 `;
 
 const LeftGrayStar = styled(GrayStarIcon)`
-  width: 85.866px;
-  height: 84.99px;
+  width: 5.3666rem;
+  height: 5.3119rem;
   transform: rotate(-6deg);
-  margin-right: -15px;
+  margin-right: -0.9375rem;
 `;
 const RightGrayStar = styled(GrayStarIcon)`
-  width: 85.866px;
-  height: 84.99px;
+  width: 5.3666rem;
+  height: 5.3119rem;
   transform: rotate(6deg);
-  margin-left: -15px;
+  margin-left: -0.9375rem;
 `;
 const MiddleGrayStar = styled(GrayStarIcon)`
-  top: -20px;
-  width: 98px;
-  height: 97px;
+  top: -1.25rem;
+  width: 6.125rem;
+  height: 6.0625rem;
   transform: translateY(-30%);
 `;
 
