@@ -24,8 +24,9 @@ const RankingPageContainer = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: ${theme.colors.lightSalmon};
-  padding: 40px;
+  padding: 2.5rem;
   align-items: center;
+  justify-content: center;
 `;
 
 const PostContainer = styled.div`
@@ -33,7 +34,7 @@ const PostContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  width: 1200px;
+  width: 75rem;
 `;
 
 const ExitBoxWrapper = styled.div`
@@ -46,7 +47,7 @@ const ExitBoxOnBlurWrapper = styled.div`
   position: fixed;
   top: 3%;
   left: 0%;
-  z-index: 300;
+  z-index: 402;
 `;
 
 // 현재 주차 계산 function
@@ -250,12 +251,12 @@ function RankingPage() {
       <PageHeaderText
         content={`${month} ${currentWeek}주차`}
         color="dark"
-        fontSize="30px"
+        fontSize="1.875rem"
       />
       <PageHeaderText
         content={`${subjectTitle} 주간 랭킹`}
         color="dark"
-        fontSize="60px"
+        fontSize="3.75rem"
       />
       {posts.rankerList && (
         <PostContainer>

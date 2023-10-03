@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import { UserRupeeState } from '../recoil/rupee/atom';
@@ -19,7 +20,7 @@ const StorePageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 100px;
+  padding: 6.25rem;
   width: 100vw;
   height: 100vh;
   background-color: ${theme.storeColors.lightYellow};
@@ -30,22 +31,22 @@ const ItemContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
-  padding: 0px 30px;
-  width: 1000px;
+  padding: 0rem 1.875rem;
+  width: 62.5rem;
 `;
 
 const HeadBtnContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  width: 950px;
-  margin-top: 23px;
+  width: 59.375rem;
+  margin-top: 1.4375rem;
 `;
 
 const UserRupeeWrapper = styled.div`
   position: fixed;
-  top: 30px;
-  right: 300px;
+  top: 1.875rem;
+  right: 18.75rem;
   z-index: 301;
 `;
 
@@ -71,23 +72,18 @@ function StorePage() {
 
   useEffect(() => {
     loadItems(userProfile.profileId, curPage);
-    console.log(itemList);
   }, [isAvatar, isTitle, curPage]);
   async function loadItems(profileId: number, currentPage: number) {
-    console.log(userRupee);
-
     try {
       if (isAvatar) {
         const response = await getAvatars(profileId, currentPage);
         const newItems = { ...response.content };
         await setItemList(newItems);
-        console.log(newItems);
       }
       if (isTitle) {
         const response = await getPictureTitles(profileId, currentPage);
         const newItems = { ...response.content };
         await setItemList(newItems);
-        console.log(newItems);
       }
     } catch (error) {
       console.log(error);
@@ -95,16 +91,13 @@ function StorePage() {
   }
   const handleBuy = async (profileId: number, itemId: number) => {
     const curRupee = userRupee.rupee;
-    console.log(curRupee);
     if (curRupee >= detailPrice) {
       try {
         if (isAvatar) {
           const response = await buyItem(profileId, itemId, 'avatar');
-          console.log(response);
         }
         if (isTitle) {
           const response = await buyItem(profileId, itemId, 'subject');
-          console.log(response);
         }
         setIsBuy(true);
         setUserRupee((prevRupee) => ({ rupee: prevRupee.rupee - detailPrice }));
@@ -116,10 +109,16 @@ function StorePage() {
           setIsDetail(false);
         }, 3050);
       } catch (error) {
-        alert(error);
+        Swal.fire({
+          title: '에러가 발생했습니다',
+          width: '400px',
+        });
       }
     } else {
-      alert('Rupee가 부족해요');
+      Swal.fire({
+        title: 'Rupee가 부족해요',
+        width: '400px',
+      });
     }
   };
   return (

@@ -11,6 +11,8 @@ const StyledArrowIcon = styled(ArrowIcon)<{ $bgColor: string }>`
     fill: ${(props) => props.$bgColor};
   }
   cursor: pointer;
+  width: 8.1875rem;
+  height: 8.1875rem;
 `;
 function Arrow({ color }: ArrowProps) {
   let bgColor = theme.colors.darkGray;

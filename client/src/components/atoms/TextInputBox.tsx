@@ -13,25 +13,25 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 const TextInputWrapper = styled.div`
   display: inline-block;
   padding: 0;
-  margin-right: 4px;
+  margin-right: 0.25rem;
 `;
 
 const Input = styled.input`
-  width: 262px;
-  height: 62px;
-  padding: 8px;
-  font-size: 40px;
+  width: 16.375rem;
+  height: 3.875rem;
+  padding: 0.5rem;
+  font-size: 2.5rem;
   font-family: 'TmoneyRoundWindRegular';
   color: ${theme.colors.mainBlack};
   &::placeholder {
-    font-size: 27px;
+    font-size: 1.6875rem;
     color: ${theme.colors.mainBlack};
-    padding-top: 5px;
+    padding-top: 0.3125rem;
   }
   text-align: center;
   background-color: ${theme.colors.mainWhite};
-  border-radius: 15px;
-  border: 3px solid ${theme.colors.lightPurple};
+  border-radius: 0.9375rem;
+  border: 0.1875rem solid ${theme.colors.lightPurple};
   outline: none;
   padding: 0;
   margin: 0;
@@ -60,7 +60,11 @@ function TextInput({
         onChange={handleInputChange} // 이벤트 핸들러 함수 연결
         placeholder={placeholder}
         maxLength={6}
-        onMouseEnter={pressEnter}
+        onKeyUp={(event) => {
+          if (event.key === 'Enter') {
+            pressEnter();
+          }
+        }}
       />
     </TextInputWrapper>
   );

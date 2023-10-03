@@ -7,10 +7,10 @@ interface ExitBoxProps {
   color: string;
 }
 
-const ExitBoxDiv = styled.div`
+const ExitBoxDiv = styled.span`
   display: flex;
-  width: 230px;
-  height: 78px;
+  width: 14.375rem;
+  height: 4.875rem;
   align-items: center;
   cursor: pointer;
   position: fixed;

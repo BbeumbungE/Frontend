@@ -25,8 +25,9 @@ const TopicPageContainer = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: ${theme.colors.green};
-  padding: 40px;
+  padding: 2.5rem;
   align-items: center;
+  justify-content: center;
 `;
 
 const PostContainer = styled.div`
@@ -34,8 +35,8 @@ const PostContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  width: 1200px;
-  margin-top: 27px;
+  width: 75rem;
+  margin-top: 1.6875rem;
 `;
 
 const ExitBoxWrapper = styled.div`
@@ -47,7 +48,7 @@ const ExitBoxOnBlurWrapper = styled.div`
   position: fixed;
   top: 3%;
   left: 0%;
-  z-index: 300;
+  z-index: 402;
 `;
 
 function TopicPage() {
@@ -242,7 +243,7 @@ function TopicPage() {
       <ExitBoxWrapper>
         <ExitBox color="dark" />
       </ExitBoxWrapper>
-      <PageHeaderText content={subjectTitle} color="dark" fontSize="80px" />
+      <PageHeaderText content={subjectTitle} color="dark" fontSize="5rem" />
       <PageChangeButton
         leftOnClick={leftOnClick}
         rightOnClick={rightOnClick}

@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
+import Swal from 'sweetalert2';
 import { UserProfileState } from '../recoil/profile/atom';
 import { UserRupeeState } from '../recoil/rupee/atom';
-import { sseMessageState } from '../recoil/mainalarm/atom';
 import { getProfiles, newProfile } from '../api/profiles';
 import { deleteUser } from '../api/user';
 import { getRupee } from '../api/rupee';
@@ -23,17 +23,19 @@ const ProfilesPageContainer = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: ${theme.colors.mainSkyblue};
-  padding: 80px;
+  padding: 5rem;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ProfilesContainer = styled.div`
   display: flex;
   flex-direction: row;
-  height: 420px;
-  margin-top: 50px;
+  height: 26.25rem;
+  margin-top: 3.125rem;
   align-items: flex-start;
   justify-content: center;
-  flex: 1;
+  /* flex: 1; */
 `;
 
 const ExitBoxWrapper = styled.div`
@@ -55,14 +57,12 @@ function FamilyProfilePage() {
       try {
         const response = await getProfiles();
         setProfiles(response.content.profileList);
-        console.log(response);
       } catch (error) {
         console.log(error);
       }
     }
     if (isCreating !== true) {
       loadProfiles();
-      console.log('로딩');
     }
   }, [isCreating]);
 
@@ -72,21 +72,18 @@ function FamilyProfilePage() {
     Img: string,
     Name: string,
   ) => {
-    setUserProfile({
+    await setUserProfile({
       profileId: Id,
       character: Char,
       profileImg: Img,
       nickname: Name,
     });
     const response = await getRupee(Id);
-    console.log(response);
-    console.log(response.content.point);
     const rupeeValue = Number(response.content.point);
     await setUserRupee({
       rupee: rupeeValue,
     });
-    connectEventSSE(userProfile.profileId);
-    console.log(userRupee);
+    connectEventSSE(Id);
     navigate('/menu');
   };
   const handleCreateProfile = async () => {
@@ -94,8 +91,27 @@ function FamilyProfilePage() {
       const response = await newProfile(textInputValue);
       setTextInputValue('');
       setIsCreating(false);
-    } catch (error) {
+    } catch (error: any) {
       console.log('프로필 생성 실패: ', error);
+      switch (error.response?.data.code) {
+        case 'P002':
+          Swal.fire({
+            title: '적절하지 않은 닉네임이에요.',
+            width: '37.5rem',
+          });
+          break;
+        case 'P001':
+          Swal.fire({
+            title: '다른 프로필과 중복되는 닉네임이에요.',
+            width: '37.5rem',
+          });
+          break;
+        default:
+          Swal.fire({
+            title: '다시 로그인 후 시도해주세요.',
+            width: '37.5rem',
+          });
+      }
     }
   };
 
@@ -124,7 +140,10 @@ function FamilyProfilePage() {
                 }
                 ProfileName={profile.profileName}
                 onClick={() => {
-                  alert('프로필 생성중에는 선택할 수 없어요');
+                  Swal.fire({
+                    title: '프로필 생성중에는 선택할 수 없어요',
+                    width: '37.5rem',
+                  });
                 }}
               />
             ))}
@@ -132,15 +151,15 @@ function FamilyProfilePage() {
               inputValue={textInputValue}
               onTextInputChange={setTextInputValue}
               onClick={() => {
-                console.log(textInputValue);
                 handleCreateProfile();
-                // newProfile(textInputValue);
-                // setTextInputValue('');
               }}
             />
             <LargeNewProfileBtn
               onClick={() => {
-                alert('프로필 생성중에는 선택할 수 없어요');
+                Swal.fire({
+                  title: '프로필 생성중에는 선택할 수 없어요',
+                  width: '37.5rem',
+                });
               }}
             />
           </ProfilesContainer>
@@ -164,7 +183,10 @@ function FamilyProfilePage() {
                 }
                 ProfileName={profile.profileName}
                 onClick={() => {
-                  alert('프로필 생성중에는 선택할 수 없어요');
+                  Swal.fire({
+                    title: '프로필 생성중에는 선택할 수 없어요',
+                    width: '37.5rem',
+                  });
                 }}
               />
             ))}
@@ -246,18 +268,31 @@ function FamilyProfilePage() {
       <PageHeaderText
         content="프로필을 선택해주세요"
         color="dark"
-        fontSize="90px"
+        fontSize="5.625rem"
       />
       {content}
       <DeleteText
         content="탈퇴하기"
         onClick={() => {
           if (isCreating) {
-            alert('프로필 생성 중에는 탈퇴할 수 없어요');
+            Swal.fire({
+              title: '프로필 생성중에는 선택할 수 없어요',
+              width: '37.5rem',
+            });
           } else {
-            deleteUser();
-            console.log('탈퇴');
-            navigate('/');
+            Swal.fire({
+              title: '정말 탈퇴할까요?',
+              showDenyButton: true,
+              denyButtonText: '아니요',
+              denyButtonColor: `${theme.colors.mainGray}`,
+              confirmButtonColor: `${theme.colors.mainBlue}`,
+              confirmButtonText: '네',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                deleteUser();
+                navigate('/');
+              }
+            });
           }
         }}
       />

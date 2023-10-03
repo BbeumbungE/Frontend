@@ -18,13 +18,13 @@ const StyledMenu = styled(NavLink)<{
   to?: string | null;
 }>`
   font-family: 'TmoneyRoundWindExtraBold';
-  width: 300px;
-  height: 430px;
+  width: 18.75rem;
+  height: 26.875rem;
   position: relative;
-  margin: 10px;
-  padding-right: 5px;
-  padding-left: 5px;
-  border-radius: 50px;
+  margin: 0.625rem;
+  padding-right: 0.3125rem;
+  padding-left: 0.3125rem;
+  border-radius: 3.125rem;
   transition: all 0.3s ease-in-out;
   background-color: ${(props) => props.$bgColor};
   border: ${(props) => props.$border};
@@ -37,12 +37,12 @@ const StyledMenu = styled(NavLink)<{
 `;
 
 const MenuText = styled.div`
-  font-size: 40px;
+  font-size: 2.5rem;
   color: ${(props) => props.theme.colors.mainBlack};
-  margin-top: 30px;
-  margin-bottom: 30px;
-  margin-right: 34px;
-  margin-left: 34px;
+  margin-top: 1.875rem;
+  margin-bottom: 1.875rem;
+  margin-right: 2.125rem;
+  margin-left: 2.125rem;
   line-height: 1.2;
 `;
 
@@ -50,8 +50,8 @@ const SvgImage = styled.img`
   position: absolute;
   bottom: -10%;
   right: -10%;
-  width: 260px;
-  height: 260px;
+  width: 16.25rem;
+  height: 16.25rem;
 `;
 
 const ButtonWrapper = styled.div`
@@ -105,11 +105,11 @@ function Menu({
       break;
     case 'borderPink':
       bgColor = theme.menuColors.pink;
-      border = `solid 10px ${theme.menuColors.borderPink}`;
+      border = `solid 0.625rem ${theme.menuColors.borderPink}`;
       break;
     case 'borderGreen':
       bgColor = theme.menuColors.green;
-      border = `solid 10px ${theme.menuColors.borderGreen}`;
+      border = `solid 0.625rem ${theme.menuColors.borderGreen}`;
       break;
     default:
       bgColor = theme.colors.mainBlue;

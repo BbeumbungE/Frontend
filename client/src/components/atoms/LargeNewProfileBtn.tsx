@@ -14,10 +14,10 @@ const ProfileWrapper = styled.div`
 const StyledCharacter = styled.div`
   position: relative;
   display: inline-block;
-  width: 322px;
-  height: 322px;
-  margin: 10px;
-  padding: 40px;
+  width: 20.125rem;
+  height: 20.125rem;
+  margin: 0.625rem;
+  padding: 2.5rem;
   border-radius: 50%;
   text-align: center;
   transition: all 0.3s ease-in-out;
@@ -31,7 +31,7 @@ const StyledCharacter = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: 'TmoneyRoundWindRegular';
-    font-size: 180px; /* + 모양의 글꼴 크기 조절 */
+    font-size: 11.25rem; /* + 모양의 글꼴 크기 조절 */
     color: ${theme.colors.mainGray};
   }
 `;

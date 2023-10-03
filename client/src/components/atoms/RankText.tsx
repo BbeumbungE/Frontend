@@ -12,13 +12,13 @@ const RankSpan = styled.span<{ fontSize: number; fontColor: string }>`
   bottom: -15%;
   left: 10%;
   font-family: 'SBAggroB';
-  font-size: ${(props) => `${props.fontSize}px`};
+  font-size: ${(props) => `${props.fontSize}rem`};
   color: ${(props) => props.fontColor};
   pointer-events: none;
 `;
 
 function getFontSize(size: string): number {
-  return size === 'large' ? 215 : 110;
+  return size === 'large' ? 13.4375 : 6.875;
 }
 
 function getFontColor(color: string): string {

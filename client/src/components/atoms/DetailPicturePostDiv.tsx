@@ -15,7 +15,7 @@ const DetailPicturePostDiv = styled.div<DetailPicturePostDivProps>`
   background-position: center;
   padding: 0;
   border: 0;
-  z-index: 200;
+  z-index: 500;
 `;
 
 export default DetailPicturePostDiv;

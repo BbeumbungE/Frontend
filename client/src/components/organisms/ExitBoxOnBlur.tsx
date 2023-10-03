@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import ExitText from '../atoms/ExitText';
 import ExitArrow from '../atoms/ExitArrow';
@@ -11,8 +10,8 @@ interface ExitBoxProps {
 
 const ExitBoxDiv = styled.div`
   display: flex;
-  width: 230px;
-  height: 78px;
+  width: 14.375rem;
+  height: 4.875rem;
   align-items: center;
   cursor: pointer;
 `;

@@ -7,22 +7,24 @@ import { UserRupeeState } from '../../recoil/rupee/atom';
 const RupeeWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin: 10px;
-  border-radius: 50px;
+  margin: 0.625rem;
+  border-radius: 3.125rem;
   background-color: ${theme.colors.mainWhite};
   position: relative;
-  top: 10px;
-  right: 10px;
+  top: 0.625rem;
+  right: 0.625rem;
 `;
 
 const RupeeImg = styled(Rupee)`
   position: absolute;
-  left: -22px;
+  left: -1.375rem;
+  width: 3.4375rem;
+  height: 3.4375rem;
 `;
 const RupeeText = styled.span`
   font-family: 'TmoneyRoundWindRegular';
-  margin: 10px;
-  font-size: 30px;
+  margin: 0.625rem;
+  font-size: 1.875rem;
   white-space: pre-wrap;
   color: ${(props) => props.theme.colors.mainBlack};
 `;

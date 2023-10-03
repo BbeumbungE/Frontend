@@ -23,13 +23,13 @@ const ProgressBarWrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-top: 5px;
+  margin-top: 0.3125rem;
 `;
 
 const ProgressBarInner = styled.div<ProgressBarInnerProps>`
-  height: 30px;
-  border-radius: 25px;
-  border: 1.3px solid #ffffff;
+  height: 1.875rem;
+  border-radius: 1.5625rem;
+  border: 0.0813rem solid #ffffff;
   background-color: ${'#ffc64a'};
   transition: width 0.2s ease-in-out;
   animation: ${progressAnimation} ${({ progress }) => progress}s linear;

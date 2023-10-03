@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useResetRecoilState } from 'recoil';
+import Swal from 'sweetalert2';
 import theme from '../style/theme';
 import { UserProfileState } from '../recoil/profile/atom';
 import AlarmBoard from '../components/atoms/AlarmBoard';
@@ -15,7 +16,7 @@ import BlurBox from '../components/atoms/BlurBox';
 import NameChangeModal from '../components/organisms/NameChangeModal';
 import ConfirmModal from '../components/organisms/ConfirmModal';
 import { deleteProfile, newNickname } from '../api/profiles';
-import { logoutUser } from '../api/user';
+import { disconnectEventSSE } from '../sse/mainSSE';
 import { getAlarms } from '../api/alarm';
 
 const sampleData = [
@@ -36,6 +37,7 @@ const LeftContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
   background-color: ${theme.hamsterColors.sky};
 `;
@@ -45,13 +47,14 @@ const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 const CenteredAlarmBoard = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 520px;
-  margin-top: 22px;
+  height: 32.5rem;
+  margin-top: 1.375rem;
 `;
 const CenteredProfileBoard = styled.div`
   display: flex;
@@ -59,7 +62,7 @@ const CenteredProfileBoard = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-top: 120px;
+  margin-top: 7.5rem;
 `;
 
 const ExitBoxWrapper = styled.div`
@@ -69,8 +72,8 @@ const ExitBoxWrapper = styled.div`
 `;
 
 const CharacterImage = styled.div<{ imgsrc: string }>`
-  width: 300px;
-  height: 300px;
+  width: 18.75rem;
+  height: 18.75rem;
   background-image: url(${(props) => props.imgsrc});
   background-size: cover;
   background-position: center;
@@ -80,7 +83,7 @@ const NicknameText = styled.span`
   display: flex;
   justify-content: center;
   font-family: 'TmoneyRoundWindExtraBold';
-  font-size: 55px;
+  font-size: 3.4375rem;
   align-items: center;
   color: ${(props) => props.theme.colors.mainBlack};
 `;
@@ -89,14 +92,14 @@ const ExitBoxOnBlurWrapper = styled.div`
   position: fixed;
   top: 3%;
   left: 0%;
-  z-index: 300;
+  z-index: 405;
 `;
 
 const WhiteModalWrapper = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 300;
+  z-index: 405;
   transform: translate(-50%, -50%);
 `;
 
@@ -156,12 +159,14 @@ function MyProfilePage() {
 
   const handleLogout = () => {
     resetUserRecoil();
+    disconnectEventSSE();
     localStorage.removeItem('accessToken');
     window.location.href = `https://kauth.kakao.com/oauth/logout?client_id=${process.env.REACT_APP_KAUTH_ID}&logout_redirect_uri=${process.env.REACT_APP_API_URL}/logout`;
   };
 
   const handleDeleteProfile = (profileId: number) => {
     deleteProfile(profileId);
+    disconnectEventSSE();
     setTimeout(() => {
       navigate('/profiles');
     }, 100);
@@ -170,7 +175,10 @@ function MyProfilePage() {
   const handleNewName = async (profileId: number, inputText: string) => {
     try {
       const response = await newNickname(profileId, inputText);
-      alert('닉네임이 성공적으로 변경되었습니다');
+      Swal.fire({
+        title: '닉네임이 성공적으로 바뀌었어요',
+        width: '37.5rem',
+      });
       setUserProfile((prevProfile) => ({
         ...prevProfile,
         nickname: inputText,
@@ -178,7 +186,10 @@ function MyProfilePage() {
       setTextInputValue('');
       setChangeName(false);
     } catch (error) {
-      alert('닉네임 변경에 실패했습니다. 다른 닉네임으로 시도해주세요');
+      Swal.fire({
+        title: '다른 닉네임으로 시도해주세요',
+        width: '37.5rem',
+      });
     }
   };
 
@@ -226,7 +237,7 @@ function MyProfilePage() {
           <BlurBox />
           <WhiteModalWrapper>
             <ConfirmModal
-              title="정말로 로그아웃 할까요?"
+              title="정말 로그아웃 할까요?"
               noCheck={() => setIsLogout(false)}
               okCheck={() => {
                 handleLogout();
