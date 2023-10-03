@@ -142,9 +142,7 @@ function DrawingTopicMenuPage() {
 
   return (
     <MainMenuWrapper>
-      <ExitBoxWrapper>
-        <ExitBox color="dark" />
-      </ExitBoxWrapper>
+      <ExitBox color="dark" />
       <BalloonWrapper>
         <Balloon>
           어떤 주제를 그려볼까요?

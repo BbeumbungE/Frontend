@@ -61,21 +61,33 @@ function LevelStars({ star }: LevelStarsProps) {
   const stars = [];
 
   if (star === null) {
-    stars.push(<LeftGrayStar />);
-    stars.push(<MiddleGrayStar />);
-    stars.push(<RightGrayStar />);
+    stars.push(<LeftGrayStar key="left" />);
+    stars.push(<MiddleGrayStar key="middle" />);
+    stars.push(<RightGrayStar key="right" />);
   } else if (star === 1) {
-    stars.push(<LeftGreenStar src={GreenStarIcon} alt="Left Star" />);
-    stars.push(<MiddleGrayStar />);
-    stars.push(<RightGrayStar />);
+    stars.push(
+      <LeftGreenStar key="left" src={GreenStarIcon} alt="Left Star" />,
+    );
+    stars.push(<MiddleGrayStar key="middle" />);
+    stars.push(<RightGrayStar key="right" />);
   } else if (star === 2) {
-    stars.push(<LeftGreenStar src={GreenStarIcon} alt="Left Star" />);
-    stars.push(<MiddleGreenStar src={GreenStarIcon} alt="Left Star" />);
-    stars.push(<RightGrayStar />);
+    stars.push(
+      <LeftGreenStar key="left" src={GreenStarIcon} alt="Left Star" />,
+    );
+    stars.push(
+      <MiddleGreenStar key="middle" src={GreenStarIcon} alt="Left Star" />,
+    );
+    stars.push(<RightGrayStar key="right" />);
   } else if (star === 3) {
-    stars.push(<LeftGreenStar src={GreenStarIcon} alt="Left Star" />);
-    stars.push(<MiddleGreenStar src={GreenStarIcon} alt="Left Star" />);
-    stars.push(<RightGreenStar src={GreenStarIcon} alt="Left Star" />);
+    stars.push(
+      <LeftGreenStar key="left" src={GreenStarIcon} alt="Left Star" />,
+    );
+    stars.push(
+      <MiddleGreenStar key="middle" src={GreenStarIcon} alt="Left Star" />,
+    );
+    stars.push(
+      <RightGreenStar key="right" src={GreenStarIcon} alt="Left Star" />,
+    );
   }
 
   return <StarWrapper>{stars}</StarWrapper>;

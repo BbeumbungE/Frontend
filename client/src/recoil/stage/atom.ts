@@ -1,6 +1,14 @@
 import { atom } from 'recoil';
 
-export const StageIdState = atom<number | null>({
+interface StageIdState {
+  currentStageId: number | null;
+  highestStageId: number | null;
+}
+
+export const StageIdState = atom<StageIdState>({
   key: 'StageIdState',
-  default: null,
+  default: {
+    currentStageId: null,
+    highestStageId: null,
+  },
 });

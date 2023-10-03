@@ -7,12 +7,12 @@ interface PageHeaderTextProps {
   fontSize: string; // fontSize 추가
 }
 
-const PageHeaderSpan = styled.span<{ txColor: string; fontSize?: string }>`
+const PageHeaderSpan = styled.span<{ $txColor: string; fontSize?: string }>`
   font-size: ${(props) =>
     props.fontSize ||
     '5.625rem'}; // fontSize를 props로 받거나 기본값은 '5.625rem'
   font-family: 'TmoneyRoundWindExtraBold';
-  color: ${(props) => props.txColor};
+  color: ${(props) => props.$txColor};
   text-align: center;
   margin-bottom: 0.1875rem;
 `;
@@ -37,7 +37,7 @@ function SpanColor(color: string) {
 const PageHeaderText = ({ color, content, fontSize }: PageHeaderTextProps) => {
   const txColor = SpanColor(color); // SpanColor 함수 호출
   return (
-    <PageHeaderSpan txColor={txColor} fontSize={fontSize}>
+    <PageHeaderSpan $txColor={txColor} fontSize={fontSize}>
       {content}
     </PageHeaderSpan>
   );

@@ -12,10 +12,10 @@ interface UserProfile {
 export const UserProfileState = atom<UserProfile>({
   key: 'UserProfileState',
   default: {
-    profileId: 2,
+    profileId: 28,
     character: 'hamster',
     profileImg: `${process.env.REACT_APP_IMG_URL}/item/avatar/hamster.png`,
-    nickname: '론빵이',
+    nickname: '날강두',
   },
   effects_UNSTABLE: [persistAtom],
 });
