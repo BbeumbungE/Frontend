@@ -27,5 +27,5 @@
   "include": [
     "src",
     "sound.d.ts"
-, "public/service-worker.ts", "src/serviceWorkerRegistration.ts"  ],
+,"public/service-worker.js",  "src/serviceWorkerRegistration.ts"  ],
 }

@@ -5,13 +5,13 @@
     {
       "src": "log192.png",
       "type": "image/png",
-      "purpose": "maskable",
+      "purpose": "any maskable",
       "sizes": "192x192"
     },
     {
       "src": "log512.png",
       "type": "image/png",
-      "purpose": "any",
+      "purpose": "any maskable",
       "sizes": "512x512"
     }
   ],
