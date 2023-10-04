@@ -56,6 +56,44 @@ interface AvatarResponse {
   };
 }
 
+interface AvatarResponse {
+  id: number;
+  avatarName: string;
+  avatarImage: string;
+}
+
+interface Item {
+  id: number;
+  itemPrice: number;
+  hasItem: boolean;
+  avatarResponse: AvatarResponse;
+}
+
+interface MyItem {
+  id: number;
+  itemType: string;
+  item: Item;
+}
+
+interface PageInfo {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+interface MyItemResponse {
+  status: {
+    httpStatus: string;
+    code: number;
+    message: string;
+  };
+  content: {
+    data: MyItem[];
+    pageInfo: PageInfo;
+  };
+}
+
 const getAvatars = async (
   profileId: number,
   pageNum: number,
@@ -102,4 +140,16 @@ const buyItem = async (
   }
 };
 
-export { getAvatars, getPictureTitles, buyItem };
+const getMyAvatar = async (profileId: number): Promise<MyItemResponse> => {
+  try {
+    const response = await api.get(
+      `/api/profiles/${profileId}/my-items?category=avatar&page=0&size=8`,
+    );
+    return response.data;
+  } catch (error) {
+    console.log('내 아바타 조회 실패', error);
+    throw error;
+  }
+};
+
+export { getAvatars, getPictureTitles, buyItem, getMyAvatar };

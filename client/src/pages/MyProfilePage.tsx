@@ -21,6 +21,7 @@ import { disconnectEventSSE } from '../sse/mainSSE';
 import { getAlarms } from '../api/alarm';
 import { useBGM } from '../sounds/MusicContext';
 import SoundEffects from '../sounds/SoundEffects';
+import CharacterBackground from '../components/organisms/CharacterBackground';
 
 const sampleData = [
   {
@@ -34,24 +35,31 @@ const MyProfileContainer = styled.div`
   height: 100vh; /* 화면 높이만큼 컨테이너 높이 설정 */
   display: flex;
 `;
-const LeftContainer = styled.div`
-  width: 50vw;
-  height: 100vh; /* 화면 높이만큼 컨테이너 높이 설정 */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  background-color: ${theme.hamsterColors.sky};
+
+const DeleteWrapper = styled.div`
+  position: absolute;
+  width: 100%;
+  margin-top: 15px;
+  text-align: center;
 `;
+
+const UpperWrapper = styled.div`
+  z-index: 300;
+  width: 50vw;
+  position: relative;
+`;
+
 const RightContainer = styled.div`
   width: 50vw;
   height: 100vh; /* 화면 높이만큼 컨테이너 높이 설정 */
+  position: fixed;
+  left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
+
 const CenteredAlarmBoard = styled.div`
   align-items: center;
   justify-content: center;
@@ -59,6 +67,7 @@ const CenteredAlarmBoard = styled.div`
   height: 32.5rem;
   margin-top: 1.375rem;
 `;
+
 const CenteredProfileBoard = styled.div`
   display: flex;
   flex-direction: column;
@@ -270,7 +279,8 @@ function MyProfilePage() {
           </WhiteModalWrapper>
         </>
       )}
-      <LeftContainer>
+      <CharacterBackground />
+      <UpperWrapper>
         <ExitBoxWrapper>
           <ExitBox color="dark" />
         </ExitBoxWrapper>
@@ -291,13 +301,15 @@ function MyProfilePage() {
             />
           </CenteredProfileBoard>
         )}
-        <DeleteText
-          onClick={() => {
-            setIsDelete(true);
-          }}
-          content="프로필 삭제하기"
-        />
-      </LeftContainer>
+        <DeleteWrapper>
+          <DeleteText
+            onClick={() => {
+              setIsDelete(true);
+            }}
+            content="프로필 삭제하기"
+          />
+        </DeleteWrapper>
+      </UpperWrapper>
       <RightContainer>
         <MuteBoxWrapper>
           <VolumeBtn isActive={isMuted} onClick={handleVolumeButtonClick} />

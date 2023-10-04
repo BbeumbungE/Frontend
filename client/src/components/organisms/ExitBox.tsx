@@ -5,6 +5,7 @@ import ExitArrow from '../atoms/ExitArrow';
 
 interface ExitBoxProps {
   color: string;
+  closeModal?: () => void;
 }
 
 const ExitBoxDiv = styled.span`
@@ -16,22 +17,31 @@ const ExitBoxDiv = styled.span`
   position: fixed;
   top: 3%;
   left: 0%;
-  z-index: 500;
+  z-index: 550;
 `;
 
-const ExitBox = ({ color }: ExitBoxProps) => {
+const ExitBox = ({ color, closeModal }: ExitBoxProps) => {
   const navigate = useNavigate();
 
-  const goBack = () => {
-    navigate(-1);
+  const handleClick = () => {
+    if (closeModal) {
+      console.log('모달 닫기');
+      closeModal();
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
-    <ExitBoxDiv onClick={goBack}>
+    <ExitBoxDiv onClick={handleClick}>
       <ExitArrow color={color} />
       <ExitText color={color} />
     </ExitBoxDiv>
   );
+};
+
+ExitBox.defaultProps = {
+  closeModal: undefined,
 };
 
 export default ExitBox;

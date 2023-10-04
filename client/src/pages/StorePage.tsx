@@ -80,6 +80,7 @@ function StorePage() {
     try {
       if (isAvatar) {
         const response = await getAvatars(profileId, currentPage);
+        console.log(response);
         const newItems = { ...response.content };
         await setItemList(newItems);
       }

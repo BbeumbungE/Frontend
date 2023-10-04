@@ -191,9 +191,10 @@ function StageRecordModal({ finishData, canvasUrl }: StageRecordModalProps) {
 
   useEffect(() => {
     const updatedRupee =
-      userRupee.rupee + finishData.content.pointInfo.currentPoint;
+      userRupee.rupee + finishData.content.pointInfo.rewardPoint;
     setUserRupee({ rupee: updatedRupee });
   }, []);
+
   console.log('업데이트한 루피!', userRupee);
 
   const handleConfirm = () => {
@@ -213,7 +214,7 @@ function StageRecordModal({ finishData, canvasUrl }: StageRecordModalProps) {
         <ModalText>축하합니다</ModalText>
         <RupeeWrapper>
           <RupeeIcon />
-          <RupeeText>{finishData.content.pointInfo.currentPoint}</RupeeText>
+          <RupeeText>{finishData.content.pointInfo.rewardPoint}</RupeeText>
         </RupeeWrapper>
         <Button
           buttonText="확인"

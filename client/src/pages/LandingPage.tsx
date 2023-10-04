@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 import theme from '../style/theme';
@@ -130,7 +130,7 @@ function LandingPage() {
   const [canvasUrl, setCanvasUrl] = useState<string | undefined>();
   const [isTransformed, setIsTransformed] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const subjectId = 2;
+  const subjectId = 6;
 
   useEffect(() => {
     const getTempID = async () => {
