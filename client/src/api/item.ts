@@ -143,7 +143,7 @@ const buyItem = async (
 const getMyAvatar = async (profileId: number): Promise<MyItemResponse> => {
   try {
     const response = await api.get(
-      `/api/profiles/${profileId}/my-items?category=avartar&page=0&size=8`,
+      `/api/profiles/${profileId}/my-items?category=avatar&page=0&size=8`,
     );
     return response.data;
   } catch (error) {
