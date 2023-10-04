@@ -94,4 +94,21 @@ const newNickname = async (
   }
 };
 
-export { getProfiles, newProfile, deleteProfile, newNickname };
+const updateAvatar = async (
+  profileId: number,
+  profileItemId: number,
+  body: { myItemId: number },
+) => {
+  try {
+    const response = await api.patch(
+      `/api/profiles/${profileId}/profile-items/${profileItemId}`,
+      body,
+    );
+    return response.data;
+  } catch (error) {
+    console.log('아바타 변경 실패', error);
+    throw error;
+  }
+};
+
+export { getProfiles, newProfile, deleteProfile, newNickname, updateAvatar };

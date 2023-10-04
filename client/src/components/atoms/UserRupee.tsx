@@ -10,6 +10,7 @@ const RupeeWrapper = styled.div`
   position: absolute;
   top: 0.625rem;
   right: 0.625rem;
+  z-index: 300;
 `;
 
 const RupeeText = styled.span`

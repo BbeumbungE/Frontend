@@ -21,6 +21,7 @@ import { disconnectEventSSE } from '../sse/mainSSE';
 import { getAlarms } from '../api/alarm';
 import { useBGM } from '../sounds/MusicContext';
 import SoundEffects from '../sounds/SoundEffects';
+import CharacterBackground from '../components/organisms/CharacterBackground';
 
 const sampleData = [
   {
@@ -34,19 +35,19 @@ const MyProfileContainer = styled.div`
   height: 100vh; /* 화면 높이만큼 컨테이너 높이 설정 */
   display: flex;
 `;
-const LeftContainer = styled.div`
+
+const LeftContainer = styled(CharacterBackground)`
   width: 50vw;
-  height: 100vh; /* 화면 높이만큼 컨테이너 높이 설정 */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  height: 100vh;
+  z-index: 0;
   position: relative;
-  background-color: ${theme.hamsterColors.sky};
 `;
+
 const RightContainer = styled.div`
   width: 50vw;
   height: 100vh; /* 화면 높이만큼 컨테이너 높이 설정 */
+  position: fixed;
+  left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
