@@ -61,6 +61,17 @@ const TopText = styled.div<{ color: string }>`
       : props.theme.colors.mainWhite};
 `;
 
+const GrayText = styled.div`
+  position: fixed;
+  z-index: 300;
+  top: 300px;
+  left: 36%;
+  font-size: 35px;
+  line-height: 80px;
+  text-align: center;
+  color: ${(props) => props.theme.colors.darkGray};
+`;
+
 const ModalTextWrapper = styled.div`
   width: 100%;
   z-index: 1000;
@@ -256,7 +267,7 @@ function MyDrawingsPage() {
   };
 
   console.log('모달 오픈', isModalOpen);
-  console.log('내 상세 그림', detailDrawing);
+  console.log('내 상세 그림', detailDrawing?.canvasId);
   console.log('조명', flashing);
 
   return (
@@ -277,18 +288,24 @@ function MyDrawingsPage() {
         leftDisabled={leftDisabled}
         rightDisabled={rightDisabled}
       />
-      {myDrawings && (
+      {myDrawings && myDrawings.length === 0 ? (
+        <GrayText>
+          {userProfile.nickname}의 그림이 아직 없어요 :( <br />
+          그림을 그려서 채워보아요!
+        </GrayText>
+      ) : (
         <PhotoFrameWrapper>
-          {myDrawings.map((drawing) => (
-            <PhotoFrame
-              key={drawing.canvasId}
-              url={drawing.imageUrl}
-              profileId={userProfile.profileId}
-              canvasId={drawing.canvasId}
-              setDetailDrawing={setDetailDrawing}
-              onClick={handleModal}
-            />
-          ))}
+          {myDrawings &&
+            myDrawings.map((drawing) => (
+              <PhotoFrame
+                key={drawing.canvasId}
+                url={drawing.imageUrl}
+                profileId={userProfile.profileId}
+                canvasId={drawing.canvasId}
+                setDetailDrawing={setDetailDrawing}
+                onClick={handleModal}
+              />
+            ))}
         </PhotoFrameWrapper>
       )}
       {isModalOpen && detailDrawing && (

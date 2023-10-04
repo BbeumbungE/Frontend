@@ -7,7 +7,7 @@ const BackgroundWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   min-height: 100vh;
-  background-color: ${(props) => props.theme.colors.lightPurple};
+  background-color: #f4f6ed;
   position: fixed;
   overflow: hidden;
 `;
@@ -39,30 +39,30 @@ const MyDrawingBackground = () => {
       <HalfMountain
         width="500px"
         height="400px"
-        top="400px"
+        top="300px"
         left="-180px"
-        color="E2EDD3"
+        color="#E2EDD3"
       />
       <HalfMountain
         width="500px"
         height="400px"
-        top="550px"
+        top="350px"
         left="220px"
-        color="E2EDD3"
+        color="#E2EDD3"
       />
       <HalfMountain
         width="600px"
         height="500px"
-        top="530px"
+        top="330px"
         left="600px"
-        color="E2EDD3"
+        color="#E2EDD3"
       />
       <HalfMountain
         width="600px"
         height="500px"
-        top="430px"
+        top="330px"
         left="1080px"
-        color="E2EDD3"
+        color="#E2EDD3"
       />
       <Ground color="#D1DFBC" />
     </BackgroundWrapper>

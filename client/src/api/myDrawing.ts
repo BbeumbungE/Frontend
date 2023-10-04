@@ -58,7 +58,7 @@ const getMyDrawing = async (
 const deleteDrawing = async (profileId: number, canvasId: number) => {
   try {
     const response = await api.delete(
-      `/api/profiles/${profileId}/canvases/${canvasId}}`,
+      `/api/profiles/${profileId}/canvases/${canvasId}`,
     );
     return response.status;
   } catch (error) {
