@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import LevelStars from './LevelStars';
+import SoundEffects from '../../sounds/SoundEffects';
 
 interface LevelBtnProps {
   level: number;
@@ -95,10 +96,17 @@ const LevelBtn = ({
   imgSrc,
   onClick,
 }: LevelBtnProps) => {
+  const { playBtnSmall2 } = SoundEffects();
+  const handleClick = () => {
+    playBtnSmall2(); // 버튼 클릭시 효과음 실행
+    if (onClick) {
+      onClick(); // 만약 외부에서 전달된 onClick 핸들러가 있다면 실행
+    }
+  };
   return (
     <LevelWrapper
       style={{ bottom: `${bottom || 0}rem`, right: `${right || 0}rem` }}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <LevelStars star={star} />
       <LevelSketch src={imgSrc} />

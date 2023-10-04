@@ -3,8 +3,15 @@
   "name": "AI Canvas: 아이들의 상상을 현실로",
   "icons": [
     {
-      "src": "../src/assets/image/logo/logo.png",
+      "src": "log192.png",
       "type": "image/png",
+      "purpose": "maskable",
+      "sizes": "192x192"
+    },
+    {
+      "src": "log512.png",
+      "type": "image/png",
+      "purpose": "any",
       "sizes": "512x512"
     }
   ],

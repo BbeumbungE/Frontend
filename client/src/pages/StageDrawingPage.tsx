@@ -369,15 +369,38 @@ function StageDrawingPage() {
   }, [isFinish, canvasUrl]); // isFinish가 변경될 때만 실행됩니다.
 
   const canvasEventListener = (
-    event: React.MouseEvent<HTMLCanvasElement>,
+    event:
+      | React.MouseEvent<HTMLCanvasElement>
+      | React.TouchEvent<HTMLCanvasElement>,
     type: string,
   ) => {
     if (isLocked) {
       return; // Lock 상태에서는 그림을 그리지 않음
     }
 
-    const x = event.nativeEvent.offsetX;
-    const y = event.nativeEvent.offsetY;
+    let x;
+    let y;
+
+    if ('touches' in event) {
+      console.log(event);
+      // Touch event
+      const touch = event.touches[0];
+      if (touch) {
+        x =
+          (touch.clientX ?? 0) -
+          (canvasRef.current!.getBoundingClientRect().left ?? 0);
+        y =
+          (touch.clientY ?? 0) -
+          (canvasRef.current!.getBoundingClientRect().top ?? 0);
+      } else {
+        x = 0;
+        y = 0;
+      }
+    } else {
+      // Mouse event
+      x = event.nativeEvent.offsetX;
+      y = event.nativeEvent.offsetY;
+    }
 
     if (isDrawingMode && ctx) {
       // 그리기 모드 일 때는 그리기
@@ -623,7 +646,11 @@ function StageDrawingPage() {
           <ProgressTimeBar
             durationInSeconds={data.timeLimit}
             isModalOpen={isModalOpen}
-            onComplete={handleFinish}
+            onComplete={() => {
+              if (!isFinish) {
+                handleFinish();
+              }
+            }}
           />
           <TopWrapper>
             <ExitBox color="dark" />
@@ -678,6 +705,15 @@ function StageDrawingPage() {
                 }}
                 onMouseUp={(event) => {
                   canvasEventListener(event, 'up');
+                }}
+                onTouchStart={(event) => {
+                  canvasEventListener(event, 'down');
+                }}
+                onTouchMove={(event) => {
+                  canvasEventListener(event, 'move');
+                }}
+                onTouchEnd={(event) => {
+                  canvasEventListener(event, 'leave');
                 }}
               />
             </div>

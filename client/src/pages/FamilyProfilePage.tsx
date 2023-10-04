@@ -71,12 +71,14 @@ function FamilyProfilePage() {
     Char: string,
     Img: string,
     Name: string,
+    profileItemId: number,
   ) => {
     await setUserProfile({
       profileId: Id,
       character: Char,
       profileImg: Img,
       nickname: Name,
+      profileItemId,
     });
     const response = await getRupee(Id);
     const rupeeValue = Number(response.content.point);
@@ -224,6 +226,7 @@ function FamilyProfilePage() {
                   profile.profileAvatar.myAvatarItem.item.avatarResponse
                     .avatarImage,
                   profile.profileName,
+                  profile.profileAvatar.id,
                 );
               }}
             />
@@ -256,6 +259,7 @@ function FamilyProfilePage() {
                   profile.profileAvatar.myAvatarItem.item.avatarResponse
                     .avatarImage,
                   profile.profileName,
+                  profile.profileAvatar.id,
                 );
               }}
             />

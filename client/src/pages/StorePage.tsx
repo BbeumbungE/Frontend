@@ -164,11 +164,7 @@ function StorePage() {
             buttonText="프로필 캐릭터"
             color="white"
             onClick={() => {
-              setUserRupee((prevRupee) => ({
-                rupee: prevRupee.rupee + 1000,
-              }));
-
-              patchRupee(userProfile.profileId, 1000);
+              // empty
             }}
           />
         ) : (
@@ -186,8 +182,10 @@ function StorePage() {
             buttonText="   그림 주제    "
             color="white"
             onClick={() => {
-              playBtnSmall2();
-              console.log('c');
+              setUserRupee((prevRupee) => ({
+                rupee: prevRupee.rupee + 1000,
+              }));
+              patchRupee(userProfile.profileId, 1000);
             }}
           />
         ) : (
