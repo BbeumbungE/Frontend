@@ -1,33 +1,37 @@
 import { AxiosResponse } from 'axios';
 import { api } from './api';
 
-interface TempIdResponse {
-  status: {
-    httpStatus: string;
-    code: number;
-    message: string;
-  };
-  content: {
-    subjectId: number;
-    subjectSketch: string;
-    tempId: string;
-  };
+interface Status {
+  httpStatus: string;
+  code: number;
+  message: string;
 }
 
-interface DrawingResponse {
-  status: {
-    httpStatus: string;
-    code: number;
-    message: string;
-  };
-  content: null;
+interface Sketch {
+  sketchId: number;
+  sketchImageUrl: string;
 }
 
-interface PostData {
-  subjectId: number;
+interface Subject {
+  id: number;
+  subjectName: string;
+  subjectImage: string;
+  sketchList: Sketch[];
 }
 
-const getTopicDrawings = async (itemId: number): Promise<TempIdResponse> => {
+interface DetailContent {
+  id: number;
+  itemPrice: number;
+  hasItem: boolean;
+  subject: Subject;
+}
+
+interface ApiResponse {
+  status: Status;
+  content: DetailContent;
+}
+
+const getTopicDrawings = async (itemId: number): Promise<ApiResponse> => {
   try {
     const response = await api.get(`/api/items/${itemId}/subjects`);
     return response.data;
@@ -37,7 +41,7 @@ const getTopicDrawings = async (itemId: number): Promise<TempIdResponse> => {
   }
 };
 
-const postTopicDrawing = async (canvasId: number): Promise<TempIdResponse> => {
+const postTopicDrawing = async (canvasId: number): Promise<any> => {
   try {
     const response = await api.post(`/api/canvases/${canvasId}/posts`);
     return response.data;

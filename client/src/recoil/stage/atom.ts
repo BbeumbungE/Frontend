@@ -11,6 +11,6 @@ export const StageIdState = atom<StageIdState>({
   default: {
     currentStageId: null,
     highestStageId: null,
-    itemId: null,
+    itemId: 12,
   },
 });
