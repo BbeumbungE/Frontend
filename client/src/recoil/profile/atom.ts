@@ -7,6 +7,7 @@ interface UserProfile {
   character: string;
   profileImg: string | null;
   nickname: string;
+  profileItemId: number;
 }
 
 export const UserProfileState = atom<UserProfile>({
@@ -16,6 +17,7 @@ export const UserProfileState = atom<UserProfile>({
     character: 'hamster',
     profileImg: `${process.env.REACT_APP_IMG_URL}/item/avatar/hamster.png`,
     nickname: '날강두',
+    profileItemId: 28,
   },
   effects_UNSTABLE: [persistAtom],
 });

@@ -53,17 +53,17 @@ const sparkle = keyframes`
   50% {
     opacity: 0.4;
     transform: scale(7);
-    box-shadow: 0px 0px 30px 20px ${transpWhite};
+    box-shadow: 0rem 0rem 1.875rem 1.25rem ${transpWhite};
   }
   50% {
     opacity: 1;
     transform: scale(7);
-    box-shadow: 0px 0px 30px 20px white;
+    box-shadow: 0rem 0rem 1.875rem 1.25rem white;
   }
   100% {
     opacity: 0;
     transform: scale(7.5);
-    box-shadow: 0px 0px 30px 20px ${transpWhite};
+    box-shadow: 0rem 0rem 1.875rem 1.25rem ${transpWhite};
   }
 `;
 
@@ -72,7 +72,7 @@ const jumpAnimation = keyframes`
     bottom: 0;
   }
   50% {
-    bottom: 20px;
+    bottom: 1.25rem;
   }
   100% {
     bottom: 0;
@@ -81,14 +81,14 @@ const jumpAnimation = keyframes`
 
 const Star = styled.div`
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 1.875rem;
+  height: 1.875rem;
   background-color: white;
   border-radius: 50%;
   opacity: 0;
   animation: ${sparkle} 4s infinite alternate;
   z-index: 0;
-  margin-bottom: 250px;
+  margin-bottom: 15.625rem;
 `;
 
 const ModalWrapper = styled.div`
@@ -96,10 +96,10 @@ const ModalWrapper = styled.div`
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
-  margin-top: 50px;
-  width: 500px;
-  height: 660px;
-  border-radius: 25px;
+  margin-top: 3.125rem;
+  width: 31.25rem;
+  height: 41.25rem;
+  border-radius: 1.5625rem;
   position: relative;
   z-index: 600;
   display: flex;
@@ -109,73 +109,73 @@ const ModalWrapper = styled.div`
 `;
 
 const TopImage = styled.img`
-  width: 380px;
-  height: 380px;
+  width: 23.75rem;
+  height: 23.75rem;
   margin-right: auto;
   margin-left: auto;
-  margin-bottom: 15px;
-  border-radius: 25px;
+  margin-bottom: 0.9375rem;
+  border-radius: 1.5625rem;
   position: relative;
   z-index: 100;
 `;
 
 const TopImageSkeleton = styled.div`
-  width: 300px;
-  height: 300px;
+  width: 18.75rem;
+  height: 18.75rem;
   background-color: #ccc;
   margin-right: auto;
   margin-left: auto;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
   animation: ${pulseAnimation} 1.5s infinite;
-  border-radius: 25px;
+  border-radius: 1.5625rem;
 `;
 
 const ModalText = styled.div`
-  font-size: 80px;
+  font-size: 5rem;
   font-style: normal;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin-bottom: 1.875rem;
   color: ${theme.colors.mainWhite};
-  -webkit-text-stroke: 3px #99d06a;
-  margin-top: -50px;
+  -webkit-text-stroke: 0.1875rem #99d06a;
+  margin-top: -3.125rem;
   position: stati7;
   z-index: 100;
 `;
 
 const RupeeWrapper = styled.span`
-  width: 300px;
+  width: 18.75rem;
   display: flex;
   justify-content: center;
   text-align: center;
-  gap: 40px;
+  gap: 2.5rem;
 `;
 
 const RupeeIcon = styled(Rupee)`
-  width: 50px;
-  height: 50px;
+  width: 3.125rem;
+  height: 3.125rem;
 `;
 
 const RupeeText = styled.span`
-  font-size: 40px;
+  font-size: 2.5rem;
   color: ${theme.colors.mainWhite};
   font-style: normal;
   font-weight: 400;
-  margin-bottom: 30px;
+  margin-bottom: 1.875rem;
   text-align: center;
-  line-height: 40px;
+  line-height: 2.5rem;
 `;
 
 const CharacterImage = styled.div<{
   $bgImage: string | null;
   $position: { left: number; bottom: number };
 }>`
-  width: 500px;
-  height: 500px;
+  width: 31.25rem;
+  height: 31.25rem;
   background-image: url(${(props) => props.$bgImage});
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
-  z-index: 150;
+  z-index: 450;
   transition:
     right 1s ease,
     bottom 1s ease;

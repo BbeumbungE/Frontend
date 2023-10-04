@@ -84,7 +84,6 @@ function RankingPage() {
     async function loadPosts(subjectId: number) {
       try {
         const response = await getRankPosts(subjectId);
-        console.log(response);
         const rankPosts = { ...response.content };
         await setSubjectTitle(rankPosts.subjectName);
         await setPosts(rankPosts);

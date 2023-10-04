@@ -107,8 +107,6 @@ function WatchingMenuPage() {
   const leftDisabled = isFirstPage;
   const rightDisabled = isLastPage;
 
-  console.log('@@@@@@@@전체 토픽 데이터', totalTopics);
-
   useEffect(() => {
     const getData = async () => {
       try {
