@@ -75,7 +75,6 @@ function TopicPage() {
         const newPosts = { ...response.content };
         await setSubjectTitle(newPosts.subjectName);
         await setPosts(newPosts);
-        console.log(response);
       } catch (error) {
         console.log(error);
       }

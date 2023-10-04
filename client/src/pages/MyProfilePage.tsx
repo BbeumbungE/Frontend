@@ -79,6 +79,7 @@ const MuteBoxWrapper = styled.div`
   position: fixed;
   top: 3%;
   right: 2%;
+  z-index: 100;
 `;
 
 const CharacterImage = styled.div<{ imgsrc: string }>`
@@ -134,7 +135,6 @@ function MyProfilePage() {
         const response = await getAlarms(profileId, currentPage);
         const loadedData = { ...response.content };
         await setAlarms(loadedData);
-        console.log(loadedData);
       } catch (error) {
         console.log(error);
       }
