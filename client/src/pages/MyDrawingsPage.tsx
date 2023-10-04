@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import Swal from 'sweetalert2';
 import styled from 'styled-components';
 import theme from '../style/theme';
 import { UserProfileState } from '../recoil/profile/atom';
@@ -309,7 +310,22 @@ function MyDrawingsPage() {
           </DetailWrapper>
           <SubText
             onClick={() =>
-              handleDeleteClick(userProfile.profileId, detailDrawing.canvasId)
+              Swal.fire({
+                title: '정말 삭제할까요?',
+                showDenyButton: true,
+                denyButtonText: '아니요',
+                denyButtonColor: `${theme.colors.mainGray}`,
+                confirmButtonColor: `${theme.colors.mainBlue}`,
+                confirmButtonText: '네',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  handleDeleteClick(
+                    userProfile.profileId,
+                    detailDrawing.canvasId,
+                  );
+                  closeModal();
+                }
+              })
             }
           >
             삭제하기
