@@ -328,7 +328,7 @@ function StageMapPage() {
       />
       <BlueSky />
       <ExitWrapper>
-        <ExitBoxOnBlur onClick={() => navigate('/stage')} color="light" />
+        <ExitBoxOnBlur onClick={() => navigate('/menu')} color="light" />
       </ExitWrapper>
       <AnimatedBigWhiteCloud />
       <AnimatedSmallWhiteCloud />

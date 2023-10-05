@@ -7,6 +7,7 @@ import { getUserTopic } from '../api/menu';
 import menuTreeIcon from '../assets/image/etc/menuTree.svg';
 import menuMountainIcon from '../assets/image/etc/mainMountain.svg';
 import ExitBox from '../components/organisms/ExitBox';
+import ExitBoxOnBlur from '../components/organisms/ExitBoxOnBlur';
 import ProfileBtn from '../components/atoms/ProfileBtn';
 import TopicMenuBox from '../components/organisms/TopicMenuBox';
 import PageChangeButton from '../components/organisms/PageChangeButton';
@@ -25,10 +26,9 @@ const MainMenuWrapper = styled.div`
   overflow: hidden;
 `;
 
-const ExitBoxWrapper = styled.div`
-  position: fixed;
+const ExitWrapper = styled.div`
+  position: absolute;
   top: 3%;
-  left: 0%;
 `;
 
 const BearImg = styled.img<SvgImageProps>`
@@ -144,7 +144,9 @@ function DrawingTopicMenuPage() {
 
   return (
     <MainMenuWrapper>
-      <ExitBox color="dark" />
+      <ExitWrapper>
+        <ExitBoxOnBlur onClick={() => navigate('/menu')} color="dark" />
+      </ExitWrapper>
       <BalloonWrapper>
         <Balloon>
           어떤 주제를 그려볼까요?
