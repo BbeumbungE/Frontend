@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { UserProfileState } from '../../recoil/profile/atom';
 import { UserRupeeState } from '../../recoil/rupee/atom';
 import BlurBox from '../atoms/BlurBox';
@@ -141,6 +141,7 @@ const ButtonWrapper = styled.div`
 function FinishDrawingModal({ canvasId, canvasUrl }: ModalProps) {
   const navigate = useNavigate();
   const userProfile = useRecoilValue(UserProfileState);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
 
   const handleConfirm = async () => {
     try {
@@ -164,26 +165,49 @@ function FinishDrawingModal({ canvasId, canvasUrl }: ModalProps) {
   };
 
   function handleSave() {
-    fetch(canvasUrl)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const blobUrl = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = '변환된 그림.jpg';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout((_) => {
-          window.URL.revokeObjectURL(blobUrl);
-        }, 60000);
-        a.remove();
-
-        console.log('이미지 다운로드 성공');
-      })
-      .catch((error) => {
-        console.error('이미지 다운로드 에러', error);
+    if (isSaved) {
+      Swal.fire({
+        title: '이미 저장된 그림이에요',
+        showDenyButton: false,
+        confirmButtonColor: `${theme.colors.mainBlue}`,
+        confirmButtonText: '확인',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          console.log('이미 저장된 그림');
+        }
       });
+    } else if (!isSaved) {
+      fetch(canvasUrl)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const blobUrl = URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = '변환된 그림.jpg';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            window.URL.revokeObjectURL(blobUrl);
+          }, 60000);
+          a.remove();
+
+          Swal.fire({
+            title: '그림이 컴퓨터에 저장되었어요',
+            showDenyButton: false,
+            confirmButtonColor: `${theme.colors.mainBlue}`,
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setIsSaved(true);
+              console.log('이미지 다운로드 성공');
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('이미지 다운로드 에러', error);
+        });
+    }
   }
 
   return (

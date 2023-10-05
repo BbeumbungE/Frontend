@@ -7,7 +7,7 @@ interface DeleteTextProps {
 }
 
 const DeleteSpan = styled.span`
-  font-size: 1.875rem;
+  font-size: 1.2rem;
   font-family: 'TmoneyRoundWindRegular';
   color: ${theme.colors.mainGray};
   text-align: center;

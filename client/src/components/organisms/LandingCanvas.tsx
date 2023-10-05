@@ -78,6 +78,7 @@ const LandingCanvas = ({
 
   useEffect(() => {
     const canvas = canvasRef.current;
+
     if (canvas) {
       const context = canvas.getContext('2d');
       if (context) {
@@ -112,22 +113,47 @@ const LandingCanvas = ({
     let x;
     let y;
 
+    // if ('touches' in event) {
+    //   // Touch event
+    //   const touch = event.touches[0];
+    //   if (touch) {
+    //     x =
+    //       (touch.clientX ?? 0) -
+    //       (canvasRef.current!.getBoundingClientRect().left ?? 0);
+    //     y =
+    //       (touch.clientY ?? 0) -
+    //       (canvasRef.current!.getBoundingClientRect().top ?? 0);
+    //   } else {
+    //     x = 0;
+    //     y = 0;
+    //   }
+    // } else {
+    //   // Mouse event
+    //   x = event.nativeEvent.offsetX;
+    //   y = event.nativeEvent.offsetY;
+    // }
+
     if ('touches' in event) {
-      // Touch event
-      const touch = event.touches[0];
-      if (touch) {
-        x =
-          (touch.clientX ?? 0) -
-          (canvasRef.current!.getBoundingClientRect().left ?? 0);
-        y =
-          (touch.clientY ?? 0) -
-          (canvasRef.current!.getBoundingClientRect().top ?? 0);
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const touch = event.touches[0];
+        if (touch) {
+          const canvasRect = canvas.getBoundingClientRect();
+          x =
+            (touch.clientX - canvasRect.left) *
+            (canvas.width / canvasRect.width);
+          y =
+            (touch.clientY - canvasRect.top) *
+            (canvas.height / canvasRect.height);
+        } else {
+          x = 0;
+          y = 0;
+        }
       } else {
         x = 0;
         y = 0;
       }
     } else {
-      // Mouse event
       x = event.nativeEvent.offsetX;
       y = event.nativeEvent.offsetY;
     }

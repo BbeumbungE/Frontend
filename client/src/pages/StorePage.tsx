@@ -130,7 +130,7 @@ function StorePage() {
       }
     } else {
       Swal.fire({
-        title: 'Rupee가 부족해요',
+        title: '루피가 부족해요 :(',
         width: '400px',
       });
     }
