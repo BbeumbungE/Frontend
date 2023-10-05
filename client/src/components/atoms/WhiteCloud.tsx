@@ -24,7 +24,7 @@ const RoundWrapper = styled.div<RoundWrapperProps>`
   position: absolute;
   top: ${(props) => props.top || 'auto'};
   left: ${(props) => props.left || 'auto'};
-  animation: ${moveRight} 30s forwards;
+  animation: ${moveRight} 30s linear infinite;
 `;
 
 const Round = styled.div<{ color: string }>`

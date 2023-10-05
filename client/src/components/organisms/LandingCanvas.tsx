@@ -110,8 +110,8 @@ const LandingCanvas = ({
       return;
     }
 
-    let x;
-    let y;
+    let x = 0;
+    let y = 0;
 
     // if ('touches' in event) {
     //   // Touch event
@@ -134,24 +134,18 @@ const LandingCanvas = ({
     // }
 
     if ('touches' in event) {
-      const canvas = canvasRef.current;
+      const canvas = canvasRef.current as HTMLCanvasElement;
       if (canvas) {
         const touch = event.touches[0];
         if (touch) {
-          const canvasRect = canvas.getBoundingClientRect();
-          x =
-            (touch.clientX - canvasRect.left) *
-            (canvas.width / canvasRect.width);
+          x = touch.clientX - canvas.offsetLeft;
           y =
-            (touch.clientY - canvasRect.top) *
-            (canvas.height / canvasRect.height);
-        } else {
-          x = 0;
-          y = 0;
+            touch.clientY -
+            canvas.offsetTop +
+            document.documentElement.scrollTop;
+
+          console.log('터치일 때 ! ! y', x);
         }
-      } else {
-        x = 0;
-        y = 0;
       }
     } else {
       x = event.nativeEvent.offsetX;

@@ -15,6 +15,18 @@ const BackgroundWrapper = styled.div<{ color: string }>`
   background-color: ${(props) => props.color};
 `;
 
+const CloudWrapper = styled.div`
+  &:nth-child(1) {
+    animation-delay: 0s;
+  }
+  &:nth-child(2) {
+    animation-delay: 10s;
+  }
+  &:nth-child(3) {
+    animation-delay: 5s;
+  }
+`;
+
 const CharacterBackground = () => {
   const userProfile = useRecoilValue(UserProfileState);
   let skyColor = theme.hamsterColors.sky;
@@ -80,21 +92,21 @@ const CharacterBackground = () => {
         width="200px"
         height="100px"
         top="30px"
-        left="-80px"
+        left="0px"
         color={cloudColor}
       />
       <WhiteCloud
         width="120px"
-        height="50px"
+        height="70px"
         top="130px"
         left="0px"
         color={cloudColor}
       />
       <WhiteCloud
-        width="130px"
-        height="70px"
-        top="230px"
-        left="-30px"
+        width="150px"
+        height="90px"
+        top="280px"
+        left="0px"
         color={cloudColor}
       />
       <HalfMountain
