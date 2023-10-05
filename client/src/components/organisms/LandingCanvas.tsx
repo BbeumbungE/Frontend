@@ -85,7 +85,7 @@ const LandingCanvas = ({
         context.fillStyle = 'transparent'; // 캔버스 배경색을 투명으로 설정
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.lineJoin = 'round';
-        context.lineWidth = 3;
+        context.lineWidth = 2;
         context.strokeStyle = 'black';
         setCtx(context);
       }
@@ -100,78 +100,44 @@ const LandingCanvas = ({
     }
   }, [ctx]);
 
-  // const canvasEventListener = (
-  //   event:
-  //     | React.MouseEvent<HTMLCanvasElement>
-  //     | React.TouchEvent<HTMLCanvasElement>,
-  //   type: string,
-  // ) => {
-  //   if (isLocked) {
-  //     return;
-  //   }
+  useEffect(() => {
+    resizeCanvas();
+    console.log('리사이즈');
+    window.addEventListener('resize', resizeCanvas);
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+    };
+  }, []);
 
-  //   let x = 0;
-  //   let y = 0;
+  const resizeCanvas = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const context = canvas.getContext('2d');
+      if (context) {
+        context.restore();
+        context.save();
 
-  //   // if ('touches' in event) {
-  //   //   // Touch event
-  //   //   const touch = event.touches[0];
-  //   //   if (touch) {
-  //   //     x =
-  //   //       (touch.clientX ?? 0) -
-  //   //       (canvasRef.current!.getBoundingClientRect().left ?? 0);
-  //   //     y =
-  //   //       (touch.clientY ?? 0) -
-  //   //       (canvasRef.current!.getBoundingClientRect().top ?? 0);
-  //   //   } else {
-  //   //     x = 0;
-  //   //     y = 0;
-  //   //   }
-  //   // } else {
-  //   //   // Mouse event
-  //   //   x = event.nativeEvent.offsetX;
-  //   //   y = event.nativeEvent.offsetY;
-  //   // }
+        const currentRatio = context.canvas.width / context.canvas.height;
+        const newRatio = window.innerWidth / window.innerHeight;
+        const xratio = window.innerWidth / context.canvas.width;
+        const yratio = window.innerHeight / context.canvas.height;
 
-  //   if ('touches' in event) {
-  //     const canvas = canvasRef.current as HTMLCanvasElement;
-  //     if (canvas) {
-  //       const touch = event.touches[0];
-  //       if (touch) {
-  //         x = touch.clientX - canvas.offsetLeft;
-  //         y =
-  //           touch.clientY -
-  //           canvas.offsetTop +
-  //           document.documentElement.scrollTop;
+        let screenSizeRatio;
 
-  //         console.log('터치일 때 ! ! y', x);
-  //       }
-  //     }
-  //   } else {
-  //     x = event.nativeEvent.offsetX;
-  //     y = event.nativeEvent.offsetY;
-  //   }
+        if (currentRatio > newRatio) {
+          screenSizeRatio = xratio;
+        } else {
+          screenSizeRatio = yratio;
+        }
 
-  //   if (ctx) {
-  //     ctx.globalCompositeOperation = 'source-over';
-  //     ctx.lineWidth = 2;
-  //     if (type === 'down') {
-  //       setIsDrawing(true); // 마우스 클릭 시작
-  //       array.push({ x, y });
-  //     } else if (type === 'move' && isDrawing) {
-  //       ctx?.save();
-  //       ctx?.beginPath();
-  //       ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
-  //       ctx?.lineTo(x, y);
-  //       ctx?.closePath();
-  //       ctx?.stroke();
-  //       ctx?.restore();
-  //       array.push({ x, y });
-  //     } else if (type === 'leave' || type === 'up') {
-  //       setIsDrawing(false); // 마우스 클릭 종료
-  //     }
-  //   }
-  // };
+        if (screenSizeRatio > 1) {
+          screenSizeRatio = 1;
+        }
+
+        context.scale(screenSizeRatio, screenSizeRatio);
+      }
+    }
+  };
 
   const startDraw = (event: React.MouseEvent | React.TouchEvent) => {
     event.persist();
