@@ -24,7 +24,7 @@ export function connectEventSSE(profileId: number): void {
     console.log('서버에서 이벤트 수신:', parsedData);
     toast(parsedData.content, {
       toastId: parsedData.content,
-      pauseOnHover: false,
+      pauseOnHover: true,
       autoClose: 4000,
     });
   };

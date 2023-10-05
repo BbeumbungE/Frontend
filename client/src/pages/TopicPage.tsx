@@ -68,17 +68,18 @@ function TopicPage() {
   const [isSad, setIsSad] = useState<boolean>(false);
   const { topic } = useParams();
 
-  useEffect(() => {
-    async function loadPosts(subjectId: number, curPage: number) {
-      try {
-        const response = await getPosts(subjectId, curPage);
-        const newPosts = { ...response.content };
-        await setSubjectTitle(newPosts.subjectName);
-        await setPosts(newPosts);
-      } catch (error) {
-        console.log(error);
-      }
+  async function loadPosts(subjectId: number, curPage: number) {
+    try {
+      const response = await getPosts(subjectId, curPage);
+      const newPosts = { ...response.content };
+      await setSubjectTitle(newPosts.subjectName);
+      await setPosts(newPosts);
+      console.log(newPosts);
+    } catch (error) {
+      console.log(error);
     }
+  }
+  useEffect(() => {
     loadPosts(Number(topic), currentPage);
   }, [currentPage]);
 
@@ -101,7 +102,9 @@ function TopicPage() {
       const response = await getDetail(postId, profileId);
       const newDetail = { ...response.content };
       await setDetailPost(newDetail);
+      console.log(response.content);
       const emotionInfos = response.content.postEmotionTypeInfos;
+      console.log(emotionInfos);
       emotionInfos.forEach((info) => {
         if (info.emotionTypeId === 1) {
           setIsSmile(info.emoted);
@@ -214,7 +217,14 @@ function TopicPage() {
             <ExitBoxOnBlur
               color="light"
               onClick={() => {
+                loadPosts(Number(topic), currentPage);
                 setIsDetail(false);
+                setIsSmile(false);
+                setIsWow(false);
+                setIsSad(false);
+                setSmileCnt(0);
+                setWowCnt(0);
+                setSadCnt(0);
                 setDetailPostId(0);
               }}
             />
