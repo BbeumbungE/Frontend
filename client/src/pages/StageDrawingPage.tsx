@@ -16,6 +16,7 @@ import {
   patchDrawing,
   postFirstFinishedDrawing,
   patchFinishedDrawing,
+  getTopDrawing,
 } from '../api/drawing';
 import { ReactComponent as PencilIcon } from '../assets/image/etc/pencil.svg';
 import { ReactComponent as MagicStickIcon } from '../assets/image/etc/magicStick.svg';
@@ -289,6 +290,8 @@ function StageDrawingPage() {
     }
   }, [isFinish, finishData]);
 
+  console.log('스테이지 상태!', stageIdState);
+  console.log('끝났니?', isFinish);
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$데이터', data);
   console.log('$$$$$$$$$$완료 데이터', finishData);
   useEffect(() => {
@@ -309,6 +312,9 @@ function StageDrawingPage() {
       }
     };
     getData();
+
+    // 그리기 페이지 접속 후 바로 SSE 연결
+    drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
   }, []);
 
   useEffect(() => {
@@ -338,6 +344,8 @@ function StageDrawingPage() {
 
       // 서버에 이미 기록이 있을 경우 (과거에 플레이해서 기록 생성을 했던 경우)
       if (isFinish && canvasUrl && data && data.record && currentStageId) {
+        console.log('서버에 이미 기록이 있을 경우');
+
         finishResponse = await patchFinishedDrawing(
           profileState.profileId,
           currentStageId,
@@ -353,6 +361,8 @@ function StageDrawingPage() {
         !data.record &&
         currentStageId
       ) {
+        console.log('서버에 기록이 없는 경우');
+
         // 서버에 기록이 없는 경우 (처음 플레이 하는 경우)
         finishResponse = await postFirstFinishedDrawing(
           profileState.profileId,
@@ -364,9 +374,10 @@ function StageDrawingPage() {
       }
     };
 
+    console.log('패치 함수 호출');
     // useEffect 내에서 fetchData 함수를 호출합니다.
     fetchData();
-  }, [isFinish, canvasUrl]); // isFinish가 변경될 때만 실행됩니다.
+  }, [isFinish, canvasUrl]);
 
   const canvasEventListener = (
     event:
@@ -518,85 +529,24 @@ function StageDrawingPage() {
     }
 
     // SSE 연결 함수 호출
-    drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
+    // drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
 
     // SSE 연결 해제 함수 호출
     // disconnectDrawingSSE();
   };
 
   const handleFinish = async () => {
-    setCanvasUrl(null);
+    // setCanvasUrl(null);
     // 화면 잠금, 변환 중 모달 오픈
     setIsLocked(true);
     setIsModalOpen(true);
 
-    if (canvasRef.current && data) {
-      const imageDataURL = canvasRef.current.toDataURL('image/png');
-
-      // 이미지 데이터 확인을 위한 img 요소 생성
-      const imageElement = new Image();
-      imageElement.src = imageDataURL;
-
-      // 이미지를 콘솔에 출력하여 확인
-      imageElement.onload = () => {
-        console.log('ImageData:', imageDataURL);
-      };
-      const convertedImg = await fetch(imageDataURL);
-      const blob = await convertedImg.blob();
-
-      // 파일 식별을 위한 변수 생성
-      const now = new Date();
-      const formattedTime = now.toLocaleTimeString();
-
-      let response: PostDrawingResponse;
-
-      if (isFirstTransform) {
-        // 첫 번째 변환, postDrawing 사용
-        console.log('첫번째 <완료>요청 보냄!!!');
-        const formData = new FormData();
-        formData.append('sketchFile', blob, `${formattedTime}.jpg`);
-        formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
-        formData.append('subjectId', String(data?.subjectItem.id));
-
-        formData.forEach(function (value, key) {
-          console.log(`${key}: ${value}`);
-        });
-
-        response = await postDrawing(
-          profileState.profileId,
-          data.subjectItem.id,
-          formData,
-        );
-        setIsFirstTransform(false);
-        setCanvasId(response.content.canvasId);
-      } else if (!isFirstTransform && canvasId) {
-        // 이후 변환, patchDrawing 사용
-        console.log('두번째 변환 이후 <완료>요청 보냄!!!');
-        const formData = new FormData();
-        formData.append('file', blob, `${formattedTime}.jpg`);
-
-        formData.forEach(function (value, key) {
-          console.log(`${key}: ${value}`);
-        });
-
-        response = await patchDrawing(
-          profileState.profileId,
-          canvasId,
-          formData,
-        );
-
-        console.log('변환하기 후 응답!', response);
-        setChangeModalData(response);
-      }
-
-      // SSE 연결 함수 호출
-      drawingSSE(profileState.profileId, setIsModalOpen, setCanvasUrl);
-
-      setIsFinish(true);
+    if (data) {
+      const response = await getTopDrawing(data.subjectItem.id);
+      setChangeModalData(response);
     }
 
-    // SSE 연결 해제 함수 호출
-    // disconnectDrawingSSE();
+    setIsFinish(true);
   };
 
   console.log('프로필', profileState);
@@ -628,7 +578,7 @@ function StageDrawingPage() {
   console.log('변환 데이터', changeModalData);
   return (
     <DrawingPageWrapper>
-      {isModalOpen && changeModalData && (
+      {isModalOpen && changeModalData && !finishData && (
         <>
           <BlurBox />
           <CheckingModal imgPath={changeModalData.content.topPost} />
@@ -653,7 +603,21 @@ function StageDrawingPage() {
           />
           <TopWrapper>
             <ExitBox color="dark" />
-            <Button buttonText="완성 !" color="salmon" onClick={handleFinish} />
+            {!isFirstTransform ? (
+              <Button
+                buttonText="채점하기"
+                color="salmon"
+                onClick={handleFinish}
+              />
+            ) : (
+              <div style={{ visibility: 'hidden' }}>
+                <Button
+                  buttonText="채점하기"
+                  color="salmon"
+                  onClick={handleFinish}
+                />
+              </div>
+            )}
           </TopWrapper>
           <CanvasWrapper>
             <div

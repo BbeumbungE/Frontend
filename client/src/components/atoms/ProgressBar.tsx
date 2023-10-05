@@ -5,6 +5,10 @@ interface ProgressBarInnerProps {
   progress: number;
 }
 
+interface ProgressBarProps {
+  setTimeIsUp: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 const progressAnimation = keyframes`
   from {
     width: 100%;
@@ -42,7 +46,7 @@ const ProgressBarInner = styled.div<ProgressBarInnerProps>`
   animation: ${progressAnimation} ${({ progress }) => progress}s linear;
 `;
 
-function ProgressBar() {
+function ProgressBar({ setTimeIsUp }: ProgressBarProps) {
   const [remainingTime, setRemainingTime] = useState<number>(10);
 
   useEffect(() => {
@@ -51,6 +55,7 @@ function ProgressBar() {
         setRemainingTime((prevTime) => prevTime - 1);
       } else {
         clearInterval(interval);
+        setTimeIsUp(true);
       }
     }, 1000);
 

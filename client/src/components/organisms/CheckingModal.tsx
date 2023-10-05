@@ -1,6 +1,9 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import ProgressBar from '../atoms/ProgressBar';
 import { ReactComponent as questionMarkIcon } from '../../assets/image/etc/questionMark.svg';
+import { ReactComponent as FairyIcon } from '../../assets/image/etc/fairy.svg';
 
 interface CheckingModalProps {
   imgPath: string | undefined;
@@ -93,23 +96,47 @@ const QuestionIcon = styled(questionMarkIcon)`
 `;
 
 function CheckingModal({ imgPath }: CheckingModalProps) {
+  const navigate = useNavigate();
+  const [timeIsUp, setTimeIsUp] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (timeIsUp) {
+      setTimeout(() => {
+        navigate('/menu');
+      }, 4000);
+    }
+  }, [timeIsUp]);
+
   return (
     <ModalWrapper>
       <InnerWrapper>
-        <ModalText>AI가 그림을 확인중이에요</ModalText>
-        {imgPath ? (
+        {!timeIsUp ? (
           <>
-            <TopImage src={imgPath} alt="이 주의 인기 그림" />
-            <ModalLightText>이 주의 인기 그림</ModalLightText>
+            <ModalText>AI가 그림을 확인중이에요</ModalText>
+            {imgPath ? (
+              <>
+                <TopImage src={imgPath} alt="이 주의 인기 그림" />
+                <ModalLightText>이 주의 인기 그림</ModalLightText>
+              </>
+            ) : (
+              <>
+                <TopImageSkeleton />
+                <QuestionIcon />
+                <ModalLightText>인기 그림은 누가 될까요?</ModalLightText>
+              </>
+            )}
+            <ProgressBar setTimeIsUp={setTimeIsUp} />
           </>
         ) : (
           <>
-            <TopImageSkeleton />
-            <QuestionIcon />
-            <ModalLightText>인기 그림은 누가 될까요?</ModalLightText>
+            <FairyIcon />
+            <ModalText>
+              요정이 장난쳤어요!
+              <br />
+              홈으로 돌아갈게요
+            </ModalText>
           </>
         )}
-        <ProgressBar />
       </InnerWrapper>
     </ModalWrapper>
   );

@@ -207,10 +207,26 @@ const patchFinishedDrawing = async (
   }
 };
 
+const getTopDrawing = async (
+  subjectId: number,
+): Promise<PostDrawingResponse> => {
+  try {
+    const response = await api.get(
+      `/api/subjects/${subjectId}/posts/top
+      `,
+    );
+    return response.data;
+  } catch (error) {
+    console.log('인기 작품 조회 실패', error);
+    throw error;
+  }
+};
+
 export {
   getLevelDetail,
   postDrawing,
   patchDrawing,
   postFirstFinishedDrawing,
   patchFinishedDrawing,
+  getTopDrawing,
 };
