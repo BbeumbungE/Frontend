@@ -116,11 +116,11 @@ function DrawingTopicMenuPage() {
           itemsPerPage,
         );
         console.log('유저 보유 토픽', response);
-        const subjectArray = response.content.data.map(
-          (item) => item.item.subject,
-        );
+        // const subjectArray = response.content.data.map(
+        //   (item) => item.item.subject,
+        // );
         setUserTopics({
-          topic: subjectArray,
+          topic: response.content.data,
           page: response.content.pageInfo,
         });
       } catch (error) {
@@ -139,6 +139,8 @@ function DrawingTopicMenuPage() {
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
   };
+
+  console.log('****', userTopics);
 
   return (
     <MainMenuWrapper>

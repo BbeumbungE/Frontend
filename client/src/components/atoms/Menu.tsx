@@ -13,7 +13,7 @@ interface ButtonProps {
   transparencyButton?: boolean;
 }
 
-const StyledMenu = styled(NavLink)<{
+const StyledMenu = styled(Link)<{
   $bgColor: string;
   $border: string;
   to?: string | null;
@@ -85,7 +85,10 @@ function Menu({
 }: ButtonProps) {
   const navigate = useNavigate();
   const { playBtnBright } = SoundEffects();
-  const handleClick = () => {
+
+  const handleDrawingNavigate = () => {
+    console.log('이동');
+    navigate('/draw/topic');
     playBtnBright();
   };
   let bgColor = theme.menuColors.pink; // 기본값은 mainBlue
@@ -135,11 +138,13 @@ function Menu({
       routeUrl = '/store';
       break;
     default:
-      routeUrl = '/';
+      routeUrl = '/draw/topic';
       break;
   }
 
-  return srcId !== 0 ? (
+  console.log('srdId:', srcId);
+
+  return srcId !== 0 && !transparencyButton ? (
     <StyledMenu $bgColor={bgColor} $border={border}>
       <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
       {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
@@ -163,7 +168,7 @@ function Menu({
       to={routeUrl}
       $bgColor={bgColor}
       $border={border}
-      onClick={handleClick}
+      onClick={handleDrawingNavigate}
     >
       <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
       {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
