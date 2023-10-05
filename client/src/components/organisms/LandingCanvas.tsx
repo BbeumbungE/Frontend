@@ -3,59 +3,59 @@ import styled from 'styled-components';
 
 const CanvasWrapper = styled.div`
   position: absolute;
-  height: 12.5rem;
-  bottom: 18.125rem;
-  left: 14.375rem;
+  height: 200px;
+  bottom: 290px;
+  left: 230px;
   z-index: 2;
 `;
 
 const LeftFrame = styled.div`
-  width: 1.5rem;
-  height: 14.75rem;
+  width: 24px;
+  height: 236px;
   transform: rotate(10.86deg);
   position: absolute;
-  bottom: 1.5625rem;
-  left: 7.375rem;
+  bottom: 25px;
+  left: 118px;
   background: #d9d9d9;
   z-index: 1;
 `;
 
 const RightFrame = styled.div`
-  width: 1.5rem;
-  height: 14.75rem;
+  width: 24px;
+  height: 236px;
   transform: rotate(-11.671deg);
   position: absolute;
-  bottom: 1.5625rem;
-  left: 20rem;
+  bottom: 25px;
+  left: 320px;
   background: #d9d9d9;
   z-index: 1;
 `;
 
 const SketchImage = styled.img`
   position: absolute;
-  width: 28.125rem;
-  height: 28.125rem;
-  border-radius: 1.5625rem;
+  width: 450px;
+  height: 450px;
+  border-radius: 25px;
   z-index: 100;
 `;
 
 const BottomFrame = styled.div`
-  width: 31.25rem;
-  height: 2.125rem;
+  width: 500px;
+  height: 34px;
   position: absolute;
-  left: -1.875rem;
-  bottom: -15.625rem;
+  left: -30px;
+  bottom: -250px;
   background: #d9d9d9;
   z-index: 150;
-  border-radius: 0.3125rem;
+  border-radius: 5px;
 `;
 
 const BottomStick = styled.div`
-  width: 4.5625rem;
-  height: 6.25rem;
+  width: 73px;
+  height: 100px;
   position: absolute;
-  bottom: -18.75rem;
-  left: 11.875rem;
+  bottom: -300px;
+  left: 190px;
   background: #d9d9d9;
   z-index: 1;
 `;
@@ -94,21 +94,43 @@ const LandingCanvas = ({
   useEffect(() => {
     if (ctx) {
       ctx.fillStyle = 'gray';
-      ctx.font = '1.5625rem TmoneyRoundWindRegular';
+      ctx.font = '25px TmoneyRoundWindRegular';
       ctx.fillText('판다를 그려주세요!', 125, 50); // 원하는 위치에 텍스트 추가
     }
   }, [ctx]);
 
   const canvasEventListener = (
-    event: React.MouseEvent<HTMLCanvasElement>,
+    event:
+      | React.MouseEvent<HTMLCanvasElement>
+      | React.TouchEvent<HTMLCanvasElement>,
     type: string,
   ) => {
     if (isLocked) {
       return;
     }
 
-    const x = event.nativeEvent.offsetX;
-    const y = event.nativeEvent.offsetY;
+    let x;
+    let y;
+
+    if ('touches' in event) {
+      // Touch event
+      const touch = event.touches[0];
+      if (touch) {
+        x =
+          (touch.clientX ?? 0) -
+          (canvasRef.current!.getBoundingClientRect().left ?? 0);
+        y =
+          (touch.clientY ?? 0) -
+          (canvasRef.current!.getBoundingClientRect().top ?? 0);
+      } else {
+        x = 0;
+        y = 0;
+      }
+    } else {
+      // Mouse event
+      x = event.nativeEvent.offsetX;
+      y = event.nativeEvent.offsetY;
+    }
 
     if (ctx) {
       ctx.globalCompositeOperation = 'source-over';
@@ -139,18 +161,18 @@ const LandingCanvas = ({
         className="container"
         style={{
           position: 'relative',
-          padding: '0rem',
+          padding: '0px',
         }}
       >
         <div
           style={{
             position: 'absolute',
-            width: '28.125rem',
-            height: '28.125rem',
+            width: '450px',
+            height: '450px',
             backgroundColor: 'white',
-            borderRadius: '1.5625rem',
+            borderRadius: '25px',
             zIndex: '100',
-            padding: '0rem',
+            padding: '0px',
           }}
         />
         <SketchImage
@@ -165,7 +187,7 @@ const LandingCanvas = ({
             height={450}
             style={{
               position: 'relative',
-              borderRadius: '1.5625rem',
+              borderRadius: '25px',
               zIndex: '100',
             }}
             onMouseDown={(event) => {
@@ -180,6 +202,15 @@ const LandingCanvas = ({
             }}
             onMouseUp={(event) => {
               canvasEventListener(event, 'up');
+            }}
+            onTouchStart={(event) => {
+              canvasEventListener(event, 'down');
+            }}
+            onTouchMove={(event) => {
+              canvasEventListener(event, 'move');
+            }}
+            onTouchEnd={(event) => {
+              canvasEventListener(event, 'leave');
             }}
           />
         )}

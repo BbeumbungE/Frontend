@@ -41,12 +41,15 @@ const DeleteWrapper = styled.div`
   width: 100%;
   margin-top: 15px;
   text-align: center;
+  bottom: 20px;
 `;
 
 const UpperWrapper = styled.div`
   z-index: 300;
   width: 50vw;
   position: relative;
+  display: flex;
+  justify-content: center;
 `;
 
 const RightContainer = styled.div`
