@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import ProgressBar from '../atoms/ProgressBar';
+import { ReactComponent as questionMarkIcon } from '../../assets/image/etc/questionMark.svg';
 
 interface CheckingModalProps {
   imgPath: string | undefined;
@@ -69,6 +70,7 @@ const TopImageSkeleton = styled.div`
 `;
 
 const InnerWrapper = styled.div`
+  position: relative;
   max-width: 100%;
   max-height: 100%;
   display: flex;
@@ -79,17 +81,34 @@ const InnerWrapper = styled.div`
   text-align: center;
 `;
 
+const QuestionIcon = styled(questionMarkIcon)`
+  width: 9.375rem;
+  height: 9.375rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 200;
+  filter: brightness(0.5);
+`;
+
 function CheckingModal({ imgPath }: CheckingModalProps) {
   return (
     <ModalWrapper>
       <InnerWrapper>
         <ModalText>AI가 그림을 확인중이에요</ModalText>
         {imgPath ? (
-          <TopImage src={imgPath} alt="이 주의 인기 그림" />
+          <>
+            <TopImage src={imgPath} alt="이 주의 인기 그림" />
+            <ModalLightText>이 주의 인기 그림</ModalLightText>
+          </>
         ) : (
-          <TopImageSkeleton />
+          <>
+            <TopImageSkeleton />
+            <QuestionIcon />
+            <ModalLightText>인기 그림은 누가 될까요?</ModalLightText>
+          </>
         )}
-        <ModalLightText>이 주의 인기 그림</ModalLightText>
         <ProgressBar />
       </InnerWrapper>
     </ModalWrapper>

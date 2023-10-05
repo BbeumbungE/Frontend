@@ -11,7 +11,7 @@ import { getRupee } from '../api/rupee';
 import theme from '../style/theme';
 import LargeProfile from '../components/organisms/LargeProfileBox';
 import NewProfileBox from '../components/organisms/NewProfileBox';
-import ExitBox from '../components/organisms/ExitBoxOnBlur';
+import ExitBoxOnBlur from '../components/organisms/ExitBoxOnBlur';
 import PageHeaderText from '../components/atoms/PageHeaderText';
 import DeleteText from '../components/atoms/DeleteText';
 import LargeNewProfileBtn from '../components/atoms/LargeNewProfileBtn';
@@ -126,7 +126,7 @@ function FamilyProfilePage() {
       profiles.length < 3 ? (
         <>
           <ExitBoxWrapper>
-            <ExitBox onClick={() => setIsCreating(false)} color="dark" />
+            <ExitBoxOnBlur onClick={() => setIsCreating(false)} color="dark" />
           </ExitBoxWrapper>
           <ProfilesContainer>
             {profiles.map((profile) => (
@@ -169,7 +169,7 @@ function FamilyProfilePage() {
       ) : (
         <>
           <ExitBoxWrapper>
-            <ExitBox onClick={() => setIsCreating(false)} color="dark" />
+            <ExitBoxOnBlur onClick={() => setIsCreating(false)} color="dark" />
           </ExitBoxWrapper>
           <ProfilesContainer>
             {profiles.map((profile) => (

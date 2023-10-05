@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { StageIdState } from '../recoil/stage/atom';
@@ -9,6 +10,7 @@ import CheckingModal from '../components/organisms/CheckingModal';
 import StageRecordModal from '../components/organisms/StageRecordModal';
 import ProgressTimeBar from '../components/atoms/ProgressTimeBar';
 import ExitBox from '../components/organisms/ExitBox';
+import ExitBoxOnBlur from '../components/organisms/ExitBoxOnBlur';
 import Button from '../components/atoms/Button';
 import {
   getLevelDetail,
@@ -23,6 +25,7 @@ import { ReactComponent as MagicStickIcon } from '../assets/image/etc/magicStick
 import { ReactComponent as LockIcon } from '../assets/image/etc/drawingLock.svg';
 import { useBGM } from '../sounds/MusicContext';
 import SoundEffects from '../sounds/SoundEffects';
+import FinishDrawingModal from '../components/organisms/FinishDrawingModal';
 
 interface Sketch {
   sketchId: number;
@@ -271,6 +274,13 @@ const TransformedImageBox = styled.img`
   z-index: -100;
 `;
 
+const ExitWrapper = styled.div`
+  position: fixed;
+  top: 3%;
+  left: 0%;
+  z-index: 402;
+`;
+
 // const eraserCursor = styled.div`
 //   width: 20px;
 //   height: 20px;
@@ -309,6 +319,8 @@ function TopicDrawingPage() {
     useState<boolean>(false);
   const { startBGM } = useBGM();
   const { playBtnSmall, playWand, playSuccess, playClap } = SoundEffects();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     startBGM('draw');
@@ -360,40 +372,40 @@ function TopicDrawingPage() {
   }, [data]);
 
   // 변환 완료되었을 때 실행
-  useEffect(() => {
-    const fetchData = async () => {
-      let finishResponse: FirstFinishResponse | SecondFinishResponse;
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     let finishResponse: FirstFinishResponse | SecondFinishResponse;
 
-      // 서버에 이미 기록이 있을 경우 (과거에 플레이해서 기록 생성을 했던 경우)
-      if (isFinish && canvasUrl && data && data.record && currentStageId) {
-        finishResponse = await patchFinishedDrawing(
-          profileState.profileId,
-          currentStageId,
-          data.record.id,
-          canvasId,
-        );
-        console.log('서버에 기록 있을 경우', finishResponse);
-        setFinishData(finishResponse);
-      } else if (
-        isFinish &&
-        canvasUrl &&
-        data &&
-        !data.record &&
-        currentStageId
-      ) {
-        // 서버에 기록이 없는 경우 (처음 플레이 하는 경우)
-        finishResponse = await postFirstFinishedDrawing(
-          profileState.profileId,
-          currentStageId,
-          canvasId,
-        );
-        console.log('서버에 기록 없을 경우', finishResponse);
-        setFinishData(finishResponse);
-      }
-    };
+  //     // 서버에 이미 기록이 있을 경우 (과거에 플레이해서 기록 생성을 했던 경우)
+  //     if (isFinish && canvasUrl && data && data.record && currentStageId) {
+  //       finishResponse = await patchFinishedDrawing(
+  //         profileState.profileId,
+  //         currentStageId,
+  //         data.record.id,
+  //         canvasId,
+  //       );
+  //       console.log('서버에 기록 있을 경우', finishResponse);
+  //       setFinishData(finishResponse);
+  //     } else if (
+  //       isFinish &&
+  //       canvasUrl &&
+  //       data &&
+  //       !data.record &&
+  //       currentStageId
+  //     ) {
+  //       // 서버에 기록이 없는 경우 (처음 플레이 하는 경우)
+  //       finishResponse = await postFirstFinishedDrawing(
+  //         profileState.profileId,
+  //         currentStageId,
+  //         canvasId,
+  //       );
+  //       console.log('서버에 기록 없을 경우', finishResponse);
+  //       setFinishData(finishResponse);
+  //     }
+  //   };
 
-    fetchData();
-  }, [isFinish, canvasUrl]);
+  //   fetchData();
+  // }, [isFinish, canvasUrl]);
 
   const canvasEventListener = (
     event:
@@ -584,7 +596,7 @@ function TopicDrawingPage() {
         const formData = new FormData();
         formData.append('sketchFile', blob, `${formattedTime}.jpg`);
         formData.append('profileId', String(profileState.profileId)); // 숫자를 문자열로 변환
-        formData.append('subjectId', String(data?.subjectItem.id));
+        formData.append('subjectId', String(data.subject.id));
 
         formData.forEach(function (value, key) {
           console.log(`${key}: ${value}`);
@@ -592,7 +604,7 @@ function TopicDrawingPage() {
 
         response = await postDrawing(
           profileState.profileId,
-          data.subjectItem.id,
+          data.subject.id,
           formData,
         );
         setIsFirstTransform(false);
@@ -656,148 +668,138 @@ function TopicDrawingPage() {
   console.log('변환 데이터', changeModalData);
   return (
     <DrawingPageWrapper>
-      {isModalOpen && changeModalData && changeModalData.content.topPost && (
+      {isModalOpen && changeModalData && changeModalData.content && (
         <>
           <BlurBox />
           <CheckingModal imgPath={changeModalData.content.topPost} />
         </>
       )}
-      {finishData && (
+      {isFinish && canvasUrl && (
         <>
           <BlurBox />
-          <StageRecordModal finishData={finishData} canvasUrl={canvasUrl} />
+          <ExitWrapper>
+            <ExitBoxOnBlur
+              onClick={() => navigate('/menu/draw')}
+              color="light"
+            />
+          </ExitWrapper>
+          <FinishDrawingModal canvasId={canvasId} canvasUrl={canvasUrl} />
         </>
       )}
-      {data && data.subjectItem && data.subjectItem.sketchList && (
-        <>
-          <ProgressTimeBar
-            durationInSeconds={data.timeLimit}
-            isModalOpen={isModalOpen}
-            onComplete={() => {
-              if (!isFinish) {
-                handleFinish();
-              }
+      <TopWrapper>
+        <ExitWrapper>
+          <ExitBoxOnBlur onClick={() => navigate('/menu/draw')} color="dark" />
+        </ExitWrapper>
+        <Button buttonText="완성 !" color="salmon" onClick={handleFinish} />
+      </TopWrapper>
+      <CanvasWrapper>
+        <div
+          className="container"
+          style={{
+            position: 'relative',
+            marginRight: '-50px',
+            padding: '0px',
+          }}
+        >
+          <Lock style={{ display: isLocked ? 'block' : 'none' }} />
+          <div
+            style={{
+              position: 'absolute',
+              width: '500px',
+              height: '500px',
+              backgroundColor: 'white',
+              borderRadius: '25px',
+              marginLeft: '-50px',
+              zIndex: -200,
+              padding: '0px',
             }}
           />
-          <TopWrapper>
-            <ExitBox color="dark" />
-            <Button buttonText="완성 !" color="salmon" onClick={handleFinish} />
-          </TopWrapper>
-          <CanvasWrapper>
-            <div
-              className="container"
-              style={{
-                position: 'relative',
-                marginRight: '-50px',
-                padding: '0px',
-              }}
-            >
-              <Lock style={{ display: isLocked ? 'block' : 'none' }} />
-              <div
-                style={{
-                  position: 'absolute',
-                  width: '500px',
-                  height: '500px',
-                  backgroundColor: 'white',
-                  borderRadius: '25px',
-                  marginLeft: '-50px',
-                  zIndex: -200,
-                  padding: '0px',
-                }}
-              />
-              <SketchImage
-                src={selectedBackSketchURL ?? ''}
-                alt="이미지"
-                style={{ display: isDrawing ? 'none' : 'block' }}
-              />
-              <canvas
-                ref={canvasRef}
-                width={500}
-                height={500}
-                style={{
-                  ...defaultStyle,
-                  cursor: !isDrawingMode
-                    ? 'url("../assets/image/etc/eraserCursor.svg") 10 10, auto'
-                    : 'auto',
-                }}
-                onMouseDown={(event) => {
-                  canvasEventListener(event, 'down');
-                  // 마우스 클릭 시 이미지 요소 숨기기
-                }}
-                onMouseMove={(event) => {
-                  canvasEventListener(event, 'move');
-                }}
-                onMouseLeave={(event) => {
-                  canvasEventListener(event, 'leave');
-                }}
-                onMouseUp={(event) => {
-                  canvasEventListener(event, 'up');
-                }}
-                onTouchStart={(event) => {
-                  canvasEventListener(event, 'down');
-                }}
-                onTouchMove={(event) => {
-                  canvasEventListener(event, 'move');
-                }}
-                onTouchEnd={(event) => {
-                  canvasEventListener(event, 'leave');
-                }}
-              />
-            </div>
-            <BtnFloating>
-              <Button
-                buttonText="변신하기"
-                color="green"
-                onClick={handleChange}
-              />
-            </BtnFloating>
-            {canvasUrl ? (
-              <TransformedImage src={canvasUrl} alt="변환된 이미지" />
-            ) : (
-              <TransformedImageBox />
-            )}
-          </CanvasWrapper>
-          <BottomWrapper>
-            <ToolWrapper>
-              <Pencil onClick={handlePencil} />
-              <Eraser onClick={handleEraser} />
-              <MagicStick onClick={handleMagicStickClick} />
-              {isBackSketchModalOpen && (
-                <BackSketchModal>
-                  {data.subjectItem.sketchList.map((sketch, index) => (
-                    <BackSketchImage
-                      key={sketch.sketchImageUrl}
-                      src={sketch.sketchImageUrl}
-                      alt="밑그림"
-                      onClick={() =>
-                        handleBackSketchClick(sketch.sketchImageUrl)
+          <SketchImage
+            src={selectedBackSketchURL ?? ''}
+            alt="이미지"
+            style={{ display: isDrawing ? 'none' : 'block' }}
+          />
+          <canvas
+            ref={canvasRef}
+            width={500}
+            height={500}
+            style={{
+              ...defaultStyle,
+              cursor: !isDrawingMode
+                ? 'url("../assets/image/etc/eraserCursor.svg") 10 10, auto'
+                : 'auto',
+            }}
+            onMouseDown={(event) => {
+              canvasEventListener(event, 'down');
+              // 마우스 클릭 시 이미지 요소 숨기기
+            }}
+            onMouseMove={(event) => {
+              canvasEventListener(event, 'move');
+            }}
+            onMouseLeave={(event) => {
+              canvasEventListener(event, 'leave');
+            }}
+            onMouseUp={(event) => {
+              canvasEventListener(event, 'up');
+            }}
+            onTouchStart={(event) => {
+              canvasEventListener(event, 'down');
+            }}
+            onTouchMove={(event) => {
+              canvasEventListener(event, 'move');
+            }}
+            onTouchEnd={(event) => {
+              canvasEventListener(event, 'leave');
+            }}
+          />
+        </div>
+        <BtnFloating>
+          <Button buttonText="변신하기" color="green" onClick={handleChange} />
+        </BtnFloating>
+        {canvasUrl ? (
+          <TransformedImage src={canvasUrl} alt="변환된 이미지" />
+        ) : (
+          <TransformedImageBox />
+        )}
+      </CanvasWrapper>
+      <BottomWrapper>
+        <ToolWrapper>
+          <Pencil onClick={handlePencil} />
+          <Eraser onClick={handleEraser} />
+          <MagicStick onClick={handleMagicStickClick} />
+          {isBackSketchModalOpen && (
+            <BackSketchModal>
+              {data &&
+                data.subject.sketchList.map((sketch, index) => (
+                  <BackSketchImage
+                    key={sketch.sketchImageUrl}
+                    src={sketch.sketchImageUrl}
+                    alt="밑그림"
+                    onClick={() => handleBackSketchClick(sketch.sketchImageUrl)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleBackSketchClick(sketch.sketchImageUrl);
                       }
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleBackSketchClick(sketch.sketchImageUrl);
-                        }
-                      }}
-                      tabIndex={index}
-                    />
-                  ))}
-                </BackSketchModal>
-              )}
-            </ToolWrapper>
-            <BtnWrapper>
-              <Button
-                buttonText="수정하기"
-                color="lightGreen"
-                onClick={handleToggleEdit}
-              />
-              <Button
-                buttonText="모두 지우기"
-                color="lightGreen"
-                onClick={handleClearCanvas}
-              />
-            </BtnWrapper>
-          </BottomWrapper>
-        </>
-      )}
+                    }}
+                    tabIndex={index}
+                  />
+                ))}
+            </BackSketchModal>
+          )}
+        </ToolWrapper>
+        <BtnWrapper>
+          <Button
+            buttonText="수정하기"
+            color="lightGreen"
+            onClick={handleToggleEdit}
+          />
+          <Button
+            buttonText="모두 지우기"
+            color="lightGreen"
+            onClick={handleClearCanvas}
+          />
+        </BtnWrapper>
+      </BottomWrapper>
     </DrawingPageWrapper>
   );
 }

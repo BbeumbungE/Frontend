@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -11,29 +12,9 @@ import Button from '../atoms/Button';
 import theme from '../../style/theme';
 import { postTopicDrawing } from '../../api/topic';
 
-interface PointInfo {
-  currentPoint: number;
-  previousPoint: number;
-  rewardPoint: number;
-}
-
-interface Content {
-  id: number;
-  pointInfo: PointInfo;
-  score: number;
-}
-interface Status {
-  code: number;
-  httpStatus: string;
-  message: string;
-}
-
-interface StageRecordModalProps {
-  finishData: {
-    content: Content;
-    status: Status;
-  };
-  canvasUrl: string | null;
+interface ModalProps {
+  canvasId: number;
+  canvasUrl: string;
 }
 
 const pulseAnimation = keyframes`
@@ -131,41 +112,6 @@ const TopImageSkeleton = styled.div`
   border-radius: 25px;
 `;
 
-const ModalText = styled.div`
-  font-size: 80px;
-  font-style: normal;
-  font-weight: 700;
-  margin-bottom: 30px;
-  color: ${theme.colors.mainWhite};
-  -webkit-text-stroke: 3px #99d06a;
-  margin-top: -50px;
-  position: stati7;
-  z-index: 100;
-`;
-
-const RupeeWrapper = styled.span`
-  width: 300px;
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  gap: 40px;
-`;
-
-const RupeeIcon = styled(Rupee)`
-  width: 50px;
-  height: 50px;
-`;
-
-const RupeeText = styled.span`
-  font-size: 40px;
-  color: ${theme.colors.mainWhite};
-  font-style: normal;
-  font-weight: 400;
-  margin-bottom: 30px;
-  text-align: center;
-  line-height: 40px;
-`;
-
 const CharacterImage = styled.div<{
   $bgImage: string | null;
   $position: { left: number; bottom: number };
@@ -176,7 +122,7 @@ const CharacterImage = styled.div<{
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
-  z-index: 150;
+  z-index: 500;
   transition:
     right 1s ease,
     bottom 1s ease;
@@ -185,23 +131,28 @@ const CharacterImage = styled.div<{
   animation: ${jumpAnimation} 1s infinite;
 `;
 
-function FinishDrawingModal({ finishData, canvasUrl }: StageRecordModalProps) {
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 700px;
+`;
+
+function FinishDrawingModal({ canvasId, canvasUrl }: ModalProps) {
   const navigate = useNavigate();
   const userProfile = useRecoilValue(UserProfileState);
-  const [userRupee, setUserRupee] = useRecoilState(UserRupeeState);
 
-  useEffect(() => {
-    const updatedRupee =
-      userRupee.rupee + finishData.content.pointInfo.currentPoint;
-    setUserRupee({ rupee: updatedRupee });
-  }, []);
-  console.log('업데이트한 루피!', userRupee);
-
-  const handleConfirm = () => {
-    navigate('/stage');
+  const handleConfirm = async () => {
+    try {
+      const response = await postTopicDrawing(canvasId);
+      console.log('게시물 올리기 성공', response);
+      return response.data;
+    } catch (error) {
+      console.log('게시물 올리기 실패', error);
+      throw error;
+    }
   };
 
-  function handleSave(canvasUrl: string) {
+  function handleSave() {
     fetch(canvasUrl)
       .then((response) => response.blob())
       .then((blob) => {
@@ -209,52 +160,38 @@ function FinishDrawingModal({ finishData, canvasUrl }: StageRecordModalProps) {
 
         const a = document.createElement('a');
         a.href = blobUrl;
-        a.download = 'image.jpg';
-
+        a.download = '변환된 그림.jpg';
+        document.body.appendChild(a);
         a.click();
+        setTimeout((_) => {
+          window.URL.revokeObjectURL(blobUrl);
+        }, 60000);
+        a.remove();
 
-        URL.revokeObjectURL(blobUrl);
+        console.log('이미지 다운로드 성공');
       })
       .catch((error) => {
         console.error('이미지 다운로드 에러', error);
       });
   }
 
-  // function handleRanking = () => {
-
-  // }
-
   return (
     <>
       <ModalWrapper>
-        <LevelStars star={finishData.content.score} />
-        <Star />
         {canvasUrl ? (
           <TopImage src={canvasUrl} alt="최종 변환된 그림" />
         ) : (
           <TopImageSkeleton />
         )}
-        <ModalText>축하합니다</ModalText>
-        <RupeeWrapper>
-          <RupeeIcon />
-          <RupeeText>{finishData.content.pointInfo.currentPoint}</RupeeText>
-        </RupeeWrapper>
-        <Button
-          buttonText="저장하기"
-          color="lightGreen"
-          onClick={handleConfirm}
-          // onClick={handleSave(canvasUrl)}
-        />
-        <Button
-          buttonText="랭킹 참여하기"
-          color="lightGreen"
-          onClick={handleConfirm}
-        />
-        <Button
-          buttonText="자랑하기"
-          color="lightGreen"
-          onClick={handleConfirm}
-        />
+        <ButtonWrapper>
+          <Button buttonText="저장하기" color="green" onClick={handleSave} />
+          <Button
+            buttonText="랭킹 참여하기"
+            color="green"
+            onClick={handleConfirm}
+          />
+          <Button buttonText="공유하기" color="green" onClick={handleConfirm} />
+        </ButtonWrapper>
       </ModalWrapper>
       <CharacterImage
         $bgImage={userProfile.profileImg}
