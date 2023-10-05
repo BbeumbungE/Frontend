@@ -595,8 +595,9 @@ function StageDrawingPage() {
           <ProgressTimeBar
             durationInSeconds={data.timeLimit}
             isModalOpen={isModalOpen}
-            onComplete={() => {
-              if (!isFinish) {
+            onComplete={async () => {
+              await handleChange();
+              if (!isFirstTransform && !isModalOpen) {
                 handleFinish();
               }
             }}
