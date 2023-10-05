@@ -41,7 +41,7 @@ const DeleteWrapper = styled.div`
   width: 100%;
   margin-top: 15px;
   text-align: center;
-  bottom: 20px;
+  bottom: 10px;
 `;
 
 const UpperWrapper = styled.div`
