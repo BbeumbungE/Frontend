@@ -100,77 +100,134 @@ const LandingCanvas = ({
     }
   }, [ctx]);
 
-  const canvasEventListener = (
-    event:
-      | React.MouseEvent<HTMLCanvasElement>
-      | React.TouchEvent<HTMLCanvasElement>,
-    type: string,
-  ) => {
-    if (isLocked) {
-      return;
-    }
+  // const canvasEventListener = (
+  //   event:
+  //     | React.MouseEvent<HTMLCanvasElement>
+  //     | React.TouchEvent<HTMLCanvasElement>,
+  //   type: string,
+  // ) => {
+  //   if (isLocked) {
+  //     return;
+  //   }
 
-    let x = 0;
-    let y = 0;
+  //   let x = 0;
+  //   let y = 0;
 
-    // if ('touches' in event) {
-    //   // Touch event
-    //   const touch = event.touches[0];
-    //   if (touch) {
-    //     x =
-    //       (touch.clientX ?? 0) -
-    //       (canvasRef.current!.getBoundingClientRect().left ?? 0);
-    //     y =
-    //       (touch.clientY ?? 0) -
-    //       (canvasRef.current!.getBoundingClientRect().top ?? 0);
-    //   } else {
-    //     x = 0;
-    //     y = 0;
-    //   }
-    // } else {
-    //   // Mouse event
-    //   x = event.nativeEvent.offsetX;
-    //   y = event.nativeEvent.offsetY;
-    // }
+  //   // if ('touches' in event) {
+  //   //   // Touch event
+  //   //   const touch = event.touches[0];
+  //   //   if (touch) {
+  //   //     x =
+  //   //       (touch.clientX ?? 0) -
+  //   //       (canvasRef.current!.getBoundingClientRect().left ?? 0);
+  //   //     y =
+  //   //       (touch.clientY ?? 0) -
+  //   //       (canvasRef.current!.getBoundingClientRect().top ?? 0);
+  //   //   } else {
+  //   //     x = 0;
+  //   //     y = 0;
+  //   //   }
+  //   // } else {
+  //   //   // Mouse event
+  //   //   x = event.nativeEvent.offsetX;
+  //   //   y = event.nativeEvent.offsetY;
+  //   // }
+
+  //   if ('touches' in event) {
+  //     const canvas = canvasRef.current as HTMLCanvasElement;
+  //     if (canvas) {
+  //       const touch = event.touches[0];
+  //       if (touch) {
+  //         x = touch.clientX - canvas.offsetLeft;
+  //         y =
+  //           touch.clientY -
+  //           canvas.offsetTop +
+  //           document.documentElement.scrollTop;
+
+  //         console.log('터치일 때 ! ! y', x);
+  //       }
+  //     }
+  //   } else {
+  //     x = event.nativeEvent.offsetX;
+  //     y = event.nativeEvent.offsetY;
+  //   }
+
+  //   if (ctx) {
+  //     ctx.globalCompositeOperation = 'source-over';
+  //     ctx.lineWidth = 2;
+  //     if (type === 'down') {
+  //       setIsDrawing(true); // 마우스 클릭 시작
+  //       array.push({ x, y });
+  //     } else if (type === 'move' && isDrawing) {
+  //       ctx?.save();
+  //       ctx?.beginPath();
+  //       ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
+  //       ctx?.lineTo(x, y);
+  //       ctx?.closePath();
+  //       ctx?.stroke();
+  //       ctx?.restore();
+  //       array.push({ x, y });
+  //     } else if (type === 'leave' || type === 'up') {
+  //       setIsDrawing(false); // 마우스 클릭 종료
+  //     }
+  //   }
+  // };
+
+  const startDraw = (event: React.MouseEvent | React.TouchEvent) => {
+    event.persist();
+
+    let offsetX = 0;
+    let offsetY = 0;
 
     if ('touches' in event) {
-      const canvas = canvasRef.current as HTMLCanvasElement;
-      if (canvas) {
-        const touch = event.touches[0];
-        if (touch) {
-          x = touch.clientX - canvas.offsetLeft;
-          y =
-            touch.clientY -
-            canvas.offsetTop +
-            document.documentElement.scrollTop;
-
-          console.log('터치일 때 ! ! y', x);
-        }
+      const touch = event.touches[0];
+      if (touch) {
+        const rect = event.currentTarget.getBoundingClientRect();
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
       }
     } else {
-      x = event.nativeEvent.offsetX;
-      y = event.nativeEvent.offsetY;
+      offsetX = event.nativeEvent.offsetX;
+      offsetY = event.nativeEvent.offsetY;
+    }
+    setIsDrawing(true);
+    if (ctx) {
+      ctx.beginPath();
+      ctx.moveTo(offsetX, offsetY);
+    }
+  };
+
+  const drawing = (event: React.MouseEvent | React.TouchEvent) => {
+    let offsetX = 0;
+    let offsetY = 0;
+
+    if ('touches' in event) {
+      // 터치 이벤트인 경우
+      const touch = event.touches[0];
+      if (touch) {
+        const rect = event.currentTarget.getBoundingClientRect();
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
+      }
+    } else {
+      // 마우스 이벤트인 경우
+      offsetX = event.nativeEvent.offsetX;
+      offsetY = event.nativeEvent.offsetY;
     }
 
     if (ctx) {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.lineWidth = 2;
-      if (type === 'down') {
-        setIsDrawing(true); // 마우스 클릭 시작
-        array.push({ x, y });
-      } else if (type === 'move' && isDrawing) {
-        ctx?.save();
-        ctx?.beginPath();
-        ctx?.moveTo(array[array.length - 1].x, array[array.length - 1].y);
-        ctx?.lineTo(x, y);
-        ctx?.closePath();
-        ctx?.stroke();
-        ctx?.restore();
-        array.push({ x, y });
-      } else if (type === 'leave' || type === 'up') {
-        setIsDrawing(false); // 마우스 클릭 종료
+      if (!isDrawing) {
+        ctx.beginPath();
+        ctx.moveTo(offsetX, offsetY);
+      } else {
+        ctx.lineTo(offsetX, offsetY);
+        ctx.stroke();
       }
     }
+  };
+
+  const stopDraw = () => {
+    setIsDrawing(false);
   };
 
   return (
@@ -210,28 +267,13 @@ const LandingCanvas = ({
               borderRadius: '25px',
               zIndex: '100',
             }}
-            onMouseDown={(event) => {
-              canvasEventListener(event, 'down');
-              // 마우스 클릭 시 이미지 요소 숨기기
-            }}
-            onMouseMove={(event) => {
-              canvasEventListener(event, 'move');
-            }}
-            onMouseLeave={(event) => {
-              canvasEventListener(event, 'leave');
-            }}
-            onMouseUp={(event) => {
-              canvasEventListener(event, 'up');
-            }}
-            onTouchStart={(event) => {
-              canvasEventListener(event, 'down');
-            }}
-            onTouchMove={(event) => {
-              canvasEventListener(event, 'move');
-            }}
-            onTouchEnd={(event) => {
-              canvasEventListener(event, 'leave');
-            }}
+            onMouseDown={startDraw}
+            onMouseUp={stopDraw}
+            onMouseMove={drawing}
+            onMouseLeave={stopDraw}
+            onTouchStart={startDraw}
+            onTouchMove={drawing}
+            onTouchEnd={stopDraw}
           />
         )}
       </div>
