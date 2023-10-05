@@ -1,11 +1,12 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
 import { UserRupeeState } from '../recoil/rupee/atom';
 import theme from '../style/theme';
-import ExitBox from '../components/organisms/ExitBox';
+import ExitBoxOnBlur from '../components/organisms/ExitBoxOnBlur';
 import StoreItem from '../components/organisms/StoreItem';
 import DetailStoreItem from '../components/organisms/DetailStoreItem';
 import DetailStoreItemBuy from '../components/organisms/DetailStoreItemBuy';
@@ -17,6 +18,9 @@ import { patchRupee } from '../api/rupee';
 import SoundEffects from '../sounds/SoundEffects';
 
 const StorePageContainer = styled.div`
+  min-height: 100vh;
+  position: fixed;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -58,9 +62,9 @@ const ExitBoxWrapper = styled.div`
 `;
 
 function StorePage() {
+  const navigate = useNavigate();
   const userProfile = useRecoilValue(UserProfileState);
   const [userRupee, setUserRupee] = useRecoilState(UserRupeeState);
-
   const [itemList, setItemList] = useState<any>({});
   const [curPage, setCurPage] = useState<number>(0);
   const [detailItemId, setDetailItemId] = useState<number>(0);
@@ -154,7 +158,7 @@ function StorePage() {
         </>
       )}
       <ExitBoxWrapper>
-        <ExitBox color="dark" />
+        <ExitBoxOnBlur onClick={() => navigate('/menu')} color="dark" />
       </ExitBoxWrapper>
       <UserRupeeWrapper>
         <UserRupee />

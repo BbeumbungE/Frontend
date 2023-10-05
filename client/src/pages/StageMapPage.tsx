@@ -68,6 +68,7 @@ const SmallWhiteCloud = styled.div`
 const ExitWrapper = styled.div`
   position: absolute;
   top: 3%;
+  z-index: 100;
 `;
 
 const LevelWrapper = styled.div`

@@ -6,7 +6,7 @@ import { UserProfileState } from '../recoil/profile/atom';
 import { getTotalTopic } from '../api/menu';
 import menuTreeIcon from '../assets/image/etc/menuTree.svg';
 import menuMountainIcon from '../assets/image/etc/mainMountain.svg';
-import ExitBox from '../components/organisms/ExitBox';
+import ExitBoxOnBlur from '../components/organisms/ExitBoxOnBlur';
 import ProfileBtn from '../components/atoms/ProfileBtn';
 import TopicMenuBox from '../components/organisms/TopicMenuBox';
 import PageChangeButton from '../components/organisms/PageChangeButton';
@@ -142,7 +142,7 @@ function WatchingMenuPage() {
   return (
     <MainMenuWrapper>
       <ExitBoxWrapper>
-        <ExitBox color="dark" />
+        <ExitBoxOnBlur onClick={() => navigate('/menu')} color="dark" />
       </ExitBoxWrapper>
       <BalloonWrapper>
         <Balloon>
@@ -169,7 +169,7 @@ function WatchingMenuPage() {
         leftDisabled={leftDisabled}
         rightDisabled={rightDisabled}
       />
-      <TopicMenuBox topicData={totalTopics.topic} transparencyButton />
+      <TopicMenuBox topicData={totalTopics.topic} />
       <SvgImage
         src={menuTreeIcon}
         alt="menuTreeIcon"

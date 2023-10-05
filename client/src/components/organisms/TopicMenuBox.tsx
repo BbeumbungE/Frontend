@@ -63,7 +63,7 @@ interface Item {
 
 interface TopicDrawingMenuProps {
   topicData: Content[] | Item[];
-  transparencyButton: boolean;
+  // transparencyButton?: boolean;
 }
 
 // interface DataItem {
@@ -96,14 +96,11 @@ function isContent(obj: any): obj is Content {
   return 'item' in obj;
 }
 
-function isItem(obj: any): obj is Item {
-  return 'avatarResponse' in obj;
-}
+// function isItem(obj: any): obj is Item {
+//   return 'avatarResponse' in obj;
+// }
 
-function TopicMenuBox({
-  topicData,
-  transparencyButton,
-}: TopicDrawingMenuProps) {
+function TopicMenuBox({ topicData }: TopicDrawingMenuProps) {
   console.log('토픽 데이터', topicData);
   return (
     <MenuWrapper>
@@ -111,6 +108,7 @@ function TopicMenuBox({
         if (isContent(data)) {
           const subject = data.item;
           if (subject) {
+            console.log('위:', data); // Content 타입의 데이터를 출력
             return (
               <Menu
                 key={subject.id}
@@ -125,12 +123,12 @@ function TopicMenuBox({
                 }
                 buttonText={subject.subject.subjectName}
                 svgSrc={subject.subject.subjectImage}
-                transparencyButton={transparencyButton}
                 srcId={subject.id}
               />
             );
           }
-        } else if (isItem(data)) {
+        } else if ('subjectName' in data) {
+          console.log('아래:', data); // Item 타입의 데이터를 출력
           return (
             <Menu
               key={data.id}
@@ -145,7 +143,7 @@ function TopicMenuBox({
               }
               buttonText={data.subjectName}
               svgSrc={data.subjectImage}
-              transparencyButton={transparencyButton}
+              transparencyButton
               srcId={data.id}
             />
           );
