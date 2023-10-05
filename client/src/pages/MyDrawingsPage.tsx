@@ -216,8 +216,10 @@ function MyDrawingsPage() {
         console.error(error);
       }
     };
-    getDrawings();
-  }, [currentPage]);
+    setTimeout(() => {
+      getDrawings();
+    }, 80);
+  }, [currentPage, isModalOpen]);
 
   function hasJongseong(str: string) {
     if (!str) return false;
@@ -340,6 +342,8 @@ function MyDrawingsPage() {
                     userProfile.profileId,
                     detailDrawing.canvasId,
                   );
+                  closeModal();
+                } else {
                   closeModal();
                 }
               })

@@ -172,7 +172,7 @@ function DrawingTopicMenuPage() {
         leftDisabled={leftDisabled}
         rightDisabled={rightDisabled}
       />
-      <TopicMenuBox topicData={userTopics.topic} transparencyButton={false} />
+      <TopicMenuBox topicData={userTopics.topic} />
       <SvgImage
         src={menuTreeIcon}
         alt="menuTreeIcon"

@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { StageIdState } from '../../recoil/stage/atom';
 import theme from '../../style/theme';
 import Button from './Button';
 import SoundEffects from '../../sounds/SoundEffects';
@@ -75,22 +77,33 @@ const StyledLink = styled(Link)`
   justify-content: center;
   z-index: 101;
 `;
+
+const StyledMenuWrapper = styled.div``;
+
 function Menu({
   key,
   buttonText,
   color,
   svgSrc,
-  srcId = 0,
+  srcId,
   transparencyButton,
 }: ButtonProps) {
   const navigate = useNavigate();
+  const [stageIdState, setStageIdState] = useRecoilState(StageIdState);
   const { playBtnBright } = SoundEffects();
 
   const handleDrawingNavigate = () => {
-    console.log('이동');
-    navigate('/draw/topic');
-    playBtnBright();
+    if (srcId) {
+      console.log('이동');
+      navigate('/draw/topic');
+      setStageIdState((prev) => ({
+        ...prev,
+        itemId: srcId,
+      }));
+      playBtnBright();
+    }
   };
+
   let bgColor = theme.menuColors.pink; // 기본값은 mainBlue
   let border = 'none';
   let routeUrl = '';
@@ -144,7 +157,7 @@ function Menu({
 
   console.log('srdId:', srcId);
 
-  return srcId !== 0 && !transparencyButton ? (
+  return srcId !== 0 && transparencyButton ? (
     <StyledMenu $bgColor={bgColor} $border={border}>
       <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
       {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
@@ -164,15 +177,12 @@ function Menu({
       )}
     </StyledMenu>
   ) : (
-    <StyledMenu
-      to={routeUrl}
-      $bgColor={bgColor}
-      $border={border}
-      onClick={handleDrawingNavigate}
-    >
-      <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
-      {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
-    </StyledMenu>
+    <StyledMenuWrapper onClick={handleDrawingNavigate}>
+      <StyledMenu to={routeUrl} $bgColor={bgColor} $border={border}>
+        <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
+        {svgSrc && <SvgImage src={svgSrc} alt="SVG Image" />}
+      </StyledMenu>
+    </StyledMenuWrapper>
   );
 }
 
