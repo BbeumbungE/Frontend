@@ -79,18 +79,18 @@ function RankingPage() {
   const [isWow, setIsWow] = useState<boolean>(false);
   const [isSad, setIsSad] = useState<boolean>(false);
   const { topic } = useParams();
+  async function loadPosts(subjectId: number) {
+    try {
+      const response = await getRankPosts(subjectId);
+      const rankPosts = { ...response.content };
+      await setSubjectTitle(rankPosts.subjectName);
+      await setPosts(rankPosts);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
-    async function loadPosts(subjectId: number) {
-      try {
-        const response = await getRankPosts(subjectId);
-        const rankPosts = { ...response.content };
-        await setSubjectTitle(rankPosts.subjectName);
-        await setPosts(rankPosts);
-      } catch (error) {
-        console.log(error);
-      }
-    }
     loadPosts(Number(topic));
   }, []);
 
@@ -218,7 +218,14 @@ function RankingPage() {
             <ExitBoxOnBlur
               color="light"
               onClick={() => {
+                loadPosts(Number(topic));
                 setIsDetail(false);
+                setIsSmile(false);
+                setIsWow(false);
+                setIsSad(false);
+                setSmileCnt(0);
+                setWowCnt(0);
+                setSadCnt(0);
                 setDetailPostId(0);
               }}
             />
