@@ -2,7 +2,7 @@
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil'; // <-- 수정
 import { useEffect, useState } from 'react';
 import { UserProfileState } from '../../recoil/profile/atom';
 import { UserRupeeState } from '../../recoil/rupee/atom';
@@ -16,6 +16,12 @@ import { postTopicDrawing } from '../../api/topic';
 interface ModalProps {
   canvasId: number;
   canvasUrl: string;
+}
+
+declare global {
+  interface Window {
+    Kakao: any;
+  }
 }
 
 const pulseAnimation = keyframes`
@@ -139,9 +145,17 @@ const ButtonWrapper = styled.div`
 `;
 
 function FinishDrawingModal({ canvasId, canvasUrl }: ModalProps) {
+  const { Kakao } = window;
   const navigate = useNavigate();
   const userProfile = useRecoilValue(UserProfileState);
   const [isSaved, setIsSaved] = useState<boolean>(false);
+  const realUrl = 'https://j9a306.p.ssafy.io/';
+
+  useEffect(() => {
+    Kakao.cleanup();
+    Kakao.init(process.env.REACT_APP_JAVASCRIPT_KEY);
+    console.log(Kakao.isInitialized());
+  }, []);
 
   const handleConfirm = async () => {
     try {
@@ -162,6 +176,28 @@ function FinishDrawingModal({ canvasId, canvasUrl }: ModalProps) {
       console.log('게시물 올리기 실패', error);
       throw error;
     }
+  };
+
+  const handleShare = async () => {
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: 'AI 캔버스',
+        description: `${userProfile.nickname}의 그림 구경가실래요?`,
+        imageUrl: `${canvasUrl}`,
+        link: {
+          mobileWebUrl: realUrl,
+        },
+      },
+      buttons: [
+        {
+          title: '나도 그리러 갈래!',
+          link: {
+            mobileWebUrl: realUrl,
+          },
+        },
+      ],
+    });
   };
 
   function handleSave() {
@@ -225,7 +261,7 @@ function FinishDrawingModal({ canvasId, canvasUrl }: ModalProps) {
             color="green"
             onClick={handleConfirm}
           />
-          <Button buttonText="공유하기" color="green" onClick={handleConfirm} />
+          <Button buttonText="공유하기" color="green" onClick={handleShare} />
         </ButtonWrapper>
       </ModalWrapper>
       <CharacterImage
