@@ -100,15 +100,37 @@ const LandingCanvas = ({
   }, [ctx]);
 
   const canvasEventListener = (
-    event: React.MouseEvent<HTMLCanvasElement>,
+    event:
+      | React.MouseEvent<HTMLCanvasElement>
+      | React.TouchEvent<HTMLCanvasElement>,
     type: string,
   ) => {
     if (isLocked) {
       return;
     }
 
-    const x = event.nativeEvent.offsetX;
-    const y = event.nativeEvent.offsetY;
+    let x;
+    let y;
+
+    if ('touches' in event) {
+      // Touch event
+      const touch = event.touches[0];
+      if (touch) {
+        x =
+          (touch.clientX ?? 0) -
+          (canvasRef.current!.getBoundingClientRect().left ?? 0);
+        y =
+          (touch.clientY ?? 0) -
+          (canvasRef.current!.getBoundingClientRect().top ?? 0);
+      } else {
+        x = 0;
+        y = 0;
+      }
+    } else {
+      // Mouse event
+      x = event.nativeEvent.offsetX;
+      y = event.nativeEvent.offsetY;
+    }
 
     if (ctx) {
       ctx.globalCompositeOperation = 'source-over';
@@ -180,6 +202,15 @@ const LandingCanvas = ({
             }}
             onMouseUp={(event) => {
               canvasEventListener(event, 'up');
+            }}
+            onTouchStart={(event) => {
+              canvasEventListener(event, 'down');
+            }}
+            onTouchMove={(event) => {
+              canvasEventListener(event, 'move');
+            }}
+            onTouchEnd={(event) => {
+              canvasEventListener(event, 'leave');
             }}
           />
         )}

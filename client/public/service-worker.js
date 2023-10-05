@@ -11,5 +11,5 @@ self.addEventListener('activate', (e) => {
 
 // fetch event
 self.addEventListener('fetch', (e) => {
-  console.log(`[Service Worker] fetched resource ${e.request.url}`);
+  // console.log(`[Service Worker] fetched resource ${e.request.url}`);
 });

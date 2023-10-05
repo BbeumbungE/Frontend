@@ -382,7 +382,6 @@ function StageDrawingPage() {
     let y;
 
     if ('touches' in event) {
-      console.log(event);
       // Touch event
       const touch = event.touches[0];
       if (touch) {
