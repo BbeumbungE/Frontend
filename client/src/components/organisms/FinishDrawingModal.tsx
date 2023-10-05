@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
+import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -145,6 +146,16 @@ function FinishDrawingModal({ canvasId, canvasUrl }: ModalProps) {
     try {
       const response = await postTopicDrawing(canvasId);
       console.log('게시물 올리기 성공', response);
+      Swal.fire({
+        title: '그림이 잘 올라갔어요!',
+        showDenyButton: false,
+        confirmButtonColor: `${theme.colors.mainBlue}`,
+        confirmButtonText: '확인',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/menu/draw');
+        }
+      });
       return response.data;
     } catch (error) {
       console.log('게시물 올리기 실패', error);

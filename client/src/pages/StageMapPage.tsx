@@ -174,7 +174,7 @@ function StageMapPage() {
   const characterRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLevelIndex, setSelectedLevelIndex] = useState<number | null>(
-    null,
+    0,
   );
 
   // 스테이지 Id
@@ -348,7 +348,6 @@ function StageMapPage() {
           userLevel.level.map((level, index) => {
             const positionIndex = getPositionIndex(level.stageNum);
             const star = level.record ? level.record.score : null;
-
             if (level.id === null) {
               return (
                 <EmptyLevelBtn
