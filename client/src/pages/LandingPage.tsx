@@ -122,6 +122,10 @@ const BtnWrapper = styled.div`
   gap: 10px;
 `;
 
+const LoginBtnWrapper = styled.div`
+  z-index: 700;
+`;
+
 function LandingPage() {
   const navigate = useNavigate();
   const [tempId, setTempId] = useState<string | undefined>();
@@ -261,11 +265,13 @@ function LandingPage() {
                 onClick={handleChange}
               />
             )}
-            <Button
-              buttonText="로그인 및 회원가입"
-              color="blue"
-              onClick={handleNavigate}
-            />
+            <LoginBtnWrapper>
+              <Button
+                buttonText="로그인 및 회원가입"
+                color="blue"
+                onClick={handleNavigate}
+              />
+            </LoginBtnWrapper>
           </BtnWrapper>
         </>
       )}
