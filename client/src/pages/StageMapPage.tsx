@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { useEffect, useState, useRef } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { UserProfileState } from '../recoil/profile/atom';
@@ -13,6 +14,7 @@ import LevelModal from '../components/organisms/LevelModal';
 import EmptyLevelBtn from '../components/organisms/EmptyLevelBtn';
 import { drawingSSE, disconnectDrawingSSE } from '../sse/drawingSSE';
 import { useBGM } from '../sounds/MusicContext';
+import ExitBoxOnBlur from '../components/organisms/ExitBoxOnBlur';
 
 type CharacterImageProps = {
   $bgImage: string | null;
@@ -147,6 +149,7 @@ const AnimatedSmallWhiteCloud = styled(SmallWhiteCloud)`
 `;
 
 function StageMapPage() {
+  const navigate = useNavigate();
   const userProfile = useRecoilValue(UserProfileState);
   const [currentPage, setCurrentPage] = useState(0);
   const [userLevel, setUserLevel] = useState<{
@@ -197,6 +200,7 @@ function StageMapPage() {
   useEffect(() => {
     startBGM('stage');
   });
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -217,7 +221,7 @@ function StageMapPage() {
       }
     };
     getData();
-  }, [currentPage, userProfile]);
+  }, [currentPage]);
 
   function getPositionIndex(number: number | undefined): number {
     if (typeof number === 'number') {
@@ -324,7 +328,7 @@ function StageMapPage() {
       />
       <BlueSky />
       <ExitWrapper>
-        <ExitBox color="light" />
+        <ExitBoxOnBlur onClick={() => navigate('/menu')} color="light" />
       </ExitWrapper>
       <AnimatedBigWhiteCloud />
       <AnimatedSmallWhiteCloud />

@@ -16,7 +16,7 @@ const ExitBoxDiv = styled.div`
   cursor: pointer;
 `;
 
-const ExitBox = ({ color, onClick }: ExitBoxProps) => {
+const ExitBoxOnBlur = ({ color, onClick }: ExitBoxProps) => {
   return (
     <ExitBoxDiv onClick={onClick}>
       <ExitArrow color={color} />
@@ -25,4 +25,4 @@ const ExitBox = ({ color, onClick }: ExitBoxProps) => {
   );
 };
 
-export default ExitBox;
+export default ExitBoxOnBlur;

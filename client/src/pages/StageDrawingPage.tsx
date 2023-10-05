@@ -628,7 +628,7 @@ function StageDrawingPage() {
   console.log('변환 데이터', changeModalData);
   return (
     <DrawingPageWrapper>
-      {isModalOpen && changeModalData && changeModalData.content.topPost && (
+      {isModalOpen && changeModalData && (
         <>
           <BlurBox />
           <CheckingModal imgPath={changeModalData.content.topPost} />

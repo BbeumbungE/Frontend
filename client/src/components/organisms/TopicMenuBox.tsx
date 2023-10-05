@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import styled from 'styled-components';
 import Menu from '../atoms/Menu';
 
@@ -9,10 +10,79 @@ interface MenuItem {
   sketch: string;
 }
 
-interface TopicMenuBoxProps {
-  topicData: MenuItem[];
+interface Status {
+  httpStatus: string;
+  code: number;
+  message: string;
+}
+
+interface Sketch {
+  sketchId: number;
+  sketchImageUrl: string;
+}
+
+interface Subject {
+  id: number;
+  subjectName: string;
+  subjectImage: string;
+  sketchList: Sketch[];
+}
+
+interface Items {
+  id: number;
+  itemPrice: number;
+  hasItem: boolean;
+  subject: Subject;
+}
+
+interface Content {
+  id: number;
+  item: Items;
+  itemPrice: number;
+}
+
+interface Item {
+  id: number;
+  sketchList: Sketch[];
+  subjectImage: string;
+  subjectName: string;
+}
+
+interface AvatarResponse {
+  id: number;
+  avatarName: string;
+  avatarImage: string;
+}
+
+interface Item {
+  id: number;
+  itemPrice: number;
+  hasItem: boolean;
+  avatarResponse: AvatarResponse;
+}
+
+interface TopicDrawingMenuProps {
+  topicData: Content[] | Item[];
   transparencyButton: boolean;
 }
+
+// interface DataItem {
+//   id: number;
+//   itemType: string;
+//   item: Item;
+// }
+
+// interface PageInfo {
+//   page: number;
+//   size: number;
+//   totalElements: number;
+//   totalPages: number;
+// }
+
+// interface Content {
+//   data: DataItem[];
+//   pageInfo: PageInfo;
+// }
 
 const MenuWrapper = styled.div`
   width: 100%;
@@ -22,45 +92,66 @@ const MenuWrapper = styled.div`
   justify-content: center;
 `;
 
-function TopicMenuBox({ topicData, transparencyButton }: TopicMenuBoxProps) {
+function isContent(obj: any): obj is Content {
+  return 'item' in obj;
+}
+
+function isItem(obj: any): obj is Item {
+  return 'avatarResponse' in obj;
+}
+
+function TopicMenuBox({
+  topicData,
+  transparencyButton,
+}: TopicDrawingMenuProps) {
+  console.log('토픽 데이터', topicData);
   return (
     <MenuWrapper>
-      {topicData.length > 0 && (
-        <Menu
-          color="pink"
-          buttonText={topicData[0].subjectName}
-          svgSrc={topicData[0].subjectImage}
-          transparencyButton={transparencyButton}
-          srcId={topicData[0].id}
-        />
-      )}
-      {topicData.length > 1 && (
-        <Menu
-          color="green"
-          buttonText={topicData[1].subjectName}
-          svgSrc={topicData[1].subjectImage}
-          transparencyButton={transparencyButton}
-          srcId={topicData[1].id}
-        />
-      )}
-      {topicData.length > 2 && (
-        <Menu
-          color="mint"
-          buttonText={topicData[2].subjectName}
-          svgSrc={topicData[2].subjectImage}
-          transparencyButton={transparencyButton}
-          srcId={topicData[2].id}
-        />
-      )}
-      {topicData.length > 3 && (
-        <Menu
-          color="yellow"
-          buttonText={topicData[3].subjectName}
-          svgSrc={topicData[3].subjectImage}
-          transparencyButton={transparencyButton}
-          srcId={topicData[3].id}
-        />
-      )}
+      {topicData.map((data, index) => {
+        if (isContent(data)) {
+          const subject = data.item;
+          if (subject) {
+            return (
+              <Menu
+                key={subject.id}
+                color={
+                  index === 0
+                    ? 'pink'
+                    : index === 1
+                    ? 'green'
+                    : index === 2
+                    ? 'mint'
+                    : 'yellow'
+                }
+                buttonText={subject.subject.subjectName}
+                svgSrc={subject.subject.subjectImage}
+                transparencyButton={transparencyButton}
+                srcId={subject.id}
+              />
+            );
+          }
+        } else if (isItem(data)) {
+          return (
+            <Menu
+              key={data.id}
+              color={
+                index === 0
+                  ? 'pink'
+                  : index === 1
+                  ? 'green'
+                  : index === 2
+                  ? 'mint'
+                  : 'yellow'
+              }
+              buttonText={data.subjectName}
+              svgSrc={data.subjectImage}
+              transparencyButton={transparencyButton}
+              srcId={data.id}
+            />
+          );
+        }
+        return null;
+      })}
     </MenuWrapper>
   );
 }

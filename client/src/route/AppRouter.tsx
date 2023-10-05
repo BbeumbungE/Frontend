@@ -30,7 +30,7 @@ const AppRouter: React.FC = () => {
         <Route path="/menu/draw" element={<DrawingTopicMenuPage />} />
         <Route path="/menu/view" element={<WatchingMenuPage />} />
 
-        <Route path="/draw/:topic" element={<TopicDrawingPage />} />
+        <Route path="/draw/topic" element={<TopicDrawingPage />} />
         <Route path="/stage" element={<StageMapPage />} />
         <Route path="/draw/stage" element={<StageDrawingPage />} />
 
