@@ -61,18 +61,18 @@ const PageWrapper = styled.div`
 
 const LogoText = styled.div`
   color: ${theme.colors.mainBlack};
-  font-size: 5rem;
-  margin-top: 1.875rem;
+  font-size: 80px;
+  margin-top: 30px;
   text-align: center;
-  letter-spacing: 1.875rem;
+  letter-spacing: 30px;
   position: relative;
   z-index: 100;
 `;
 
 const BearImg = styled.img<SvgImageProps>`
   position: fixed;
-  width: ${(props) => props.width || '9.375rem'};
-  height: ${(props) => props.height || '9.375rem'};
+  width: ${(props) => props.width || '150px'};
+  height: ${(props) => props.height || '150px'};
   bottom: ${(props) => props['data-bottom'] || '0'};
   right: ${(props) => props['data-right'] || '0'};
   z-index: -2;
@@ -80,8 +80,8 @@ const BearImg = styled.img<SvgImageProps>`
 
 const CloudImgFromLeft = styled(CloudIcon)<SvgImageProps>`
   position: fixed;
-  width: ${(props) => props.width || '9.375rem'};
-  height: ${(props) => props.height || '9.375rem'};
+  width: ${(props) => props.width || '150px'};
+  height: ${(props) => props.height || '150px'};
   bottom: ${(props) => props['data-bottom'] || '0'};
   right: ${(props) => props['data-right'] || '0'};
   z-index: 300;
@@ -97,8 +97,8 @@ const CloudImgFromLeft = styled(CloudIcon)<SvgImageProps>`
 
 const CloudImgFromRight = styled(CloudIcon)<SvgImageProps>`
   position: fixed;
-  width: ${(props) => props.width || '9.375rem'};
-  height: ${(props) => props.height || '9.375rem'};
+  width: ${(props) => props.width || '150px'};
+  height: ${(props) => props.height || '150px'};
   bottom: ${(props) => props['data-bottom'] || '0'};
   right: ${(props) => props['data-right'] || '0'};
   z-index: 300;
@@ -114,12 +114,12 @@ const CloudImgFromRight = styled(CloudIcon)<SvgImageProps>`
 
 const BtnWrapper = styled.div`
   position: absolute;
-  bottom: 1.875rem;
-  left: 46.875rem;
+  bottom: 30px;
+  left: 750px;
   display: flex;
-  width: 18.875rem;
+  width: 302px;
   flex-wrap: wrap;
-  gap: 0.625rem;
+  gap: 10px;
 `;
 
 function LandingPage() {
@@ -215,23 +215,23 @@ function LandingPage() {
         canvas
       </LogoText>
       <CloudImgFromLeft
-        width="93.75rem"
-        height="93.75rem"
+        width="1500px"
+        height="1500px"
         data-bottom="-65%"
         data-right="20%"
         isLoading={isLoading}
       />
       <CloudImgFromRight
-        width="62.5rem"
-        height="62.5rem"
+        width="1000px"
+        height="1000px"
         data-bottom="-20%"
         data-right="-10%"
         style={{ transform: 'scaleX(-1)' }}
         isLoading={isLoading}
       />
       <CloudImgFromRight
-        width="78.125rem"
-        height="78.125rem"
+        width="1250px"
+        height="1250px"
         data-bottom="-70%"
         data-right="-10%"
         style={{ transform: 'scaleX(-1)', opacity: '0.9' }}
@@ -248,8 +248,8 @@ function LandingPage() {
           <BearImg
             src={`${process.env.REACT_APP_IMG_URL}/service-image/mainBear.png`}
             alt="하얀 곰 이미지"
-            width="41.25rem"
-            height="41.25rem"
+            width="660px"
+            height="660px"
             data-bottom="-20%"
             data-right="7%"
           />
