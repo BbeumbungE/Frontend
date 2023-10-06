@@ -41,6 +41,7 @@ const ModalText = styled.span`
   font-style: normal;
   font-weight: 400;
   margin-bottom: 30px;
+  line-height: 80px;
 `;
 
 const ModalLightText = styled.span`
