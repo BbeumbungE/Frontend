@@ -235,22 +235,24 @@ function StageMapPage() {
   }
 
   useEffect(() => {
+    let positionIndex = 1;
     if (userLevel.highestClearedStageNumber) {
-      let positionIndex = getPositionIndex(userLevel.highestClearedStageNumber);
+      if (userLevel.highestClearedStageNumber >= userLevel.level[0].stageNum) {
+        positionIndex = getPositionIndex(userLevel.highestClearedStageNumber);
 
-      // 만약 highestClearedStageNumber가 4 이상이면 positionIndex를 3으로 설정
-      if (userLevel.highestClearedStageNumber >= 4) {
-        console.log('유저의 최고레벨', userLevel.highestClearedStageNumber);
-        positionIndex = 3;
+        // 만약 highestClearedStageNumber가 4 이상이면 positionIndex를 3으로 설정
+        if (userLevel.highestClearedStageNumber >= 4) {
+          console.log('유저의 최고레벨', userLevel.highestClearedStageNumber);
+          positionIndex = 3;
+        }
+        console.log('유저 포지션 인덱스', positionIndex);
       }
-      console.log('유저 포지션 인덱스', positionIndex);
-
-      // 최고 기록 레벨을 초기 선택된 레벨로 설정
-      setSelectedLevelIndex(positionIndex - 1);
-      // 최고 기록 레벨을 초기 캐릭터 위치로 설정
-      const newPosition = levelPositions[positionIndex];
-      setCharacterPosition(newPosition);
     }
+    // 최고 기록 레벨을 초기 선택된 레벨로 설정
+    setSelectedLevelIndex(positionIndex - 1);
+    // 최고 기록 레벨을 초기 캐릭터 위치로 설정
+    const newPosition = levelPositions[positionIndex];
+    setCharacterPosition(newPosition);
   }, [userLevel, currentPage]);
 
   console.log('초기 캐릭터 위치는?', characterPosition);
