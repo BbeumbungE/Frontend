@@ -7,7 +7,6 @@ import Button from './Button';
 import SoundEffects from '../../sounds/SoundEffects';
 
 interface ButtonProps {
-  key?: number;
   buttonText: string;
   color: string;
   svgSrc?: string;
@@ -81,7 +80,6 @@ const StyledLink = styled(Link)`
 const StyledMenuWrapper = styled.div``;
 
 function Menu({
-  key,
   buttonText,
   color,
   svgSrc,
@@ -155,8 +153,6 @@ function Menu({
       break;
   }
 
-  console.log('srdId:', srcId);
-
   return srcId !== 0 && transparencyButton ? (
     <StyledMenu $bgColor={bgColor} $border={border}>
       <MenuText dangerouslySetInnerHTML={{ __html: buttonText }} />
@@ -187,7 +183,6 @@ function Menu({
 }
 
 Menu.defaultProps = {
-  key: null,
   svgSrc: '',
   transparencyButton: false,
   srcId: 0,

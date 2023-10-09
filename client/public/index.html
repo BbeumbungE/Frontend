@@ -8,16 +8,17 @@
       name="description"
       content="Web site created using create-react-app"
     />
-    <!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> -->
-    <!-- <link rel="icon" href="/favicon.ico" type="image/x-icon"> -->
-    <!-- <link rel="apple-touch-icon" href="../src/assets/image/logo/logo.png" /> -->
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.4.0/kakao.min.js" integrity="sha384-mXVrIX2T/Kszp6Z0aEWaA8Nm7J6/ZeWXbL8UpGRjKwWe56Srd/iyNmWMBhcItAjH" crossorigin="anonymous"></script>
-    
+    <script
+      src="https://t1.kakaocdn.net/kakao_js_sdk/2.4.0/kakao.min.js"
+      integrity="sha384-mXVrIX2T/Kszp6Z0aEWaA8Nm7J6/ZeWXbL8UpGRjKwWe56Srd/iyNmWMBhcItAjH"
+      crossorigin="anonymous"
+    ></script>
+
     <title>AI Canvas</title>
   </head>
   <body>
@@ -35,34 +36,39 @@
     -->
     <script>
       // index.js 파일 또는 웹 애플리케이션의 진입점에서 다음 코드를 추가합니다.
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./service-worker.js').then(registration => {
-    registration.addEventListener('updatefound', () => {
-      const installingWorker = registration.installing;
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+          .register('./service-worker.js')
+          .then((registration) => {
+            registration.addEventListener('updatefound', () => {
+              const installingWorker = registration.installing;
 
-      installingWorker.addEventListener('statechange', () => {
-        if (installingWorker.state === 'installed') {
-          if (navigator.serviceWorker.controller) {
-            // 새로운 서비스 워커가 설치되었지만 이전 서비스 워커와 충돌을 방지하려고 대기 중인 경우
-            const updateConfirm = window.confirm('새로운 업데이트가 있습니다. 적용하시겠습니까?');
+              installingWorker.addEventListener('statechange', () => {
+                if (installingWorker.state === 'installed') {
+                  if (navigator.serviceWorker.controller) {
+                    // 새로운 서비스 워커가 설치되었지만 이전 서비스 워커와 충돌을 방지하려고 대기 중인 경우
+                    const updateConfirm = window.confirm(
+                      '새로운 업데이트가 있습니다. 적용하시겠습니까?',
+                    );
 
-            if (updateConfirm) {
-              installingWorker.postMessage({ action: 'skipWaiting' });
-            }
-          } else {
-            // 서비스 워커가 처음 등록될 때
-            console.log('Service Worker registered with scope:', registration.scope);
-          }
-        }
-      });
-    });
-  }).catch(error => {
-    console.error('Service Worker registration failed:', error);
-  });
-}
-
-
-
+                    if (updateConfirm) {
+                      installingWorker.postMessage({ action: 'skipWaiting' });
+                    }
+                  } else {
+                    // 서비스 워커가 처음 등록될 때
+                    console.log(
+                      'Service Worker registered with scope:',
+                      registration.scope,
+                    );
+                  }
+                }
+              });
+            });
+          })
+          .catch((error) => {
+            console.error('Service Worker registration failed:', error);
+          });
+      }
     </script>
   </body>
 </html>
