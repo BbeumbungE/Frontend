@@ -16,42 +16,42 @@ import BtnWarmSound3 from '../assets/sound/effect/zapsplat_multimedia_game_sound
 
 const SoundEffects = () => {
   const [playComplete] = useSound(CompleteSound, {
-    volume: 0.35,
+    volume: 0.1,
   });
   const [playSuccess] = useSound(SuccessSound, {
-    volume: 0.35,
+    volume: 0.1,
   });
   const [playClap] = useSound(ClapSound, {
-    volume: 0.35,
+    volume: 0.1,
   });
 
   const [playAlarm] = useSound(AlarmSound, {
-    volume: 0.35,
+    volume: 0.1,
   });
 
   const [playBtnSmall] = useSound(BtnSmallSound, {
-    volume: 0.35,
+    volume: 0.1,
   });
   const [playBtnSmall2] = useSound(BtnSmallSound2, {
-    volume: 0.35,
+    volume: 0.1,
   });
   const [playBtnBright] = useSound(BtnBrightSound, {
-    volume: 0.37,
+    volume: 0.1,
   });
   const [playBtnBright2] = useSound(BtnBrightSound2, {
-    volume: 0.25,
+    volume: 0.1,
   });
   const [playError] = useSound(ErrorSound, {
-    volume: 0.35,
+    volume: 0.15,
   });
   const [playStamp] = useSound(StampSound, {
-    volume: 0.35,
+    volume: 0.1,
   });
   const [playWand] = useSound(WandSound, {
-    volume: 0.35,
+    volume: 0.1,
   });
   const [playBtnWarm] = useSound(BtnWarmSound, {
-    volume: 0.31,
+    volume: 0.1,
   });
   const [playBtnWarm2] = useSound(BtnWarmSound2, {
     volume: 0.31,
