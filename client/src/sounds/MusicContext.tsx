@@ -18,15 +18,15 @@ export const BGMProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [playMain, { stop: stopMain }] = useSound(mainBGM, {
-    volume: 0.4,
+    volume: 0.12,
     loop: true,
   });
   const [playStage, { stop: stopStage }] = useSound(stageBGM, {
-    volume: 0.4,
+    volume: 0.12,
     loop: true,
   });
   const [playDraw, { stop: stopDraw }] = useSound(drawBGM, {
-    volume: 0.4,
+    volume: 0.12,
     loop: true,
   });
   const [mainPlaying, setMainPlaying] = useState(false);
